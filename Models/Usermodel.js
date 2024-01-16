@@ -26,6 +26,18 @@ const Userschema= new Schema({
         required:true,
     },
 
+    isVerified :{
+        type:Boolean,
+        default:false
+    },
+
+    verificationToken:{
+        type:String,
+      
+        
+
+    },
+
     date:{
         type:Date,
         default:Date.now,
