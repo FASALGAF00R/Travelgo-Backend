@@ -3,7 +3,6 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  // configure your email transport
   host: process.env.MAIL_HOST,
   auth: {
     user: process.env.MAIL_USER,
@@ -15,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = (user) => {
     console.log("email sending area");
   const verificationLink = `http://localhost:5173/verify/${user.verificationToken}`;
-
+console.log(verificationLink,"linkkkk");
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: user.email,

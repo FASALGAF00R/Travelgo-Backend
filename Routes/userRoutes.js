@@ -7,6 +7,9 @@ const { userVerification } = require('../Middlewares/AuthMiddleware')
 
 userRoute.post('/signup',usercontroller.loadSignup)
 userRoute.post('/login',usercontroller.loadLogin)
-userRoute.post('/',userVerification)
+// userRoute.post('/verify',userVerification)
+userRoute.post('/verify/:token',usercontroller.verifyEmail )
+
+
 module.exports=userRoute
 
