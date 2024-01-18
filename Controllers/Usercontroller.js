@@ -96,7 +96,7 @@ const auth = await bcrypt.compare(password, Data.password);
                 withCredentials: true,
                 httpOnly: false,
             })
-            res.status(201).json({ message: "User logged succesfulluy", success: true ,Data })
+            res.status(201).json({ message: "User logged succesfulluy", success: true ,Data ,token})
         }
         
         

@@ -2,23 +2,50 @@
 const user =require('../Models/Usermodel')
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const asyncHandler =require('express-async-handler')
+
+
+// module.exports.userVerification = (req, res) => {
+//   console.log("oooooooooooooooooooooo");
+//     const token = req.cookies.token
+//     if (!token) {
+//       return res.json({ status: false })
+//     }
+//     jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
+//       if (err) {
+//        return res.json({ status: false })
+//       } else {
+//         const user = await user.findById(data.id)
+//         if (user)
+//          return res.json({ status: true, user: user.username })
+//         else return res.json({ status: false })
+//       }
+//     })
+//   }
 
 
 
-module.exports.userVerification = (req, res) => {
-  console.log("oooooooooooooooooooooo");
-    const token = req.cookies.token
-    if (!token) {
-      return res.json({ status: false })
-    }
-    jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
-      if (err) {
-       return res.json({ status: false })
-      } else {
-        const user = await user.findById(data.id)
-        if (user)
-         return res.json({ status: true, user: user.username })
-        else return res.json({ status: false })
+const protect = asyncHandler(async (req, res, next) => {
+console.log("protector");
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+
+      try {
+
+          token = req.headers.authorization.split(" ")[1];
+          const decoded = jwt.verify(token, process.env.TOKEN_KEY)
+          next();
+
+      } catch (error) {
+
+          res.status(401).json("Invalid token")
       }
-    })
+  } else {
+
+      res.status(401).json("Token not found")
+
   }
+})
+
+module.exports = { protect }
