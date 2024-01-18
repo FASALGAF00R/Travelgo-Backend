@@ -34,7 +34,7 @@ const loadSignup = async (req, res) => {
                 withCredentials: true,
                 httpOnly: false,
             });
-            res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success:true, newuser })
+            res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newuser })
         }
     } catch (error) {
         console.error(error);
@@ -46,7 +46,7 @@ const loadSignup = async (req, res) => {
 // user email verification
 const verifyEmail = async (req, res) => {
     try {
-        const {token }= req.params;
+        const { token } = req.params;
         const Data = await user.findOne({ verificationToken: token });
         console.log(Data, "ppppppp");
         if (Data) {
@@ -54,7 +54,7 @@ const verifyEmail = async (req, res) => {
             Data.verificationToken = undefined;
             await Data.save();
 
-            res.json({ message: 'Email verification successful.',Data });
+            res.json({ message: 'Email verification successful.', Data });
         } else {
             res.status(404).json({ message: 'Invalid or expired verification token.' });
         }
@@ -82,24 +82,24 @@ const loadLogin = async (req, res) => {
         if (!Data) {
             return res.json({ message: "email or password is incorrect" })
         }
-const auth = await bcrypt.compare(password, Data.password);
+        const auth = await bcrypt.compare(password, Data.password);
         console.log(auth, "ppppadword");
         if (auth) {
             return res.json({ message: "incorrect password" })
-        } 
-            console.log("7");
-           
-            if(Data){
+        }
+        console.log("7");
+
+        if (Data) {
             const token = createSecretToken(Data._id);
             console.log(token, "login token");
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             })
-            res.status(201).json({ message: "User logged succesfulluy", success: true ,Data ,token})
+            res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
         }
-        
-        
+
+
     } catch (error) {
         console.log(error);
     }
@@ -107,11 +107,32 @@ const auth = await bcrypt.compare(password, Data.password);
 
 }
 
+// google login 
+
+const googlelogin = async (req, res) => {
+    try {
+        console.log(req.body,"kkkk");
+        const {email} = req.body
+       
+        const Finduser = await user.findOne({ email: email })
+        console.log(Finduser,"gggggggggggg");
+        if (Finduser.isVerified) {
+            return  res.json({ message: "user verified",success:true })
+        }else{
+            return res.json({message:"wrong user"})
+        }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
 
 
 
 module.exports = {
-    loadSignup,
-    loadLogin,
-    verifyEmail
-}
+        loadSignup,
+        loadLogin,
+        verifyEmail,
+        googlelogin
+    }

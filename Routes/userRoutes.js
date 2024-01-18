@@ -9,6 +9,7 @@ userRoute.post('/signup',usercontroller.loadSignup)
 userRoute.post('/login',usercontroller.loadLogin)
 // userRoute.post('/verify',userVerification)
 userRoute.post('/verify/:token',usercontroller.verifyEmail )
+userRoute.post('/googlelogin',usercontroller.googlelogin)
 
 
 module.exports=userRoute
