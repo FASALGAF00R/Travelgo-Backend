@@ -33,9 +33,6 @@ const Agentschema= new Schema({
 
     verificationToken:{
         type:String,
-      
-        
-
     },
 
     date:{
@@ -51,6 +48,5 @@ Agentschema.pre("save", async function () {
   
 
 
- export const agent=mongoose.model('agent',Agentschema)
-
-// module.exports=agent
+const agent=mongoose.model('agent',Agentschema)
+export default agent
