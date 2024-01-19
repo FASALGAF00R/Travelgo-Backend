@@ -1,10 +1,9 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 
-
 const Schema =mongoose.Schema
 
-const Userschema= new Schema({
+const Agentschema= new Schema({
     userName:{
         type:String,
         required:true,
@@ -14,6 +13,12 @@ const Userschema= new Schema({
         type:String,
         required:true,
         unique:true
+    },
+
+    phone: {
+        type: Number,
+        required: true,
+
     },
 
     password :{
@@ -40,11 +45,12 @@ const Userschema= new Schema({
 
 })
 
-Userschema.pre("save", async function () {
+Agentschema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12);
   });
   
 
 
- export const user=mongoose.model('user',Userschema)
+ export const agent=mongoose.model('agent',Agentschema)
 
+// module.exports=agent

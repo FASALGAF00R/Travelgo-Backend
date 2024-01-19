@@ -1,6 +1,6 @@
 // emailService.js
+import nodemailer from 'nodemailer'
 
-const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const sendVerificationEmail = (user) => {
+ export const  sendVerificationEmail = (user) => {
     console.log("email sending area");
   const verificationLink = `http://localhost:5173/verify/${user.verificationToken}`;
 console.log(verificationLink,"linkkkk");
@@ -31,7 +31,5 @@ console.log(verificationLink,"linkkkk");
   });
 };
 
-module.exports = {
-  sendVerificationEmail,
-};
+
 

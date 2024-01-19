@@ -1,12 +1,13 @@
 // checks if the user have axcess to the home
-const user =require('../Models/Usermodel')
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const asyncHandler =require('express-async-handler')
+import {user} from '../Models/Usermodel.js'
+import env from 'dotenv';
+env.config()
+import jwt from 'jsonwebtoken'
+import asyncHandler from 'express-async-handler'
 
 
 
-const protect = asyncHandler(async (req, res, next) => {
+ export const protect = asyncHandler(async (req, res, next) => {
 console.log("protector");
   let token;
 
@@ -29,4 +30,3 @@ console.log("protector");
   }
 })
 
-module.exports = { protect }

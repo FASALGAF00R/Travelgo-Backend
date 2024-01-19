@@ -1,8 +1,8 @@
-const user = require('../Models/Usermodel')
-const { createSecretToken } = require('../Util/SecretToken')
-const crypto = require('crypto');
-const bcrypt = require('bcrypt')
-const { sendVerificationEmail } = require('../Util/emailService');
+import {user} from '../Models/Usermodel.js'
+import {createSecretToken} from   '../Util/SecretToken.js'
+import crypto from 'crypto'
+import bcrypt from 'bcrypt'
+import  {sendVerificationEmail}  from '../Util/emailService.js'
 
 
 
@@ -11,7 +11,7 @@ const { sendVerificationEmail } = require('../Util/emailService');
 const verificationToken = crypto.randomBytes(20).toString('hex');
 console.log(verificationToken, "tokkkkennnnnn");
 
-const loadSignup = async (req, res) => {
+ export const loadSignup = async (req, res) => {
     console.log("6");
     try {
         const User = await user.findOne({ email: req.body.email })
@@ -44,7 +44,7 @@ const loadSignup = async (req, res) => {
 
 
 // user email verification
-const verifyEmail = async (req, res) => {
+ export const verifyEmail = async (req, res) => {
     try {
         const { token } = req.params;
         const Data = await user.findOne({ verificationToken: token });
@@ -67,7 +67,7 @@ const verifyEmail = async (req, res) => {
 
 
 
-const loadLogin = async (req, res) => {
+export const loadLogin = async (req, res) => {
     console.log("6");
     try {
         console.log("pppppppppp");
@@ -109,7 +109,7 @@ const loadLogin = async (req, res) => {
 
 // google login 
 
-const googlelogin = async (req, res) => {
+export const googlelogin = async (req, res) => {
     try {
         console.log(req.body,"kkkk");
         const {email} = req.body
@@ -130,9 +130,3 @@ const googlelogin = async (req, res) => {
 
 
 
-module.exports = {
-        loadSignup,
-        loadLogin,
-        verifyEmail,
-        googlelogin
-    }

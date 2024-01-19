@@ -1,16 +1,25 @@
-const express=require('express')
-const userRoute=express.Router()
-const usercontroller=require('../Controllers/Usercontroller')
-const { protect } = require('../Middlewares/AuthMiddleware')
+import express from 'express'
+
+import {
+    loadSignup,
+    loadLogin,
+    verifyEmail,
+    googlelogin
+} from '../Controllers/Usercontroller.js'
+import { protect } from '../Middlewares/AuthMiddleware.js'
+const userRoute = express.Router();
+
+// user routes
+userRoute.post('/signup', loadSignup)
+userRoute.post('/login', loadLogin)
+userRoute.post('/verify/:token', verifyEmail)
+userRoute.post('/googlelogin', googlelogin)
 
 
 
-userRoute.post('/signup',usercontroller.loadSignup)
-userRoute.post('/login',usercontroller.loadLogin)
-// userRoute.post('/verify',userVerification)
-userRoute.post('/verify/:token',usercontroller.verifyEmail )
-userRoute.post('/googlelogin',usercontroller.googlelogin)
+
+// agentroutes
 
 
-module.exports=userRoute
 
+export default userRoute

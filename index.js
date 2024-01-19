@@ -1,18 +1,18 @@
 // backend entry point
+import express, { json } from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+const { connect, connection } = mongoose;
+import env from 'dotenv';
 
-const express = require ('express')
-const cors = require('cors')
-const mongoose = require ('mongoose')
-require("dotenv").config();
+env.config()
 const app=express()
-const cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
 
 
 app.use(cookieParser());
 app.use(cors())
-app.use(express.urlencoded());
-
-app.use(express.json())
+app.use(json())
 
 
 app.use(
@@ -25,8 +25,8 @@ app.use(
   
 const port =3000
 
-mongoose.connect('mongodb://localhost:27017/travelgo')
-const db=mongoose.connection
+connect('mongodb://localhost:27017/travelgo')
+const db=connection
 
 db.once('open',()=>{
     console.log("database connected succesfully")
@@ -34,9 +34,9 @@ db.once('open',()=>{
 
 
 // user routes
-const userRoutes= require('./Routes/userRoutes')
-app.use('/',userRoutes)
+import userRoutes from './Routes/userRoutes.js'
 
+app.use('/',userRoutes)
 
 
 
