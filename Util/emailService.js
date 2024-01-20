@@ -27,7 +27,7 @@ export const sendVerificationEmail = (user,url) => {
       if (error) {
         console.error(error);
       } else {
-        console.log('Email sent: ' + info.response);
+        console.log('Email sent for agent : ' + info.response);
       }
     });
   } else {

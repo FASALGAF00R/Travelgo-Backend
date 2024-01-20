@@ -2,12 +2,12 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import cookieParser from "cookie-parser";
 const { connect, connection } = mongoose;
 import env from 'dotenv';
 
 env.config()
 const app=express()
-import cookieParser from "cookie-parser";
 
 
 app.use(cookieParser());
@@ -33,7 +33,7 @@ db.once('open',()=>{
 })
 
 
-// user routes
+//  routes
 import userRoutes from './Routes/userRoutes.js'
 import agentRoute from './Routes/agentRoutes.js';
 

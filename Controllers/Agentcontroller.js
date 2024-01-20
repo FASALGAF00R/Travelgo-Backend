@@ -2,9 +2,9 @@ import agent from '../Models/Agentmodel.js'
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
-
+import bcrypt from 'bcrypt'
 const verificationToken = crypto.randomBytes(20).toString('hex');
-console.log(verificationToken, "tokkkkennnnnn");
+
 
 export const AgentSignup = async (req, res) => {
     try {
@@ -20,7 +20,6 @@ export const AgentSignup = async (req, res) => {
                 password: req.body.password
             })
             newagent.verificationToken = verificationToken;
-            console.log(newagent,"mmmmmmmmmmmmm");
             newagent.save();
             
               const url =`${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
@@ -55,3 +54,35 @@ export const Agentverify = async (req, res) => {
     }
 }
 
+export const AgentLogin = async(req,res)=>{
+    console.log("llllllllllllll");
+    try {
+        const { email, password } = req.body
+       
+        if (!email || !password) {
+            return res.json({ message: "All fields are required " })
+        }
+
+        const Agent = await agent.findOne({ email :email})
+        console.log(Agent, "datagggggggggggggggg");
+        if (!Agent) {
+            return res.json({ message: "email or password is incorrect" })
+        }
+        const auth = await bcrypt.compare(password, Agent.password);
+        if (auth) {
+            return res.json({ message: "incorrect password" })
+        }
+        console.log("7");
+
+        if (Agent) {
+            const token = createSecretToken(Agent._id);
+            res.cookie("token", token, {
+                withCredentials: true,
+                httpOnly: false,
+            })
+            res.status(201).json({ message: "Agent logged succesfulluy", success: true, Agent, token })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}

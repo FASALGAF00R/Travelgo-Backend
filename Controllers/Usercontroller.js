@@ -11,8 +11,9 @@ import  {sendVerificationEmail}  from '../Util/emailService.js'
 const verificationToken = crypto.randomBytes(20).toString('hex');
 console.log(verificationToken, "tokkkkennnnnn");
 
+
+//  user signup
  export const loadSignup = async (req, res) => {
-    console.log("6");
     try {
         const User = await user.findOne({ email: req.body.email })
         if (User) {
@@ -24,12 +25,10 @@ console.log(verificationToken, "tokkkkennnnnn");
                 phone: req.body.phone,
                 password: req.body.password
             })
-            console.log(newuser, "7");
             newuser.verificationToken = verificationToken;
             newuser.save();
             sendVerificationEmail(newuser);
             const token = createSecretToken(newuser._id);
-            console.log(token, "lllllllllll");
             res.cookie('tokken', token, {
                 withCredentials: true,
                 httpOnly: false,
@@ -44,11 +43,11 @@ console.log(verificationToken, "tokkkkennnnnn");
 
 
 // user email verification
+
  export const verifyEmail = async (req, res) => {
     try {
         const { token } = req.params;
         const Data = await user.findOne({ verificationToken: token });
-        console.log(Data, "ppppppp");
         if (Data) {
             Data.isVerified = true;
             Data.verificationToken = undefined;
@@ -65,12 +64,11 @@ console.log(verificationToken, "tokkkkennnnnn");
 };
 
 
-
+// user login
 
 export const loadLogin = async (req, res) => {
-    console.log("6");
+
     try {
-        console.log("pppppppppp");
         const { email, password } = req.body
         console.log(req.body);
         if (!email || !password) {
@@ -78,12 +76,11 @@ export const loadLogin = async (req, res) => {
         }
 
         const Data = await user.findOne({ email })
-        console.log(Data, "data");
+        console.log(Data, "datajkbbbb");
         if (!Data) {
             return res.json({ message: "email or password is incorrect" })
         }
         const auth = await bcrypt.compare(password, Data.password);
-        console.log(auth, "ppppadword");
         if (auth) {
             return res.json({ message: "incorrect password" })
         }
@@ -91,7 +88,6 @@ export const loadLogin = async (req, res) => {
 
         if (Data) {
             const token = createSecretToken(Data._id);
-            console.log(token, "login token");
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
@@ -111,11 +107,9 @@ export const loadLogin = async (req, res) => {
 
 export const googlelogin = async (req, res) => {
     try {
-        console.log(req.body,"kkkk");
-        const {email} = req.body
-       
+
+        const {email} = req.body   
         const Finduser = await user.findOne({ email: email })
-        console.log(Finduser,"gggggggggggg");
         if (Finduser.isVerified) {
             return  res.json({ message: "user verified",success:true })
         }else{

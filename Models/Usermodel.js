@@ -13,7 +13,7 @@ const Userschema= new Schema({
     email:{
         type:String,
         required:true,
-        unique:true
+    
     },
 
     password :{
@@ -28,10 +28,9 @@ const Userschema= new Schema({
 
     verificationToken:{
         type:String,
-      
-        
 
     },
+
 
     date:{
         type:Date,
