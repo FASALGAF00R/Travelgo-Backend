@@ -36,7 +36,7 @@ db.once('open',()=>{
 //  routes
 import userRoutes from './Routes/userRoutes.js'
 import agentRoute from './Routes/agentRoutes.js';
-
+import adminRoute from './Routes/adminRoutes.js';
 
 
 
@@ -44,6 +44,7 @@ import agentRoute from './Routes/agentRoutes.js';
 
 app.use('/',userRoutes)
 app.use('/agent',agentRoute)
+app.use('/admin',adminRoute)
 
 
 
