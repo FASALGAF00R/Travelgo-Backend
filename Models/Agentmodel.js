@@ -17,6 +17,7 @@ const Agentschema= new Schema({
     phone: {
         type: Number,
         required: true,
+        unique:true,
 
     },
 
@@ -25,9 +26,20 @@ const Agentschema= new Schema({
         required:true,
     },
 
+    
+    ConfirmPassword :{
+        type:String,
+
+    },
+
     isVerified :{
         type:Boolean,
         default:false
+    },
+
+    isBlock:{
+        type:String,
+        default:true,
     },
 
     verificationToken:{

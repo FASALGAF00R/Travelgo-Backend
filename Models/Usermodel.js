@@ -21,6 +21,11 @@ const Userschema= new Schema({
         required:true,
     },
 
+    ConfirmPassword :{
+        type:String,
+
+    },
+
     isVerified :{
         type:Boolean,
         default:false
@@ -29,6 +34,11 @@ const Userschema= new Schema({
     verificationToken:{
         type:String,
 
+    },
+
+    isBlock:{
+        type:String,
+        default:true,
     },
 
 

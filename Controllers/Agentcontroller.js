@@ -40,6 +40,7 @@ export const Agentverify = async (req, res) => {
     
     try {
         const  {token}  = req.params;
+        console.log(token);
         const Data = await agent.findOne({ verificationToken: token  })
         if (Data) {
             Data.isVerified = true;
@@ -73,6 +74,8 @@ export const AgentLogin = async(req,res)=>{
             return res.json({ message: "incorrect password" })
         }
         console.log("7");
+        console.log(Agent,"GGGGG");
+        if (Agent.isBlock=='true') {
 
         if (Agent) {
             const token = createSecretToken(Agent._id);
@@ -82,7 +85,12 @@ export const AgentLogin = async(req,res)=>{
             })
             res.status(201).json({ message: "Agent logged succesfulluy", success: true, Agent, token })
         }
-    } catch (error) {
+    }else{
+        res.json({message:'agents is blocked'})
+    }
+    
+}
+    catch (error) {
         console.log(error);
     }
 }

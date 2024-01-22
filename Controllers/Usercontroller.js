@@ -7,9 +7,10 @@ import  {sendVerificationEmail}  from '../Util/emailService.js'
 
 
 
+
 // user signup
 const verificationToken = crypto.randomBytes(20).toString('hex');
-console.log(verificationToken, "tokkkkennnnnn");
+
 
 
 //  user signup
@@ -70,13 +71,11 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        console.log(req.body);
         if (!email || !password) {
             return res.json({ message: "All fields are required " })
         }
 
         const Data = await user.findOne({ email })
-        console.log(Data, "datajkbbbb");
         if (!Data) {
             return res.json({ message: "email or password is incorrect" })
         }
@@ -85,14 +84,16 @@ export const loadLogin = async (req, res) => {
             return res.json({ message: "incorrect password" })
         }
         console.log("7");
-
-        if (Data) {
+         console.log(Data);
+        if (Data.isBlock=='true') {
             const token = createSecretToken(Data._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             })
             res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
+        }else{
+            res.json({message:'users is blocked'})
         }
 
 
@@ -107,10 +108,9 @@ export const loadLogin = async (req, res) => {
 
 export const googlelogin = async (req, res) => {
     try {
-
         const {email} = req.body   
         const Finduser = await user.findOne({ email: email })
-        if (Finduser.isVerified) {
+        if (Finduser) {
             return  res.json({ message: "user verified",success:true })
         }else{
             return res.json({message:"wrong user"})

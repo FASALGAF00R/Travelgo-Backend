@@ -9,7 +9,7 @@ import {
 const agentRoute =express.Router()
 
 // agent routes
-agentRoute.post('/loginagent',AgentLogin)
+agentRoute.post('/login',AgentLogin)
 agentRoute.post('/agentsignup',AgentSignup)
 agentRoute.get('/verify/:token',Agentverify)
 export default agentRoute
