@@ -108,13 +108,9 @@ export const loadLogin = async (req, res) => {
 
 export const googlelogin = async (req, res) => {
     try {
-        const {email} = req.body   
-        const Finduser = await user.findOne({ email: email })
-        if (Finduser) {
-            return  res.json({ message: "user verified",success:true })
-        }else{
-            return res.json({message:"wrong user"})
-        }
+        console.log("gigsdjdhfkjgnskdnmngkj");
+        // const{}
+
         } catch (error) {
             console.log(error)
         }

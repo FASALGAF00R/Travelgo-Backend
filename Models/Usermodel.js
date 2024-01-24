@@ -5,47 +5,23 @@ import bcrypt from 'bcrypt'
 const Schema =mongoose.Schema
 
 const Userschema= new Schema({
-    userName:{
-        type:String,
-        required:true,
-    },
+    userName:{ type:String,  required:true,},
+ 
+    email:{  type:String,  required:true },
 
-    email:{
-        type:String,
-        required:true,
-    
-    },
+    password :{ type:String,  required:true,},
 
-    password :{
-        type:String,
-        required:true,
-    },
+    ConfirmPassword :{ type:String,},
 
-    ConfirmPassword :{
-        type:String,
+    isVerified :{type:Boolean, default:false},
 
-    },
+    verificationToken:{type:String},
 
-    isVerified :{
-        type:Boolean,
-        default:false
-    },
+    isBlock:{type:String,default:true},
 
-    verificationToken:{
-        type:String,
+    isGoogle:{type:Boolean,default:false},
 
-    },
-
-    isBlock:{
-        type:String,
-        default:true,
-    },
-
-
-    date:{
-        type:Date,
-        default:Date.now,
-    }
+    date:{ type:Date, default:Date.now }
 
 })
 
