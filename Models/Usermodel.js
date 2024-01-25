@@ -11,7 +11,7 @@ const Userschema= new Schema({
 
     password :{ type:String,  required:true,},
 
-    ConfirmPassword :{ type:String,},
+    // ConfirmPassword :{ type:String, required:true,},
 
     isVerified :{type:Boolean, default:false},
 
@@ -26,7 +26,7 @@ const Userschema= new Schema({
 })
 
 Userschema.pre("save", async function () {
-    this.password = await bcrypt.hash(this.password, 12);
+    this.password = await bcrypt.hash(this.password, 10);
   });
   
 

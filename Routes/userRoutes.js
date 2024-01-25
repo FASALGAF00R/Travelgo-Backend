@@ -4,7 +4,8 @@ import {
     loadSignup,
     loadLogin,
     verifyEmail,
-    googlelogin
+    googlelogin,
+
 } from '../Controllers/Usercontroller.js'
 import { protect } from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();

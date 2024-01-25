@@ -1,8 +1,14 @@
-import {user} from '../Models/Usermodel.js'
-import {createSecretToken} from   '../Util/SecretToken.js'
+import { user } from '../Models/Usermodel.js'
+import { createSecretToken } from '../Util/SecretToken.js'
 import crypto from 'crypto'
 import bcrypt from 'bcrypt'
-import  {sendVerificationEmail}  from '../Util/emailService.js'
+import { sendVerificationEmail } from '../Util/emailService.js'
+
+
+  function passwordHasher(password){
+    const pass = bcrypt.hash(password, 10);
+    return pass;
+};
 
 
 
@@ -14,7 +20,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 
 
 //  user signup
- export const loadSignup = async (req, res) => {
+export const loadSignup = async (req, res) => {
     try {
         const User = await user.findOne({ email: req.body.email })
         if (User) {
@@ -45,7 +51,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 
 // user email verification
 
- export const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
     try {
         const { token } = req.params;
         const Data = await user.findOne({ verificationToken: token });
@@ -84,16 +90,16 @@ export const loadLogin = async (req, res) => {
             return res.json({ message: "incorrect password" })
         }
         console.log("7");
-         console.log(Data);
-        if (Data.isBlock=='true') {
+        console.log(Data);
+        if (Data.isBlock == 'true') {
             const token = createSecretToken(Data._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             })
             res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
-        }else{
-            res.json({message:'users is blocked'})
+        } else {
+            res.json({ message: 'users is blocked' })
         }
 
 
@@ -108,13 +114,36 @@ export const loadLogin = async (req, res) => {
 
 export const googlelogin = async (req, res) => {
     try {
-        console.log("gigsdjdhfkjgnskdnmngkj");
-        // const{}
+      
+        const { id ,name , email } = req.body.data
+        console.log( id ,name , email,"namddddddddddddddddddddddddddde");
+        // const Finduser = await user.findOne({ email: email })
+        // console.log(Finduser);
+            // const hashpass = await passwordHasher(id)
 
-        } catch (error) {
-            console.log(error)
-        }
+            const Googleuser = new user({
+                userName:name,
+                email:email,
+                password: id
+            })
+
+              await Googleuser.save()  
+              if(Googleuser){
+
+                  const token = createSecretToken(Googleuser._id);
+                  console.log(token,"yyyyy");
+                  res.cookie("token", token, {
+                      withCredentials: true,
+                      httpOnly: false,
+                  })
+                  res.status(201).json({ message: "User logged succesfulluy", success: true,  token ,Googleuser})         
+      
+              }        
+
+    } catch (error) {
+        console.log(error)
     }
+}
 
 
 
