@@ -19,8 +19,6 @@ const Userschema= new Schema({
 
     isBlock:{type:String,default:true},
 
-    isGoogle:{type:Boolean,default:false},
-
     date:{ type:Date, default:Date.now }
 
 })

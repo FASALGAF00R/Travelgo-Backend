@@ -5,11 +5,6 @@ import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from '../Util/emailService.js'
 
 
-  function passwordHasher(password){
-    const pass = bcrypt.hash(password, 10);
-    return pass;
-};
-
 
 
 
@@ -116,20 +111,20 @@ export const googlelogin = async (req, res) => {
     try {
       
         const { id ,name , email } = req.body.data
-        console.log( id ,name , email,"namddddddddddddddddddddddddddde");
-        // const Finduser = await user.findOne({ email: email })
-        // console.log(Finduser);
-            // const hashpass = await passwordHasher(id)
-
+      
+        const Finduser = await user.findOne({ email: email })
+        console.log(Finduser);
+        if(Finduser.isBlock==false){
+            return res.json({message:"user is blocked by admin"})
+        }else{
             const Googleuser = new user({
                 userName:name,
                 email:email,
-                password: id
+                password: id,
             })
-
+            Googleuser.isVerified=true,
               await Googleuser.save()  
               if(Googleuser){
-
                   const token = createSecretToken(Googleuser._id);
                   console.log(token,"yyyyy");
                   res.cookie("token", token, {
@@ -138,7 +133,8 @@ export const googlelogin = async (req, res) => {
                   })
                   res.status(201).json({ message: "User logged succesfulluy", success: true,  token ,Googleuser})         
       
-              }        
+              }      
+            }  
 
     } catch (error) {
         console.log(error)
