@@ -4,7 +4,9 @@ Adminlogin,
 Userlisting,
 Blockuser,
 Agentlisting,
-Blockagent
+Blockagent,
+agentapprovallisting,
+agentreject
  } from "../Controllers/Admincontroller.js";
 
 const adminRoute=express.Router()
@@ -13,4 +15,6 @@ adminRoute.get('/users',Userlisting)
 adminRoute.get('/agents',Agentlisting)
 adminRoute.put('/blockuser',Blockuser)
 adminRoute.put('/blockagent',Blockagent)
+adminRoute.get('/agentapproval',agentapprovallisting)
+adminRoute.put('/reject',agentreject)
 export  default adminRoute

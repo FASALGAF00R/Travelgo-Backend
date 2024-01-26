@@ -26,11 +26,6 @@ const Agentschema= new Schema({
         required:true,
     },
 
-    
-    ConfirmPassword :{
-        type:String,
-
-    },
 
     isVerified :{
         type:Boolean,
@@ -46,12 +41,14 @@ const Agentschema= new Schema({
         type:String,
     },
 
+    Approval:{type:Boolean,default:false},
+
     date:{
         type:Date,
         default:Date.now,
-    }
-
-})
+    },
+    
+});
 
 Agentschema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12);

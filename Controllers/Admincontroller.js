@@ -89,7 +89,7 @@ export const Adminlogin = async (req, res) => {
 
         const objectId = new mongoose.Types.ObjectId(id);
 
-        const User = await user.findOne({ _id: objectId });
+        const User = await user.findOne({ _id: id });
     
     console.log(User,'0OOOOO');
         if (User.isBlock == "true") {
@@ -118,3 +118,46 @@ export const Adminlogin = async (req, res) => {
     } catch (error) {
       res.status(500).json({ alert: "Internal Server Error" });    }
 };
+
+
+export const  agentapprovallisting =async(req,res)=>{
+  try {
+    const Agent = await agent.find({})
+    return res.json({success:true,Agent})
+    
+} catch (error) {
+    console.log(error);
+}
+}
+
+export const agentreject= async (req,res)=>{
+
+try {
+  const id = req.body._id
+  const Agent = await agent.findOne({ _id: id });
+
+    if(agent){
+      const newAgent = await agent.updateOne(
+        { _id: id },
+        { $set: { Approval: !Agent.Approval } }
+      );
+  
+      res.status(200).json({
+        newAgent,
+        status: true,
+        alert: "Done.",
+      });
+    }else{
+      res.json({
+        newAgent,
+        status: false,
+        alert: "user not found",
+      });
+    }
+  
+
+
+} catch (error) {
+  res.status(500).json({ alert: "Internal Server Error" });    }
+
+}

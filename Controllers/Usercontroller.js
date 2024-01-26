@@ -3,6 +3,7 @@ import { createSecretToken } from '../Util/SecretToken.js'
 import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from '../Util/emailService.js'
+import { log } from 'console'
 
 
 
@@ -18,6 +19,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const User = await user.findOne({ email: req.body.email })
+        console.log(User,"usssserrr");
         if (User) {
             return res.json({ message: "user already exisist !" })
         } else {
@@ -72,34 +74,30 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        if (!email || !password) {
-            return res.json({ message: "All fields are required " })
+        const Data = await user.findOne({ email:email })
+
+        if (!Data ) {
+            return res.json({ message: "user  not found" })
+        }
+            const auth = await bcrypt.compare(password, Data.password);
+
+        if(!auth){
+            return res.json({ message: " incorrect password" })
         }
 
-        const Data = await user.findOne({ email })
-        if (!Data) {
-            return res.json({ message: "email or password is incorrect" })
-        }
-        const auth = await bcrypt.compare(password, Data.password);
-        if (auth) {
-            return res.json({ message: "incorrect password" })
-        }
-        console.log("7");
-        console.log(Data);
-        if (Data.isBlock == 'true') {
+        if(Data && auth){
             const token = createSecretToken(Data._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             })
             res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
-        } else {
-            res.json({ message: 'users is blocked' })
+        
         }
-
-
     } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+
     }
 
 
@@ -114,7 +112,7 @@ export const googlelogin = async (req, res) => {
       
         const Finduser = await user.findOne({ email: email })
         console.log(Finduser);
-        if(Finduser.isBlock==false){
+        if(Finduser.isBlock ==false){
             return res.json({message:"user is blocked by admin"})
         }else{
             const Googleuser = new user({
