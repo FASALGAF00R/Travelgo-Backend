@@ -92,7 +92,7 @@ export const Adminlogin = async (req, res) => {
         const User = await user.findOne({ _id: id });
     
     console.log(User,'0OOOOO');
-        if (User.isBlock == "true") {
+        if (User.isBlock ==true) {
     console.log('0OOO9999OO');
 
           const newData = await user.updateOne(

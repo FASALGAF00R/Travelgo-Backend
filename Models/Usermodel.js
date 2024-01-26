@@ -15,15 +15,15 @@ const Userschema= new Schema({
 
     verificationToken:{type:String},
 
-    isBlock:{type:String,default:true},
+    isBlock:{type:Boolean,default:true},
 
     date:{ type:Date, default:Date.now }
 
 })
 
-Userschema.pre("save", async function () {
-    this.password = await bcrypt.hash(this.password, 10);
-  });
+// Userschema.pre("save", async function () {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   });
   
 
 

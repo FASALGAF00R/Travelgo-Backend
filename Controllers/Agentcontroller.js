@@ -11,7 +11,7 @@ export const AgentSignup = async (req, res) => {
         const Agent = await agent.findOne({ email: req.body.email })
         console.log(Agent, "back");
         if (Agent) {
-            return res.json({ message: "user already exisist !" })
+            return res.json({ message: "agent already exisist !" })
         } else {
             const newagent = new agent({
                 userName: req.body.userName,
@@ -29,7 +29,7 @@ export const AgentSignup = async (req, res) => {
                 withCredentials: true,
                 httpOnly: false,
             });
-            res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newagent })
+            res.status(201).json({ message: 'Agent signed up successfully. Please check your email for verification.', success: true, newagent })
         }
     } catch (error) {
         console.error(error);

@@ -3,7 +3,6 @@ import { createSecretToken } from '../Util/SecretToken.js'
 import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from '../Util/emailService.js'
-import { log } from 'console'
 
 
 
@@ -19,16 +18,19 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const User = await user.findOne({ email: req.body.email })
-        console.log(User,"usssserrr");
+        console.log(User, "usssserrr");
         if (User) {
             return res.json({ message: "user already exisist !" })
         } else {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            console.log(hashedPassword, "ooooooo");
+
             const newuser = new user({
                 userName: req.body.userName,
                 email: req.body.email,
-                phone: req.body.phone,
-                password: req.body.password
+                password: hashedPassword
             })
+
             newuser.verificationToken = verificationToken;
             newuser.save();
             sendVerificationEmail(newuser);
@@ -74,28 +76,34 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        const Data = await user.findOne({ email:email })
-
-        if (!Data ) {
+        console.log(req.body);
+        const Data = await user.findOne({ email: email })
+        if (!Data) {
             return res.json({ message: "user  not found" })
         }
-            const auth = await bcrypt.compare(password, Data.password);
+        const auth = await bcrypt.compare(password, Data.password);
+        console.log(auth, "PASSWORD");
 
-        if(!auth){
-            return res.json({ message: " incorrect password" })
+        if (!auth) {
+            return res.json({ message: "incorrect password" })
         }
 
-        if(Data && auth){
+
+        if (Data && auth && Data.isBlock==true) {
+
             const token = createSecretToken(Data._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             })
             res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
-        
+
+        } else {
+            return res.json({ message: "blocked by admin" })
+
         }
-   
-    
+
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -109,32 +117,38 @@ export const loadLogin = async (req, res) => {
 
 export const googlelogin = async (req, res) => {
     try {
-      
-        const { id ,name , email } = req.body.data
-      
+        const { id, name, email } = req.body.data
         const Finduser = await user.findOne({ email: email })
-        console.log(Finduser);
-        if(Finduser.isBlock ==false){
-            return res.json({message:"user is blocked by admin"})
-        }else{
-            const Googleuser = new user({
-                userName:name,
-                email:email,
-                password: id,
-            })
-            Googleuser.isVerified=true,
-              await Googleuser.save()  
-              if(Googleuser){
-                  const token = createSecretToken(Googleuser._id);
-                  console.log(token,"yyyyy");
-                  res.cookie("token", token, {
-                      withCredentials: true,
-                      httpOnly: false,
-                  })
-                  res.status(201).json({ message: "User logged succesfulluy", success: true,  token ,Googleuser})         
-      
-              }      
-            }  
+        if (Finduser) {
+            if (Finduser.isBlock == false) {
+                return res.json({ message: "user is blocked by admin" })
+            }else{
+                return res.json(Finduser)
+            }
+        } else {
+            console.log(Finduser, "oooooooooooooooooo");
+            if (user.isBlock == false) {
+                return res.json({ message: "user is blocked by admin" })
+            } else {
+                const Googleuser = new user({
+                    userName: name,
+                    email: email,
+                    password: id,
+                })
+                Googleuser.isVerified = true,
+                    await Googleuser.save()
+                if (Googleuser) {
+                    const token = createSecretToken(Googleuser._id);
+                    console.log(token, "yyyyy");
+                    res.cookie("token", token, {
+                        withCredentials: true,
+                        httpOnly: false,
+                    })
+                    res.status(201).json({ message: "User logged succesfulluy", success: true, token, Googleuser })
+                }
+            }
+        }
+        
 
     } catch (error) {
         console.log(error)
