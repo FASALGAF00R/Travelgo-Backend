@@ -21,9 +21,9 @@ export const AgentSignup = async (req, res) => {
             })
             newagent.verificationToken = verificationToken;
             newagent.save();
-            
-              const url =`${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
-            sendVerificationEmail(newagent,url);
+
+            const url = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
+            sendVerificationEmail(newagent, url);
             const token = createSecretToken(newagent._id);
             res.cookie('tokken', token, {
                 withCredentials: true,
@@ -37,11 +37,11 @@ export const AgentSignup = async (req, res) => {
 }
 
 export const Agentverify = async (req, res) => {
-    
+
     try {
-        const  {token}  = req.params;
+        const { token } = req.params;
         console.log(token);
-        const Data = await agent.findOne({ verificationToken: token  })
+        const Data = await agent.findOne({ verificationToken: token })
         if (Data) {
             Data.isVerified = true;
             Data.verificationToken = undefined;
@@ -55,42 +55,33 @@ export const Agentverify = async (req, res) => {
     }
 }
 
-export const AgentLogin = async(req,res)=>{
-    console.log("llllllllllllll");
+export const AgentLogin = async (req, res) => {
     try {
-        const { email, password } = req.body
-       
-        if (!email || !password) {
-            return res.json({ message: "All fields are required " })
-        }
-
-        const Agent = await agent.findOne({ email :email})
-        console.log(Agent, "datagggggggggggggggg");
+        const { email, password } = req.body;
+        const Agent = await agent.findOne({ email: email });
+        console.log(Agent, "agent");
         if (!Agent) {
-            return res.json({ message: "email or password is incorrect" })
+            return res.json({ message: "user not found" });
         }
         const auth = await bcrypt.compare(password, Agent.password);
-        if (auth) {
-            return res.json({ message: "incorrect password" })
+        if(!auth){
+            return res.json({message:"password incorrect"})
         }
-        console.log("7");
-        console.log(Agent,"GGGGG");
-        if (Agent.isBlock=='true') {
 
-        if (Agent) {
-            const token = createSecretToken(Agent._id);
+        if (Agent.isBlock === "true" && Agent.Approval == false) {
+                  const token = createSecretToken(Agent._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
-            })
-            res.status(201).json({ message: "Agent logged succesfulluy", success: true, Agent, token })
+            });
+            return res.status(201).json({ message: "Agent logged in successfully", success: true, Agent, token });
+        } else {
+            return res.status(200).json({message:"permission required"})
         }
-    }else{
-        res.json({message:'agents is blocked'})
-    }
-    
-}
-    catch (error) {
+
+    } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};
+
