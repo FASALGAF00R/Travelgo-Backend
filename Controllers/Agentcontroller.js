@@ -8,32 +8,39 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 
 export const AgentSignup = async (req, res) => {
     try {
-        const Agent = await agent.findOne({ email: req.body.email })
-        console.log(Agent, "back");
-        if (Agent) {
-            return res.json({ message: "agent already exisist !" })
-        } else {
-            const newagent = new agent({
-                userName: req.body.userName,
-                email: req.body.email,
-                phone: req.body.phone,
-                password: req.body.password
-            })
-            newagent.verificationToken = verificationToken;
-            newagent.save();
+        console.log("kerri");
+        const { userName, email, phone, password } = req.body
+        console.log(userName, email, phone, password, ";;;;;;;;;;;");
 
-            const url = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
-            sendVerificationEmail(newagent, url);
-            const token = createSecretToken(newagent._id);
-            res.cookie('tokken', token, {
-                withCredentials: true,
-                httpOnly: false,
-            });
-            res.status(201).json({ message: 'Agent signed up successfully. Please check your email for verification.', success: true, newagent })
+        const Agent=await agent.findOne({email:email})
+        console.log(Agent);
+
+        if(Agent){
+            return res.json({message:"user already exisits"})
+        }else{
+            const hashpass=await bcrypt.hash(password,10)
+            console.log(hashpass,"password");
+
+            const newagent = new agent({
+                userName:userName,
+                email:email,
+                phone:phone,
+                password:hashpass
+            })
+        newagent.verificationToken = verificationToken;
+        newagent.save();
+        const url = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
+        sendVerificationEmail(newagent, url);
+        const token = createSecretToken(newagent._id);
+        res.cookie('tokken', token, {
+            withCredentials: true,
+            httpOnly: false,
+        });
+        res.status(201).json({ message: 'Agent signed up successfully. Please check your email for verification.', success: true, newagent })
         }
     } catch (error) {
-        console.error(error);
-    }
+    console.error(error);
+}
 }
 
 export const Agentverify = async (req, res) => {
@@ -64,19 +71,19 @@ export const AgentLogin = async (req, res) => {
             return res.json({ message: "user not found" });
         }
         const auth = await bcrypt.compare(password, Agent.password);
-        if(!auth){
-            return res.json({message:"password incorrect"})
+        if (!auth) {
+            return res.json({ message: "password incorrect" })
         }
 
-        if (Agent.isBlock === "true" && Agent.Approval == false) {
-                  const token = createSecretToken(Agent._id);
+        if ( Agent.Approval == false) {
+            const token = createSecretToken(Agent._id);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
             });
             return res.status(201).json({ message: "Agent logged in successfully", success: true, Agent, token });
         } else {
-            return res.status(200).json({message:"permission required"})
+            return res.status(200).json({ message: "permission required" })
         }
 
     } catch (error) {
@@ -85,3 +92,42 @@ export const AgentLogin = async (req, res) => {
     }
 };
 
+export const Agentgoogle = async (req,res) =>{
+    try {
+        const {id,name,email,phone}=req.body.data
+        const Findagent = await agent.findOne({email:email})
+        console.log(Findagent,"ffffffffff");
+        if(Findagent){
+            if(Findagent.Approval== true){
+                return res.json({message:"user need permission by admin"})
+            }else{
+                return res.json({data:Findagent})
+            }
+            
+
+        }else{
+            const hashpass =await bcrypt.hash(id,10)
+            console.log(hashpass);
+            const Googleagent =new agent({
+                userName:name,
+                email:email,
+                password:hashpass,
+            })
+            Googleagent.isVerified =true
+            await Googleagent.save()
+            if(Googleagent){
+                const token = createSecretToken(Googleagent._id);
+                console.log(token, "yyyyy");
+                res.cookie("token", token, {
+                    withCredentials: true,
+                    httpOnly: false,
+                })
+                res.status(201).json({ message: "Agent logged succesfulluy", success: true, token, data:Googleagent })
+
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

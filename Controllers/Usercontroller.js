@@ -34,7 +34,7 @@ export const loadSignup = async (req, res) => {
             newuser.verificationToken = verificationToken;
             newuser.save();
             sendVerificationEmail(newuser);
-            const token = createSecretToken(newuser._id);
+            const token = createSecretToken(newuser._id,newuser.userName);
             res.cookie('tokken', token, {
                 withCredentials: true,
                 httpOnly: false,
@@ -89,9 +89,9 @@ export const loadLogin = async (req, res) => {
         }
 
 
-        if (Data && auth && Data.isBlock==true) {
+        if (Data && auth && Data.isBlock == true) {
 
-            const token = createSecretToken(Data._id);
+            const token = createSecretToken(Data._id,Data.userName);
             res.cookie("token", token, {
                 withCredentials: true,
                 httpOnly: false,
@@ -122,14 +122,11 @@ export const googlelogin = async (req, res) => {
         if (Finduser) {
             if (Finduser.isBlock == false) {
                 return res.json({ message: "user is blocked by admin" })
-            }else{
-                return res.json(Finduser)
+            } else {
+                return res.json({data:Finduser})
             }
         } else {
-            console.log(Finduser, "oooooooooooooooooo");
-            if (user.isBlock == false) {
-                return res.json({ message: "user is blocked by admin" })
-            } else {
+            
                 const Googleuser = new user({
                     userName: name,
                     email: email,
@@ -144,11 +141,11 @@ export const googlelogin = async (req, res) => {
                         withCredentials: true,
                         httpOnly: false,
                     })
-                    res.status(201).json({ message: "User logged succesfulluy", success: true, token, Googleuser })
+                    res.status(201).json({ message: "User logged succesfulluy", success: true, token, data:Googleuser })
                 }
-            }
+            
         }
-        
+
 
     } catch (error) {
         console.log(error)

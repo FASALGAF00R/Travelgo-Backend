@@ -3,7 +3,8 @@ import express from 'express'
 import { 
     AgentSignup ,
     Agentverify,
-    AgentLogin
+    AgentLogin,
+    Agentgoogle
 } from '../Controllers/Agentcontroller.js'
 
 const agentRoute =express.Router()
@@ -12,4 +13,5 @@ const agentRoute =express.Router()
 agentRoute.post('/login',AgentLogin)
 agentRoute.post('/agentsignup',AgentSignup)
 agentRoute.get('/verify/:token',Agentverify)
+agentRoute.post('/googlelogin',Agentgoogle)
 export default agentRoute

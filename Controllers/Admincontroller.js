@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 
 export const Adminlogin = async (req, res) => {
     try {
-      const { name, email, password } = req.body;
-      if (name === process.env.ADMIN_NAME && email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+      const { email, password } = req.body;
+      if ( email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
         return res.json({ message: 'it is admin', status: true });
       } else {
         return res.json({ message: "not admin", success: false });

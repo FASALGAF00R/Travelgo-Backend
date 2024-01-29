@@ -16,7 +16,6 @@ const Agentschema= new Schema({
 
     phone: {
         type: Number,
-        required: true,
         unique:true,
 
     },
@@ -33,7 +32,7 @@ const Agentschema= new Schema({
     },
 
     isBlock:{
-        type:String,
+        type:Boolean,
         default:true,
     },
 
@@ -50,10 +49,6 @@ const Agentschema= new Schema({
     
 });
 
-Agentschema.pre("save", async function () {
-    this.password = await bcrypt.hash(this.password, 12);
-  });
-  
 
 
 const agent=mongoose.model('agent',Agentschema)
