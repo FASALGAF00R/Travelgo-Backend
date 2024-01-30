@@ -18,12 +18,10 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const User = await user.findOne({ email: req.body.email })
-        console.log(User, "usssserrr");
         if (User) {
             return res.json({ message: "user already exisist !" })
         } else {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            console.log(hashedPassword, "ooooooo");
 
             const newuser = new user({
                 userName: req.body.userName,
@@ -82,7 +80,6 @@ export const loadLogin = async (req, res) => {
             return res.json({ message: "user  not found" })
         }
         const auth = await bcrypt.compare(password, Data.password);
-        console.log(auth, "PASSWORD");
 
         if (!auth) {
             return res.json({ message: "incorrect password" })
@@ -136,7 +133,6 @@ export const googlelogin = async (req, res) => {
                     await Googleuser.save()
                 if (Googleuser) {
                     const token = createSecretToken(Googleuser._id);
-                    console.log(token, "yyyyy");
                     res.cookie("token", token, {
                         withCredentials: true,
                         httpOnly: false,

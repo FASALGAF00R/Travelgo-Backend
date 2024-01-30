@@ -10,5 +10,5 @@ export const createSecretToken = (id,userName) => {
     console.log("TOKEN_KEY:", process.env.TOKEN_KEY);
   return jwt.sign({ id ,userName }, process.env.TOKEN_KEY, {
     expiresIn: 3 * 24 * 60 * 60,
-  });
+  }); 
 };
