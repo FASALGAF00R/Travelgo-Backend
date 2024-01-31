@@ -6,9 +6,6 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 
 
 
-
-
-
 // user signup
 const verificationToken = crypto.randomBytes(20).toString('hex');
 
@@ -17,30 +14,21 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 //  user signup
 export const loadSignup = async (req, res) => {
     try {
+        const{userName,email,password}=req.body
         const User = await user.findOne({ email: req.body.email })
         if (User) {
-            return res.json({ message: "user already exisist !" })
+            return res.status(400).json({ message: "user already exisist !" })
         } else {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-            const newuser = new user({
-                userName: req.body.userName,
-                email: req.body.email,
-                password: hashedPassword
-            })
-
+           const hashedPassword = await bcrypt.hash(password, 10);
+            const newuser = new user({userName,email,password:hashedPassword})
             newuser.verificationToken = verificationToken;
             newuser.save();
             sendVerificationEmail(newuser);
-            const token = createSecretToken(newuser._id,newuser.userName);
-            res.cookie('tokken', token, {
-                withCredentials: true,
-                httpOnly: false,
-            });
-            res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newuser })
+            res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newuser  })
         }
     } catch (error) {
         console.error(error);
+        return res.status(500).json({message:'internal server  error please try again later'})
     }
 }
 
@@ -89,7 +77,7 @@ export const loadLogin = async (req, res) => {
         if (Data && auth && Data.isBlock == true) {
 
             const token = createSecretToken(Data._id,Data.userName);
-            res.cookie("token", token, {
+            res.cookie("jwt", token, {
                 withCredentials: true,
                 httpOnly: false,
             })

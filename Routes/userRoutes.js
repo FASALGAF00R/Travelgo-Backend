@@ -1,5 +1,4 @@
 import express from 'express'
-
 import {
     loadSignup,
     loadLogin,
@@ -7,7 +6,8 @@ import {
     googlelogin,
 
 } from '../Controllers/Usercontroller.js'
-import { protect } from '../Middlewares/AuthMiddleware.js'
+import {userVerification} from '../Middlewares/AuthMiddleware.js'
+// import { protect } from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();
 
 // user routes
@@ -15,7 +15,7 @@ userRoute.post('/signup', loadSignup)
 userRoute.post('/login', loadLogin)
 userRoute.post('/verify/:token', verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
-
+// userRoute.post('/',userVerification)
 
 
 
