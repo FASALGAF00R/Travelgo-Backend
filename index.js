@@ -1,5 +1,5 @@
 // backend entry point
-import express, { json } from 'express';
+import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from "cookie-parser";
@@ -11,18 +11,18 @@ const app=express()
 
 
 app.use(cookieParser());
-app.use(cors())
-app.use(json())
 
 
-app.use(
-  cors({
-    origin: [process.env.BACKEND_URL],
+
+ app.use(cors({
+    origin: "http://localhost:5173" ,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
-)
-  
+  }))
+
+
+app.use(express.json())
+
 const port =3000
 
 connect('mongodb://localhost:27017/travelgo')

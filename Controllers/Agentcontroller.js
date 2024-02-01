@@ -29,7 +29,11 @@ export const AgentSignup = async (req, res) => {
             })
         newagent.verificationToken = verificationToken;
         newagent.save();
-        const url = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`
+        const  Expirationtime =3;
+        const Expirationdate = new Date();
+        Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime)
+        const url = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}?expires=${Expirationdate.toISOString()}`
+        console.log(url,"url");
         sendVerificationEmail(newagent, url);
         const token = createSecretToken(newagent._id);
         res.cookie('tokken', token, {
