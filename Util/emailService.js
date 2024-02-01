@@ -18,17 +18,17 @@ const Expirationdate = new Date();
 Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
 
 
-export const sendVerificationEmail = (user,url) => {
+export const sendVerificationEmail = (user,URL) => {
   const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${user.verificationToken}?expires=${Expirationdate.toISOString()}`;
 
 
-  if (url) {
+  if (URL) {
+    console.log("done");
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: user.email,
-      subject: 'TravelGO verification',
-      emailtext : `Click the following link to verify your email: ${url}`,
-    };
+      subject: 'TravelGO Agent verification',
+    text : `Click the following link to verify Agent: ${URL}\n\n`+`This link will expire on: ${Expirationdate.toLocaleString()}` }
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(error);
@@ -41,7 +41,7 @@ export const sendVerificationEmail = (user,url) => {
       from: process.env.MAIL_USER,
       to: user.email,
       subject: 'TravelGO verification',
-      text: `Click the following link to verify your email: ${verificationLinkuser}\n\n` +
+      text: `Click the following link to verify user email: ${verificationLinkuser}\n\n` +
       `This link will expire on: ${Expirationdate.toLocaleString()}`
     };
 
