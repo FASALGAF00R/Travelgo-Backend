@@ -30,20 +30,29 @@ env.config()
 //   }
 // })
 
+//  the verify method accepts the token from user and jwtkey and provides decode of the token
 
-export const userVerification = (req, res,next) => {
-    const token = req.cookies.jwt
-    if (!token) {
-      return res.status(401).json({ message :'Unauthorized' })
-    }
-    jwt.verify(token, process.env.TOKEN_KEY,(err, Data) => {
-      if (err) {
-       return res.status(403).json({ message:'Invalid token' })
-      } 
-      req.Data=Data;
-      next();
-    })
+export const userVerification = (req, res, next) => {
+  console.log("userverification");
+  const token = req.headers.authorization.split(' ')[1];
+  // Extracts the token from the Authorization header.
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Unauthorized token not provided ' })
   }
+  // decoding of the token
+  try {
+    // verifying the token
+    const decoded = jwt.verify(token, process.env.AXCESSTOKEN_KEY)
+    req.user = decoded
+    next()
+  } catch (error) {
+    return res.status(401).json({ message: 'Forbidden - Invalid token' });
+
+  }
+
+}
+
+
 
 
 

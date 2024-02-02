@@ -72,7 +72,7 @@ export const AgentLogin = async (req, res) => {
         const Agent = await agent.findOne({ email: email });
         console.log(Agent, "agent");
         if (!Agent) {
-            return res.json({ message: "user not found" });
+            return res.json({ message: "successful" });
         }
         const auth = await bcrypt.compare(password, Agent.password);
         if (!auth) {

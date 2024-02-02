@@ -7,7 +7,6 @@ env.config()
 
 
 const Adminpass = process.env.ADMIN_PASS;
-console.log(Adminpass,"PAFHHSDFUDHHHHHHHHHHHHHH");
 bcrypt.hash(Adminpass,10,function(err,hash){
   if(err){
     console.err

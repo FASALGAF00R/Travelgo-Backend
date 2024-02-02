@@ -6,7 +6,7 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 
 
 
-// user signup
+
 const verificationToken = crypto.randomBytes(20).toString('hex');
 
 
@@ -77,11 +77,7 @@ export const loadLogin = async (req, res) => {
         if (Data && auth && Data.isBlock == true) {
 
             const token = createSecretToken(Data._id,Data.userName);
-            res.cookie("jwt", token, {
-                withCredentials: true,
-                httpOnly: false,
-            })
-            res.status(201).json({ message: "User logged succesfulluy", success: true, Data, token })
+            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, token })
 
         } else {
             return res.json({ message: "blocked by admin" })
