@@ -1,11 +1,29 @@
 import agent from '../Models/Agentmodel.js';
 import { user } from "../Models/Usermodel.js";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt"
+import env from 'dotenv';
+env.config()
+
+
+const Adminpass = process.env.ADMIN_PASS;
+console.log(Adminpass,"PAFHHSDFUDHHHHHHHHHHHHHH");
+bcrypt.hash(Adminpass,10,function(err,hash){
+  if(err){
+    console.err
+  }else{
+    console.log('hashed password ',hash);
+  }
+})
+
+
+
 
 export const Adminlogin = async (req, res) => {
     try {
-      const { email, password } = req.body;
-      if ( email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+      const { email, password } = req.body;      
+      const Pass = await  bcrypt.compare(password,Adminpass)
+      if ( email === process.env.ADMIN_EMAIL && Pass) {
         return res.json({ message: 'it is admin', status: true });
       } else {
         return res.json({ message: "not admin", success: false });
