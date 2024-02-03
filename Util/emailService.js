@@ -15,7 +15,15 @@ const transporter = nodemailer.createTransport({
 
 const Expirationtime = 3;
 const Expirationdate = new Date();
+
+// Add the expiration time to the current minutes
 Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
+
+// Check if the new minutes exceed 60, and adjust the hours accordingly
+if (Expirationdate.getMinutes() >= 60) {
+  Expirationdate.setHours(Expirationdate.getHours() + 1);
+  Expirationdate.setMinutes(Expirationdate.getMinutes() - 60);
+}
 
 
 export const sendVerificationEmail = (user,URL) => {

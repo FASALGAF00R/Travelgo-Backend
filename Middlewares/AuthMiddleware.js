@@ -1,34 +1,7 @@
-// checks if the user have axcess to the home
-// import {user} from '../Models/Usermodel.js'
+// checks if the user have axcess to .....
 import env from 'dotenv';
 env.config()
-// import jwt from 'jsonwebtoken'
-// import asyncHandler from 'express-async-handler'
 
-
-
-//  export const protect = asyncHandler(async (req, res, next) => {
-// console.log("protector");
-//   let token;
-
-//   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-
-//       try {
-
-//           token = req.headers.authorization.split(" ")[1];
-//           const decoded = jwt.verify(token, process.env.TOKEN_KEY)
-//           next();
-
-//       } catch (error) {
-
-//           res.status(401).json("Invalid token")
-//       }
-//   } else {
-
-//       res.status(401).json("Token not found")
-
-//   }
-// })
 
 //  the verify method accepts the token from user and jwtkey and provides decode of the token
 
@@ -51,6 +24,32 @@ export const userVerification = (req, res, next) => {
   }
 
 }
+
+
+
+export const refreshTokenHandler = async (req, res) => {
+  try {
+    const refreshToken = req.body.Refreshtoken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, message: 'Unauthorized - Refresh token not provided' });
+    }
+
+    // Verify the refresh token
+    const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
+
+    // Create a new access token
+    const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName }, process.env.AXCESSTOKEN_KEY, {
+      expiresIn: '10m',
+    });
+
+    // Send the new access token in the response
+    res.json({ success: true, accessToken: newAccessToken });
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Unauthorized - Invalid refresh token' });
+  }
+};
+
 
 
 

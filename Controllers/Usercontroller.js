@@ -7,6 +7,7 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 
 
 
+
 const verificationToken = crypto.randomBytes(20).toString('hex');
 
 
@@ -62,37 +63,33 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        console.log(req.body);
-        const Data = await user.findOne({ email: email })
+        console.log(req.body,"body");
+        const Data = await user.findOne({email:email })
+        console.log(Data,"data");
         if (!Data) {
             return res.json({ message: "user  not found" })
         }
         const auth = await bcrypt.compare(password, Data.password);
+        console.log(auth,"auth");
 
         if (!auth) {
             return res.json({ message: "incorrect password" })
         }
-
-
         if (Data && auth && Data.isBlock == true) {
-
-            const token = createSecretToken(Data._id,Data.userName);
-            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, token })
+            const {accesToken,Refreshtoken} = createSecretToken(Data._id,Data.userName);
+            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken ,Refreshtoken })
 
         } else {
             return res.json({ message: "blocked by admin" })
-
         }
-
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
 
     }
-
-
 }
+
+
 
 // google login 
 
