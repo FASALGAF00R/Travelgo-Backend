@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 // passing the payload
 export const createSecretToken = (id,userName) => {
 const accesToken =jwt.sign({ id ,userName }, process.env.AXCESSTOKEN_KEY, {
-    expiresIn:'3m',
+    expiresIn:'1m',
   }); 
 // // Assigning refresh token in http-only cookie 
  const Refreshtoken = jwt.sign({id,userName},process.env.REFRESHTOKEN_KEY,{
@@ -16,6 +16,4 @@ const accesToken =jwt.sign({ id ,userName }, process.env.AXCESSTOKEN_KEY, {
     expiresIn:'1d',
   })
   return { accesToken, Refreshtoken };
-console.log(accesToken,"accestoken");
-console.log(Refreshtoken,"refresh token");
 }

@@ -63,7 +63,7 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        console.log(req.body,"body");
+        console.log("body");
         const Data = await user.findOne({email:email })
         console.log(Data,"data");
         if (!Data) {

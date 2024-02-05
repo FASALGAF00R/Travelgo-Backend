@@ -7,7 +7,7 @@ import {
 
 } from '../Controllers/Usercontroller.js'
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
-import {refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
+// import {refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();
 
 // user routes
@@ -15,7 +15,7 @@ userRoute.post('/signup', loadSignup)
 userRoute.post('/login', loadLogin)
 userRoute.post('/verify/:token', verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
-userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
+// userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
 
 
 
