@@ -11,6 +11,7 @@ const Userschema= new Schema({
     isVerified :{type:Boolean, default:false},
     verificationToken:{type:String},
     isBlock:{type:Boolean,default:true},
+    Otp:{type:String},
     date:{ type:Date, default:Date.now }
 
 })

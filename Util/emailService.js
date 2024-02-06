@@ -12,7 +12,6 @@ const transporter = nodemailer.createTransport({
 
 });
 
-
 const Expirationtime = 3;
 const Expirationdate = new Date();
 
@@ -26,7 +25,8 @@ if (Expirationdate.getMinutes() >= 60) {
 }
 
 
-export const sendVerificationEmail = (user,URL) => {
+export const sendVerificationEmail = (user, URL) => {
+
   const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${user.verificationToken}?expires=${Expirationdate.toISOString()}`;
 
 
@@ -36,7 +36,8 @@ export const sendVerificationEmail = (user,URL) => {
       from: process.env.MAIL_USER,
       to: user.email,
       subject: 'TravelGO Agent verification',
-    text : `Click the following link to verify Agent: ${URL}\n\n`+`This link will expire on: ${Expirationdate.toLocaleString()}` }
+      text: `Click the following link to verify Agent: ${URL}\n\n` + `This link will expire on: ${Expirationdate.toLocaleString()}`
+    }
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(error);
@@ -44,13 +45,15 @@ export const sendVerificationEmail = (user,URL) => {
         console.log('Email sent for agent : ' + info.response);
       }
     });
-  } else {
+
+
+  }else {
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: user.email,
       subject: 'TravelGO verification',
       text: `Click the following link to verify user email: ${verificationLinkuser}\n\n` +
-      `This link will expire on: ${Expirationdate.toLocaleString()}`
+        `This link will expire on: ${Expirationdate.toLocaleString()}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

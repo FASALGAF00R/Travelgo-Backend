@@ -13,10 +13,10 @@ export const userVerification = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.AXCESSTOKEN_KEY)
 
-    const Normaltime = Date.now() / 1000;
-    if (decoded.exp < Normaltime) {
-      return res.status(401).json({ message: 'token has expired' })
-    }
+    // const Normaltime = Date.now() / 1000;
+    // if (decoded.exp < Normaltime) {
+    //   return res.status(401).json({ message: 'token has expired' })
+    // }
     req.user = decoded
     next()
   } catch (error) {
