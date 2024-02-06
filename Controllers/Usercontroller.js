@@ -143,17 +143,9 @@ export const Forgotpassword = async (req, res) => {
             specialChars: false,
         });
         const userdata = await user.updateOne({email:Data.email},{$set:{Otp:otp}})
-        console.log(userdata,"uuuuuuuuuuuuuuuuuuuuuuuu");
-
         let result = await user.findOne({ email:Data.email });
-        console.log(result,"otp");
-        // while (result) {
-        //     otp = otpGenerator.generate(6, {
-        //         upperCaseAlphabets: false,
-        //     });
-        //     result = await user.findOne({ Otp: otp });
-        // }
-
+  
+// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         const transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
             auth: {
@@ -161,12 +153,11 @@ export const Forgotpassword = async (req, res) => {
               pass: process.env.MAIL_PASS,
             }         
           });
-        //   console.log(result.email,"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
 
           const mailOptions = {
             from: process.env.MAIL_USER,
             to: result.email,
-            subject: 'otp verification',
+            subject: 'otp verification for forgot password',
             text: `Pls confirm your otp ${result.Otp}`
           }
 
@@ -177,13 +168,11 @@ export const Forgotpassword = async (req, res) => {
               console.log('Email sent  : ' + info.response);
             }
           });
-
-
-        console.log(result,"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+//    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         res.status(201).json({
             success: true,
             message: "OTP sent successfully",
-            otp,
+           
         });
     } catch (error) {
         console.log(error);
