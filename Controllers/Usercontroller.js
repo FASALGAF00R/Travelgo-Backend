@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from '../Util/emailService.js'
 import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
+import env from 'dotenv'
 
 
 
@@ -124,7 +125,7 @@ export const googlelogin = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error)
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
@@ -132,6 +133,7 @@ export const googlelogin = async (req, res) => {
 // forgotpass
 export const Forgotpassword = async (req, res) => {
     try {
+        console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
         const { email } = req.body
         const Data = await user.findOne({ email: email })
         if (!Data) {
@@ -142,42 +144,50 @@ export const Forgotpassword = async (req, res) => {
             lowerCaseAlphabets: false,
             specialChars: false,
         });
-        const userdata = await user.updateOne({email:Data.email},{$set:{Otp:otp}})
-        let result = await user.findOne({ email:Data.email });
-  
-// ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        const userdata = await user.updateOne({ email: Data.email }, { $set: { Otp: otp } })
+        let result = await user.findOne({ email: Data.email });
+
+        // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         const transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
             auth: {
-              user: process.env.MAIL_USER,
-              pass: process.env.MAIL_PASS,
-            }         
-          });
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS,
+            }
+        });
 
-          const mailOptions = {
+        const mailOptions = {
             from: process.env.MAIL_USER,
             to: result.email,
             subject: 'otp verification for forgot password',
             text: `Pls confirm your otp ${result.Otp}`
-          }
+        }
 
-          transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-              console.error(error);
+                console.log("errooor");
+                console.error(error);
             } else {
-              console.log('Email sent  : ' + info.response);
+                console.log('Email sent  : ' + info.response);
+                return  res.status(200).json({
+                    success: true,
+                    message: "OTP sent successfully",
+                    userdata
+        
+                });
             }
-          });
-//    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        res.status(201).json({
-            success: true,
-            message: "OTP sent successfully",
-           
+        
         });
+
+        
+
+       
+        //    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     } catch (error) {
         console.log(error);
+        // res.status(500).json({ message: 'Internal server error' });
     }
 }
 
 
-  
