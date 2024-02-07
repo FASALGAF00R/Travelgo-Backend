@@ -11,6 +11,7 @@ import env from 'dotenv'
 
 
 
+
 const verificationToken = crypto.randomBytes(20).toString('hex');
 
 
@@ -133,11 +134,10 @@ export const googlelogin = async (req, res) => {
 // forgotpass
 export const Forgotpassword = async (req, res) => {
     try {
-        console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
         const { email } = req.body
-        const Data = await user.findOne({ email: email })
-        if (!Data) {
-            return res.status(400).json({ message: 'user not exsist' })
+        const Data = await user.findOne({ email })
+        if (Data === null) {
+            return res.json({ message: 'user not registerd' })
         }
         let otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -155,7 +155,7 @@ export const Forgotpassword = async (req, res) => {
                 pass: process.env.MAIL_PASS,
             }
         });
-
+        console.log(process.env.MAIL_PASS, ".................");
         const mailOptions = {
             from: process.env.MAIL_USER,
             to: result.email,
@@ -169,19 +169,20 @@ export const Forgotpassword = async (req, res) => {
                 console.error(error);
             } else {
                 console.log('Email sent  : ' + info.response);
-                return  res.status(200).json({
+                console.log("iuiuiui");
+                return res.status(200).json({
                     success: true,
                     message: "OTP sent successfully",
                     userdata
-        
+
                 });
             }
-        
+
         });
 
-        
 
-       
+
+
         //    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     } catch (error) {
@@ -189,5 +190,46 @@ export const Forgotpassword = async (req, res) => {
         // res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+
+// userotpverficaton
+
+export const userotpverify = async (req, res) => {
+    try {
+
+        const otp = req.params.otp;
+        const findotp = await user.findOne({ Otp: otp })
+        if (findotp) {
+            if (findotp.Otp === otp) {
+                return res.json({ success: true, message: "verified" })
+            } else {
+                return res.json({ success: false, message: "invalid otp" })
+            }
+
+        } else {
+            return res.json({ success: false, message: "OTP not found" });
+
+        }
+    } catch (error) {
+        console.error("Error while checking for user:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+
+    }
+}
+
+
+
+// newpassword
+ export const Createnewpass= async (req,res)=>{
+    try {
+        console.log("\\\\\\\\\\\\\\\\");
+
+    } catch (error) {
+        console.error("Error while creating newpassword:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+
+    }
+ }
+
 
 
