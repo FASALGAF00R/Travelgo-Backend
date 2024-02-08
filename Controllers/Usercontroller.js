@@ -222,12 +222,13 @@ export const userotpverify = async (req, res) => {
 // newpassword
  export const Createnewpass= async (req,res)=>{
     try {
-        console.log("\\\\\\\\\\\\\\\\");
-
+        const Data = req.body.password
+        const hashpass =await bcrypt.hash(Data,10)
+        const userdata =await user.updateOne({$set:{password:hashpass}})
+        return res.status(200).json({message:'password updated',userdata})
     } catch (error) {
         console.error("Error while creating newpassword:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
-
     }
  }
 

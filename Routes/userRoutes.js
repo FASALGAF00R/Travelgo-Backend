@@ -19,7 +19,7 @@ userRoute.post('/verify/:token', verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
 userRoute.post('/forgotpass',Forgotpassword)
 userRoute.get('/otpverify/:otp', userotpverify)
-userRoute.post('/newpass',Createnewpass)
+userRoute.put('/newpass',Createnewpass)
 
 // userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
 
