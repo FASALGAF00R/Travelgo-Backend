@@ -5,8 +5,7 @@ import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from '../Util/emailService.js'
 import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
-import env from 'dotenv'
-
+import { handleUpload } from '../Util/Cloudinary.js'
 
 
 
@@ -67,15 +66,15 @@ export const loadLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        console.log("body");
+        console.log(password,"body");
         const Data = await user.findOne({ email: email })
-        console.log(Data, "data");
+       
+
         if (!Data) {
             return res.json({ message: "user  not found" })
         }
-        const auth = await bcrypt.compare(password, Data.password);
-        console.log(auth, "auth");
 
+        const auth = await bcrypt.compare(password, Data.password);
         if (!auth) {
             return res.json({ message: "incorrect password" })
         }
@@ -222,10 +221,16 @@ export const userotpverify = async (req, res) => {
 // newpassword
  export const Createnewpass= async (req,res)=>{
     try {
-        const Data = req.body.password
-        const hashpass =await bcrypt.hash(Data,10)
-        const userdata =await user.updateOne({$set:{password:hashpass}})
-        return res.status(200).json({message:'password updated',userdata})
+        const {password,email} =req.body
+        const hashpass =await bcrypt.hash(password,10)
+        const userdata =await user.updateOne({email:email},{$set:{password:hashpass}})
+        if(userdata){
+            return res.status(200).json({message:'password updated',success:true})
+        }else{
+            return res.status(200).json({message:'User not found!',success:false})
+
+        }
+            
     } catch (error) {
         console.error("Error while creating newpassword:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
@@ -234,3 +239,19 @@ export const userotpverify = async (req, res) => {
 
 
 
+// userprofile
+
+export const updateprofile =async (req,res)=>{
+    try {
+        console.log("ethiiiiiteewe");
+        const Image = req.file.path;
+        console.log(Image,"kkkkkkkkk");
+        const Cloudstore = await handleUpload(Image,"profilepic")
+        console.log(Cloudstore);
+
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Internal server error" });
+
+    }
+}
