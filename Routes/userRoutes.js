@@ -22,7 +22,7 @@ userRoute.post('/googlelogin', googlelogin)
 userRoute.post('/forgotpass',Forgotpassword)
 userRoute.get('/otpverify/:otp', userotpverify)
 userRoute.put('/newpass',Createnewpass)
-userRoute.post('/profile',upload.single('image'),updateprofile)
+userRoute.post('/profile',upload.single('profilepic'),updateprofile)
 
 // userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
 

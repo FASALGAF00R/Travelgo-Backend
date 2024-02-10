@@ -243,13 +243,9 @@ export const userotpverify = async (req, res) => {
 
 export const updateprofile =async (req,res)=>{
     try {
-        console.log("ethiiiiiteewe");
         const Image = req.file.path;
-        console.log(Image,"kkkkkkkkk");
         const Cloudstore = await handleUpload(Image,"profilepic")
-        console.log(Cloudstore);
-
-
+        res.status(200).json({ success: true, imageUrl: Cloudstore.secure_url });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error" });
 

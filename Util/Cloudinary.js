@@ -14,6 +14,7 @@ cloudinary.config({
         const res = await cloudinary.uploader.upload(file, {
           resource_type: "auto",
         });
+    
         return res;       
     } catch (error) {
         throw error;
