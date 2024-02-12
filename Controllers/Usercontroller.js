@@ -6,6 +6,7 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
 import { handleUpload } from '../Util/Cloudinary.js'
+import { log } from 'console'
 
 
 
@@ -65,11 +66,13 @@ export const verifyEmail = async (req, res) => {
 export const loadLogin = async (req, res) => {
     try {
         const { email, password } = req.body
+        console.log(password,"ll");
         const Data = await user.findOne({ email: email })
         if (!Data) {
             return res.json({ message: "user  not found" })
         }
         const auth = await bcrypt.compare(password, Data.password);
+        console.log(auth,'//');
         if (!auth) {
             return res.json({ message: "incorrect password" })
         }
@@ -248,18 +251,21 @@ export const updateprofile = async (req, res) => {
 export const Resetpassword = async (req, res) => {
     try {
         const { email, formData } = req.body;
-        const { password, newPassword } = formData;
-        console.log("email:", email);
-        console.log("Password:", password);
-        console.log("New Password:", newPassword);
-        console.log("Request Body:", req.body);
-
-
-
-
-
+        const { password, newPassword } = formData;      
+        const User = await user.findOne({ email: email });
+        if (!User) {
+            return res.status(404).json({ message: "User not found" });
+        }    
+        const Passwordconfirm = await bcrypt.compare(password,User.password)
+        if (Passwordconfirm) {
+            const hashpassnew =await bcrypt.hash(newPassword,10)
+            const resetPassword = await user.updateOne({ email: email }, { $set: { password: hashpassnew } });
+            return res.status(200).json({ success: true, message: "Password updated" });
+        } else {
+            return res.status(404).json({ message: "Current password incorrect" });
+        }
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Internal server error" });
-
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
