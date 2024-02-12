@@ -63,32 +63,26 @@ export const verifyEmail = async (req, res) => {
 // user login
 
 export const loadLogin = async (req, res) => {
-
     try {
         const { email, password } = req.body
-        console.log(password,"body");
         const Data = await user.findOne({ email: email })
-       
-
         if (!Data) {
             return res.json({ message: "user  not found" })
         }
-
         const auth = await bcrypt.compare(password, Data.password);
         if (!auth) {
             return res.json({ message: "incorrect password" })
         }
-        if (Data && auth && Data.isBlock == true) {
-            const { accesToken, Refreshtoken } = createSecretToken(Data._id, Data.userName);
-            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken, Refreshtoken })
 
+        if (Data && auth && Data.isBlock == true) {
+            const { accesToken, Refreshtoken } = createSecretToken(Data._id, Data.userName, Data.email);
+            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken, Refreshtoken })
         } else {
             return res.json({ message: "blocked by admin" })
         }
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
-
     }
 }
 
@@ -219,33 +213,51 @@ export const userotpverify = async (req, res) => {
 
 
 // newpassword
- export const Createnewpass= async (req,res)=>{
+export const Createnewpass = async (req, res) => {
     try {
-        const {password,email} =req.body
-        const hashpass =await bcrypt.hash(password,10)
-        const userdata =await user.updateOne({email:email},{$set:{password:hashpass}})
-        if(userdata){
-            return res.status(200).json({message:'password updated',success:true})
-        }else{
-            return res.status(200).json({message:'User not found!',success:false})
+        const { password, email } = req.body
+        const hashpass = await bcrypt.hash(password, 10)
+        const userdata = await user.updateOne({ email: email }, { $set: { password: hashpass } })
+        if (userdata) {
+            return res.status(200).json({ message: 'password updated', success: true })
+        } else {
+            return res.status(200).json({ message: 'User not found!', success: false })
 
         }
-            
     } catch (error) {
         console.error("Error while creating newpassword:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
- }
+}
 
 
 
 // userprofile
 
-export const updateprofile =async (req,res)=>{
+export const updateprofile = async (req, res) => {
     try {
         const Image = req.file.path;
-        const Cloudstore = await handleUpload(Image,"profilepic")
+        const Cloudstore = await handleUpload(Image, "profilepic")
         res.status(200).json({ success: true, imageUrl: Cloudstore.secure_url });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Internal server error" });
+
+    }
+} 
+
+export const Resetpassword = async (req, res) => {
+    try {
+        const { email, formData } = req.body;
+        const { password, newPassword } = formData;
+        console.log("email:", email);
+        console.log("Password:", password);
+        console.log("New Password:", newPassword);
+        console.log("Request Body:", req.body);
+
+
+
+
+
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error" });
 

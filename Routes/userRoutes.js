@@ -7,7 +7,8 @@ import {
     Forgotpassword,
     userotpverify,
     Createnewpass,
-    updateprofile
+    updateprofile,
+    Resetpassword
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
@@ -23,6 +24,7 @@ userRoute.post('/forgotpass',Forgotpassword)
 userRoute.get('/otpverify/:otp', userotpverify)
 userRoute.put('/newpass',Createnewpass)
 userRoute.post('/profile',upload.single('profilepic'),updateprofile)
+userRoute.post('/resetpass',Resetpassword)
 
 // userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
 
