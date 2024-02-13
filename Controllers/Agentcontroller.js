@@ -11,8 +11,6 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const AgentSignup = async (req, res) => {
     try {
         const { userName, email, phone, password } = req.body
-        console.log(userName, email, phone, password, ";;;;;;;;;;;");
-
         const Agent = await agent.findOne({ email: email })
         console.log(Agent);
 
@@ -20,8 +18,6 @@ export const AgentSignup = async (req, res) => {
             return res.json({ message: "user already exisits" })
         } else {
             const hashpass = await bcrypt.hash(password, 10)
-            console.log(hashpass, "password");
-
             const newagent = new agent({
                 userName: userName,
                 email: email,
@@ -70,9 +66,8 @@ export const AgentLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const Agent = await agent.findOne({ email: email });
-        console.log(Agent, "agent");
         if (!Agent) {
-            return res.json({ message: "successful" });
+            return res.json({ message: "user not found" });
         }
         const auth = await bcrypt.compare(password, Agent.password);
         if (!auth) {

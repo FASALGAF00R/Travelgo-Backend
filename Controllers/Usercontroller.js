@@ -6,7 +6,7 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
 import { handleUpload } from '../Util/Cloudinary.js'
-import { log } from 'console'
+
 
 
 

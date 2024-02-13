@@ -6,25 +6,18 @@ import env from 'dotenv';
 env.config()
 
 
-const Adminpass = process.env.ADMIN_PASS;
-bcrypt.hash(Adminpass,10,function(err,hash){
-  if(err){
-    console.err
-  }else{
-    console.log('hashed password ',hash);
-  }
-})
-
 
 
 
 export const Adminlogin = async (req, res) => {
     try {
       const { email, password } = req.body;      
-      const Pass = await  bcrypt.compare(password,Adminpass)
-      if ( email === process.env.ADMIN_EMAIL && Pass) {
+      const hash =await bcrypt.hash(password,10)
+      const Pass = await  bcrypt.compare(password,process.env.ADMIN_PASS)
+      if ( email === process.env.ADMIN_EMAIL && Pass ) {
         return res.json({ message: 'it is admin', status: true });
       } else {
+        console.log("not");
         return res.json({ message: "not admin", success: false });
       }
     } catch (error) {

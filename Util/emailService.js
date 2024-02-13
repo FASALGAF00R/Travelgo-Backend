@@ -13,21 +13,14 @@ const transporter = nodemailer.createTransport({
 });
 
 const Expirationtime = 3;
-const Expirationdate = new Date();
-
-// Add the expiration time to the current minutes
-Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
-
-// Check if the new minutes exceed 60, and adjust the hours accordingly
-if (Expirationdate.getMinutes() >= 60) {
-  Expirationdate.setHours(Expirationdate.getHours() + 1);
-  Expirationdate.setMinutes(Expirationdate.getMinutes() - 60);
-}
-
 
 export const sendVerificationEmail = (user, URL) => {
+  const Expirationdate = new Date();
+  Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
 
-  const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${user.verificationToken}?expires=${Expirationdate.toISOString()}`;
+  const expirationTimeString = Expirationdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const expirationISOString = Expirationdate.toISOString();
+  const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${user.verificationToken}?expires=${expirationISOString}`;
 
 
   if (URL) {
@@ -36,7 +29,7 @@ export const sendVerificationEmail = (user, URL) => {
       from: process.env.MAIL_USER,
       to: user.email,
       subject: 'TravelGO Agent verification',
-      text: `Click the following link to verify Agent: ${URL}\n\n` + `This link will expire on: ${Expirationdate.toLocaleString()}`
+      text: `Click the following link to verify Agent: ${URL}\n\n` + `This link will expire on: ${expirationTimeString}`
     }
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -53,7 +46,7 @@ export const sendVerificationEmail = (user, URL) => {
       to: user.email,
       subject: 'TravelGO verification',
       text: `Click the following link to verify user email: ${verificationLinkuser}\n\n` +
-        `This link will expire on: ${Expirationdate.toLocaleString()}`
+        `This link will expire on: ${expirationTimeString}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -65,6 +58,10 @@ export const sendVerificationEmail = (user, URL) => {
     });
   };
 }
+
+
+
+
 
 
 
