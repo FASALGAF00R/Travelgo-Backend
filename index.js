@@ -3,9 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from "cookie-parser";
-const { connect, connection } = mongoose;
+const { connect } = mongoose;
 import env from 'dotenv';
-import path from 'path'
+
 
 
 
@@ -25,12 +25,10 @@ app.use(express.json())
 const port =3000
 
 connect('mongodb://localhost:27017/travelgo')
-const db=connection
-
-db.once('open',()=>{
-    console.log("database connected succesfully")
+.then(()=>{
+   console.log("connected to the database")
 })
-
+ .catch((err)=>{console.log(`connection error ${err}`)})
 
 //  routes
 import userRoutes from './Routes/userRoutes.js'

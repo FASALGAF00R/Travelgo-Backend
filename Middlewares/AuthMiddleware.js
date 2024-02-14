@@ -1,9 +1,8 @@
 import env from 'dotenv';
 env.config()
 
-
 //  the verify method accepts the token from user and jwtkey and provides decode of the token
-
+console.log("page");
 export const userVerification = (req, res, next) => {
   console.log("userverification");
   const token = req.headers.authorization.split(' ')[1];
@@ -12,11 +11,12 @@ export const userVerification = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.AXCESSTOKEN_KEY)
-
-    // const Normaltime = Date.now() / 1000;
-    // if (decoded.exp < Normaltime) {
-    //   return res.status(401).json({ message: 'token has expired' })
-    // }
+console.log("vannu");
+    const Normaltime = Date.now() / 1000;
+    if (decoded.exp < Normaltime) {
+      console.log("super");
+      return res.status(401).json({ message: 'token has expired' })
+    }
     req.user = decoded
     next()
   } catch (error) {

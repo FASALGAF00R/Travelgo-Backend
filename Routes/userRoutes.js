@@ -12,7 +12,6 @@ import {
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
-// import {refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();
 
 // user routes
@@ -23,10 +22,10 @@ userRoute.post('/googlelogin', googlelogin)
 userRoute.post('/forgotpass',Forgotpassword)
 userRoute.get('/otpverify/:otp', userotpverify)
 userRoute.put('/newpass',Createnewpass)
-userRoute.post('/profile',upload.single('profilepic'),updateprofile)
+userRoute.post('/profile',userVerification,upload.single('profilepic'),updateprofile)
 userRoute.post('/resetpass',Resetpassword)
 
-// userRoute.post('/refreshtoken',userVerification,refreshTokenHandler)
+
 
 
 
