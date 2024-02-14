@@ -66,13 +66,11 @@ export const verifyEmail = async (req, res) => {
 export const loadLogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        console.log(password,"ll");
         const Data = await user.findOne({ email: email })
         if (!Data) {
             return res.json({ message: "user  not found" })
         }
         const auth = await bcrypt.compare(password, Data.password);
-        console.log(auth,'//');
         if (!auth) {
             return res.json({ message: "incorrect password" })
         }
@@ -239,6 +237,7 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
+   
         const Image = req.file.path;
         const Cloudstore = await handleUpload(Image, "profilepic")
         res.status(200).json({ success: true, imageUrl: Cloudstore.secure_url });
@@ -269,3 +268,7 @@ export const Resetpassword = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+ export const Resfreshtokenload =async(req,res)=>{
+
+ }

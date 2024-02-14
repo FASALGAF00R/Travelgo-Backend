@@ -1,17 +1,18 @@
 import env from 'dotenv';
+import jwt from 'jsonwebtoken';
+
 env.config()
 
 //  the verify method accepts the token from user and jwtkey and provides decode of the token
-console.log("page");
+
 export const userVerification = (req, res, next) => {
-  console.log("userverification");
-  const token = req.headers.authorization.split(' ')[1];
-  if (!token) {
+  const axcesstoken = req.headers.authorization.split(' ')[1];
+  if (!axcesstoken) {
     return res.status(401).json({ success: false, message: 'Unauthorized token not provided ' })
   }
   try {
-    const decoded = jwt.verify(token, process.env.AXCESSTOKEN_KEY)
-console.log("vannu");
+    console.log(process.env.AXCESSTOKEN_KEY,"mm");
+  const decoded =  jwt.verify(axcesstoken, process.env.AXCESSTOKEN_KEY);
     const Normaltime = Date.now() / 1000;
     if (decoded.exp < Normaltime) {
       console.log("super");
@@ -31,29 +32,30 @@ console.log("vannu");
 }
 
 
+export const refreshTokenHandler = async (req, res) => {
+  console.log("l");
+  try {
+    const refreshToken = req.body.refreshToken;
+    console.log(refreshToken, "kkkkkkkkkkk");
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, message: 'Unauthorized - Refresh token not provided' });
+    }
 
-// export const refreshTokenHandler = async (req, res) => {
-//   try {
-//     const refreshToken = req.body.Refreshtoken;
+    // Verify the refresh token
+    const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
+console.log(decoded,"decode");
+    // Create a new access token
+    const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName }, process.env.AXCESSTOKEN_KEY, {
+      expiresIn: '10m',
+    });
 
-//     if (!refreshToken) {
-//       return res.status(401).json({ success: false, message: 'Unauthorized - Refresh token not provided' });
-//     }
+    // Send the new access token in the response
+    res.json({ success: true, accessToken: newAccessToken });
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Unauthorized - Invalid refresh token' });
+  }
+};
 
-//     // Verify the refresh token
-//     const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
-
-//     // Create a new access token
-//     const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName }, process.env.AXCESSTOKEN_KEY, {
-//       expiresIn: '10m',
-//     });
-
-//     // Send the new access token in the response
-//     res.json({ success: true, accessToken: newAccessToken });
-//   } catch (error) {
-//     res.status(401).json({ success: false, message: 'Unauthorized - Invalid refresh token' });
-//   }
-// };
 
 
 

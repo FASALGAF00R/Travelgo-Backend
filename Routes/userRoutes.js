@@ -8,10 +8,11 @@ import {
     userotpverify,
     Createnewpass,
     updateprofile,
-    Resetpassword
+    Resetpassword,
+    
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
-import {userVerification} from '../Middlewares/AuthMiddleware.js'
+import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();
 
 // user routes
@@ -24,6 +25,7 @@ userRoute.get('/otpverify/:otp', userotpverify)
 userRoute.put('/newpass',Createnewpass)
 userRoute.post('/profile',userVerification,upload.single('profilepic'),updateprofile)
 userRoute.post('/resetpass',Resetpassword)
+userRoute.post('/refreshtoken', refreshTokenHandler);
 
 
 
