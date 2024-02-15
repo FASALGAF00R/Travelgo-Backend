@@ -11,7 +11,6 @@ export const userVerification = (req, res, next) => {
     return res.status(401).json({ success: false, message: 'Unauthorized token not provided ' })
   }
   try {
-    console.log(process.env.AXCESSTOKEN_KEY,"mm");
   const decoded =  jwt.verify(axcesstoken, process.env.AXCESSTOKEN_KEY);
     const Normaltime = Date.now() / 1000;
     if (decoded.exp < Normaltime) {
@@ -45,10 +44,10 @@ export const refreshTokenHandler = async (req, res) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
 console.log(decoded,"decode");
     // Create a new access token
-    const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName }, process.env.AXCESSTOKEN_KEY, {
+    const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName , email:decoded.email }, process.env.AXCESSTOKEN_KEY, {
       expiresIn: '10m',
     });
-
+console.log(newAccessToken,"................................");
     // Send the new access token in the response
     res.json({ success: true, accessToken: newAccessToken });
   } catch (error) {
