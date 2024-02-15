@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 env.config()
 
 //  the verify method accepts the token from user and jwtkey and provides decode of the token
-
 export const userVerification = (req, res, next) => {
   const axcesstoken = req.headers.authorization.split(' ')[1];
+
   if (!axcesstoken) {
     return res.status(401).json({ success: false, message: 'Unauthorized token not provided ' })
   }
@@ -32,22 +32,19 @@ export const userVerification = (req, res, next) => {
 
 
 export const refreshTokenHandler = async (req, res) => {
-  console.log("l");
   try {
     const refreshToken = req.body.refreshToken;
-    console.log(refreshToken, "kkkkkkkkkkk");
     if (!refreshToken) {
       return res.status(401).json({ success: false, message: 'Unauthorized - Refresh token not provided' });
     }
 
     // Verify the refresh token
     const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
-console.log(decoded,"decode");
+
     // Create a new access token
     const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName , email:decoded.email }, process.env.AXCESSTOKEN_KEY, {
       expiresIn: '10m',
     });
-console.log(newAccessToken,"................................");
     // Send the new access token in the response
     res.json({ success: true, accessToken: newAccessToken });
   } catch (error) {

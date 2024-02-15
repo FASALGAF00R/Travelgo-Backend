@@ -237,7 +237,7 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
-   
+
         const Image = req.file.path;
         const Cloudstore = await handleUpload(Image, "profilepic")
         res.status(200).json({ success: true, imageUrl: Cloudstore.secure_url });
@@ -245,23 +245,28 @@ export const updateprofile = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
 
     }
-} 
+}
 
 export const Resetpassword = async (req, res) => {
+    console.log("ioioioioioioioioio");
     try {
         const { email, formData } = req.body;
-        const { password, newPassword } = formData;      
+        console.log(formData, ":::::::::::::::::::::::");
+        const { password, newPassword } = formData;
         const User = await user.findOne({ email: email });
         if (!User) {
             return res.status(404).json({ message: "User not found" });
-        }    
-        const Passwordconfirm = await bcrypt.compare(password,User.password)
+        }
+        const Passwordconfirm = await bcrypt.compare(password, User.password)
+        console.log(Passwordconfirm, ".....");
         if (Passwordconfirm) {
-            const hashpassnew =await bcrypt.hash(newPassword,10)
-            const resetPassword = await user.updateOne({ email: email }, { $set: { password: hashpassnew } });
+            const hashpassnew = await bcrypt.hash(newPassword, 10)
+            const Userdata = await user.updateOne({ email: email }, { $set: { password: hashpassnew } });
+            User.image = formData.image
+            await User.save()
             return res.status(200).json({ success: true, message: "Password updated" });
         } else {
-            return res.status(404).json({ message: "Current password incorrect" });
+            return res.json({ success: false, message: "Current password incorrect" });
         }
     } catch (error) {
         console.error(error);
@@ -269,6 +274,17 @@ export const Resetpassword = async (req, res) => {
     }
 };
 
- export const Resfreshtokenload =async(req,res)=>{
+export const getimage = async (req, res) => {
+    console.log("ethiii");
+    try {
+        const Id = req.params.id;
+        const Img = await user.findById(Id);
+        console.log(Img.image,"opopopopoo");
+        return res.json({message:"Image send",image:Img.image});
 
- }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
