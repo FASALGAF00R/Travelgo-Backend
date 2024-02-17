@@ -1,4 +1,5 @@
 import agent from '../Models/Agentmodel.js'
+import { place } from '../Models/Placesmodel.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
@@ -30,7 +31,7 @@ export const AgentSignup = async (req, res) => {
             const Expirationdate = new Date();
             Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
             const URL = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}?expires=${Expirationdate.toISOString()}`;
-            sendVerificationEmail(newagent,URL); 
+            sendVerificationEmail(newagent, URL);
             const token = createSecretToken(newagent._id);
             res.cookie('tokken', token, {
                 withCredentials: true,
@@ -129,4 +130,22 @@ export const Agentgoogle = async (req, res) => {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
     }
+}
+
+
+export const Agentplaces = async (req, res) => {
+    try {
+        console.log("ethiii");
+        const {place,description}=req.body
+        const{path:image}=req.file
+        console.log(image,"mm");
+        console.log(place,description);
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+
+    }
+
 }

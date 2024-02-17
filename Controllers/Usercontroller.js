@@ -131,7 +131,7 @@ export const Forgotpassword = async (req, res) => {
         const { email } = req.body
         const Data = await user.findOne({ email })
         if (Data === null) {
-            return res.json({ message: 'user not registerd' })
+            return res.json({ message: 'user not registered' })
         }
         let otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -173,8 +173,6 @@ export const Forgotpassword = async (req, res) => {
             }
 
         });
-
-
 
 
         //    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -233,7 +231,7 @@ export const Createnewpass = async (req, res) => {
 
 
 
-// userprofile
+// userprofile image
 
 export const updateprofile = async (req, res) => {
     try {
@@ -246,6 +244,8 @@ export const updateprofile = async (req, res) => {
 
     }
 }
+ 
+// changing password
 
 export const Resetpassword = async (req, res) => {
     console.log("ioioioioioioioioio");
@@ -274,6 +274,8 @@ export const Resetpassword = async (req, res) => {
     }
 };
 
+
+// viewing image
 export const getimage = async (req, res) => {
     console.log("ethiii");
     try {
