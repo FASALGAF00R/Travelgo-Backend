@@ -10,6 +10,6 @@ const PlaceSchema = new Schema({
 
 }, { timeStamp:true })
 
-export const place=mongoose.model('places',PlaceSchema)
+export const Place=mongoose.model('places',PlaceSchema)
 
 

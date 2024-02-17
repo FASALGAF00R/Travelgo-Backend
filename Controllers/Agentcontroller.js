@@ -1,5 +1,5 @@
 import agent from '../Models/Agentmodel.js'
-import { place } from '../Models/Placesmodel.js';
+import {Place}  from '../Models/Placesmodel.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
@@ -96,7 +96,6 @@ export const Agentgoogle = async (req, res) => {
     try {
         const { id, name, email, phone } = req.body.data
         const Findagent = await agent.findOne({ email: email })
-        console.log(Findagent, "ffffffffff");
         if (Findagent) {
             if (Findagent.Approval == true) {
                 return res.json({ message: "user need permission by admin" })
@@ -117,7 +116,6 @@ export const Agentgoogle = async (req, res) => {
             await Googleagent.save()
             if (Googleagent) {
                 const token = createSecretToken(Googleagent._id);
-                console.log(token, "yyyyy");
                 res.cookie("token", token, {
                     withCredentials: true,
                     httpOnly: false,
@@ -140,6 +138,13 @@ export const Agentplaces = async (req, res) => {
         const{path:image}=req.file
         console.log(image,"mm");
         console.log(place,description);
+        const Placedata =new Place({
+            Placename:place,
+            Description:description,
+            Image:image
+        })
+    const Savedplace =await Placedata.save()
+        console.log(Savedplace,";;;");
 
 
     } catch (error) {
