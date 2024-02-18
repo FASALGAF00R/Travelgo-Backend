@@ -1,5 +1,5 @@
 import agent from '../Models/Agentmodel.js'
-import {Place}  from '../Models/Placesmodel.js';
+import { Place } from '../Models/Placesmodel.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
@@ -134,17 +134,17 @@ export const Agentgoogle = async (req, res) => {
 export const Agentplaces = async (req, res) => {
     try {
         console.log("ethiii");
-        const {place,description}=req.body
-        const{path:image}=req.file
-        console.log(image,"mm");
-        console.log(place,description);
-        const Placedata =new Place({
-            Placename:place,
-            Description:description,
-            Image:image
+        const { place, description } = req.body
+        const { path: image } = req.file
+        console.log(image, "mmmmmmmmmmmmmmmmmmm");
+        console.log(place, description);
+        const Placedata = new Place({
+            Placename: place,
+            Description: description,
+            Image: image
         })
-    const Savedplace =await Placedata.save()
-        console.log(Savedplace,";;;");
+        const Savedplace = await Placedata.save()
+        console.log(Savedplace, ";;;");
 
 
     } catch (error) {
@@ -154,3 +154,23 @@ export const Agentplaces = async (req, res) => {
     }
 
 }
+
+
+export const Getplaces = async (req, res) => {
+    try {
+        console.log("ethii");
+        const placelist = await Place.find();
+        const placesWithImageUrls = placelist.map(place => {
+            return {
+                ...place._doc,
+                Image: `${req.protocol}://${req.get('host')}/${place.Image}` // Construct the image URL with the full path from the database
+            };
+            
+        });
+        console.log(placesWithImageUrls, ";;;;;;;;;;;;");
+        return res.status(200).json( placesWithImageUrls);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
