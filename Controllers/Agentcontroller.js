@@ -133,10 +133,8 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
-        console.log("ethiii");
         const { place, description } = req.body
         const { path: image } = req.file
-        console.log(image, "mmmmmmmmmmmmmmmmmmm");
         console.log(place, description);
         const Placedata = new Place({
             Placename: place,
@@ -144,8 +142,6 @@ export const Agentplaces = async (req, res) => {
             Image: image
         })
         const Savedplace = await Placedata.save()
-        console.log(Savedplace, ";;;");
-
 
     } catch (error) {
         console.log(error);
@@ -158,19 +154,36 @@ export const Agentplaces = async (req, res) => {
 
 export const Getplaces = async (req, res) => {
     try {
-        console.log("ethii");
         const placelist = await Place.find();
         const placesWithImageUrls = placelist.map(place => {
             return {
                 ...place._doc,
-                Image: `${req.protocol}://${req.get('host')}/${place.Image}` // Construct the image URL with the full path from the database
+                Image: `${req.protocol}://${req.get('host')}/${place.Image}`
             };
-            
+
         });
-        console.log(placesWithImageUrls, ";;;;;;;;;;;;");
-        return res.status(200).json( placesWithImageUrls);
+        return res.status(200).json(placesWithImageUrls);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+
+export const UpdatePlace = async (req, res) => {
+    try {
+        const id = req.params.id;
+        console.log(id);
+        const { place, description, image } = req.body.Data;
+        console.log(place, description, image, "///");
+        const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Placename: place, Description: description } }, { new: true });
+        console.log(foundPlace,"pop");
+        if (!foundPlace) {
+            return res.status(400).json({ message: "Place not found" });
+        }
+        return res.status(200).json(foundPlace);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
