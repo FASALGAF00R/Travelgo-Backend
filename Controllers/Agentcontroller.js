@@ -5,6 +5,7 @@ import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
 import { Activity } from '../Models/Activities.js';
 import bcrypt from 'bcrypt'
+import { log } from 'console';
 
 
 const verificationToken = crypto.randomBytes(20).toString('hex');
@@ -196,8 +197,40 @@ export const Agentactivities = async (req, res) => {
             Activity: Data
         })
         await Activitydata.save()
-        return res.status(200).json({ succes: true})
+        return res.status(200).json({ succes: true })
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
+export const Getactivities = async (req, res) => {
+    try {
+        const Activities = await Activity.find();
+        return res.status(200).json(Activities);
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+
+    }
+}
+
+
+export const UpdateActivity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { form } = req.body;
+      
+        const foundActivity = await Activity.findByIdAndUpdate(id, { $set: { Activity: form } }, { new: true });
+        if (!foundActivity) {
+            return res.status(400).json({ message: "Activity not found" });
+        } else {
+            await foundActivity.updateOne({ Activity: form });
+            return res.status(201).json({ message: 'Updated Successfully' });
+        }
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+
     }
 }

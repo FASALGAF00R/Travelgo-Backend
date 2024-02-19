@@ -8,7 +8,9 @@ import {
     Agentplaces,
     Getplaces,
     UpdatePlace,
-    Agentactivities
+    Agentactivities,
+    Getactivities,
+    UpdateActivity
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 const agentRoute =express.Router()
@@ -21,6 +23,8 @@ agentRoute.post('/googlelogin',Agentgoogle)
 agentRoute.post('/places',upload.single('image'),Agentplaces)
 agentRoute.get('/getplaces',Getplaces)
 agentRoute.put('/updateplace/:id',upload.single('image'),UpdatePlace)
-agentRoute.post('/activities',Agentactivities)
+agentRoute.post('/addactivity',Agentactivities)
+agentRoute.get('/activities',Getactivities)
+agentRoute.put('/updateactivity/:id',UpdateActivity)
 
 export default agentRoute
