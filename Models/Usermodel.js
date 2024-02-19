@@ -11,9 +11,8 @@ const Userschema= new Schema({
     isBlock:{type:Boolean,default:true},
     image:{type:String},
     Otp:{type:String},
-    date:{ type:Date, default:Date.now }
-
-})
+    date:{ type:Date, default:Date.now }},
+    {timestamps: true })
 
  export const user=mongoose.model('user',Userschema)
 

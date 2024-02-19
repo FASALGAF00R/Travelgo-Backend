@@ -6,7 +6,8 @@ Blockuser,
 Agentlisting,
 Blockagent,
 agentapprovallisting,
-agentreject
+agentreject,
+Addcatgeory
  } from "../Controllers/Admincontroller.js";
 
 const adminRoute=express.Router()
@@ -17,4 +18,5 @@ adminRoute.put('/blockuser',Blockuser)
 adminRoute.put('/blockagent',Blockagent)
 adminRoute.get('/agentapproval',agentapprovallisting)
 adminRoute.put('/reject',agentreject)
+adminRoute.post('/catgeory',Addcatgeory)
 export  default adminRoute

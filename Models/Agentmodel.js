@@ -11,9 +11,8 @@ const Agentschema= new Schema({
     isBlock:{type:Boolean},
     verificationToken:{type:String},
     Approval:{type:Boolean,default:false},
-    date:{type:Date,default:Date.now,},
-    
-});
+    date:{type:Date,default:Date.now,}},
+    {timestamps: true });
 
 const agent=mongoose.model('agent',Agentschema)
 export default agent

@@ -1,6 +1,7 @@
 import agent from '../Models/Agentmodel.js';
+import { category } from '../Models/Categorymodel.js';
 import { user } from "../Models/Usermodel.js";
-import mongoose from "mongoose";
+import mongoose from "mongoose";  
 import bcrypt from "bcrypt"
 import env from 'dotenv';
 env.config()
@@ -170,4 +171,19 @@ try {
 } catch (error) {
   res.status(500).json({ alert: "Internal Server Error" });    }
 
+}
+
+export const Addcatgeory= async (req,res)=>{
+  try {
+      const { Name } = req.body;
+      console.log(Name,"pop");
+      const newCategory = new category({ 
+        Name: Name
+      });
+      console.log(newCategory,"0");
+      newCategory.save();
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });    
+
+  }
 }

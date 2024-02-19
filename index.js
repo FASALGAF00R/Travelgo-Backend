@@ -35,6 +35,7 @@ connect('mongodb://localhost:27017/travelgo')
 .catch((err)=>{console.log(`connection error ${err}`)})
 
 app.use('/uploads', express.static(join(__dirname, 'Uploads')));
+
 //  routes
 import userRoutes from './Routes/userRoutes.js'
 import agentRoute from './Routes/agentRoutes.js';

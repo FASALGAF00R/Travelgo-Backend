@@ -19,6 +19,6 @@ agentRoute.get('/verify/:token',Agentverify)
 agentRoute.post('/googlelogin',Agentgoogle)
 agentRoute.post('/places',upload.single('image'),Agentplaces)
 agentRoute.get('/getplaces',Getplaces)
-agentRoute.put('/updateplace/:id',UpdatePlace)
+agentRoute.put('/updateplace/:id',upload.single('image'),UpdatePlace)
 
 export default agentRoute
