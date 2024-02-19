@@ -3,6 +3,7 @@ import { Place } from '../Models/Placesmodel.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
+import { Activity } from '../Models/Activities.js';
 import bcrypt from 'bcrypt'
 
 
@@ -177,13 +178,26 @@ export const UpdatePlace = async (req, res) => {
         const { place, description, image } = req.body.Data;
         console.log(place, description, image, "///");
         const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Placename: place, Description: description } }, { new: true });
-        console.log(foundPlace,"pop");
+        console.log(foundPlace, "pop");
         if (!foundPlace) {
             return res.status(400).json({ message: "Place not found" });
         }
         return res.status(200).json(foundPlace);
     } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+export const Agentactivities = async (req, res) => {
+    try {
+        const Data = req.body.form
+        const Activitydata = new Activity({
+            Activity: Data
+        })
+        await Activitydata.save()
+        return res.status(200).json({ succes: true})
+    } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
