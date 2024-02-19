@@ -175,13 +175,12 @@ try {
 
 export const Addcatgeory= async (req,res)=>{
   try {
-      const { Name } = req.body;
-      console.log(Name,"pop");
+      const {categoryName} = req.body;
       const newCategory = new category({ 
-        Name: Name
+        Name: categoryName
       });
-      console.log(newCategory,"0");
       newCategory.save();
+      return res.status(200).json({success:true})
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });    
 
