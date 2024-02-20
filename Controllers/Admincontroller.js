@@ -1,6 +1,7 @@
 import agent from '../Models/Agentmodel.js';
 import { category } from '../Models/Categorymodel.js';
 import { user } from "../Models/Usermodel.js";
+import { createSecretToken } from '../Util/SecretToken.js'
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"
 import env from 'dotenv';
@@ -12,13 +13,12 @@ env.config()
 
 export const Adminlogin = async (req, res) => {
   try {
+    console.log("ethii");
     const { email, password } = req.body;
-    const hash = await bcrypt.hash(password, 10)
-    const Pass = await bcrypt.compare(password, process.env.ADMIN_PASS)
-    if (email === process.env.ADMIN_EMAIL && Pass) {
-      return res.json({ message: 'it is admin', status: true });
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
+      const { accesToken, Refreshtoken } = createSecretToken();
+      res.status(200).json({ message: "admin logged succesfully", success: true,accesToken, Refreshtoken })
     } else {
-      console.log("not");
       return res.json({ message: "not admin", success: false });
     }
   } catch (error) {

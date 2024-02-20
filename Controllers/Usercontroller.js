@@ -6,7 +6,7 @@ import { sendVerificationEmail } from '../Util/emailService.js'
 import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
 import { handleUpload } from '../Util/Cloudinary.js'
-
+import agent from '../Models/Agentmodel.js'
 
 
 
@@ -22,7 +22,7 @@ export const loadSignup = async (req, res) => {
         const { userName, email, password } = req.body
         const User = await user.findOne({ email: req.body.email })
         if (User) {
-            return res.status(400).json({ message: "user already exisist !" })
+            return res.json({success:false, message: "user already exisist !" })
         } else {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newuser = new user({ userName, email, password: hashedPassword })
@@ -214,14 +214,27 @@ export const userotpverify = async (req, res) => {
 // newpassword
 export const Createnewpass = async (req, res) => {
     try {
-        const { password, email } = req.body
+        const { password, email,role } = req.body
+        console.log(role,';;;;;;;;;;',req.body);
+        
         const hashpass = await bcrypt.hash(password, 10)
-        const userdata = await user.updateOne({ email: email }, { $set: { password: hashpass } })
-        if (userdata) {
-            return res.status(200).json({ message: 'password updated', success: true })
-        } else {
-            return res.status(200).json({ message: 'User not found!', success: false })
+        if(role==='user'){
 
+            const userdata = await user.updateOne({ email: email }, { $set: { password: hashpass } })
+            if (userdata) {
+                return res.status(200).json({ message: 'password updated', success: true })
+            } else {
+                return res.status(200).json({ message: 'User not found!', success: false })
+    
+            }
+        }else{
+            const agentdata = await agent.updateOne({ email: email }, { $set: { password: hashpass } })
+            if (agentdata) {
+                return res.status(200).json({ message: 'password updated', success: true })
+            } else {
+                return res.status(200).json({ message: 'User not found!', success: false })
+    
+            }
         }
     } catch (error) {
         console.error("Error while creating newpassword:", error);
