@@ -1,11 +1,12 @@
 import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js';
+import { Package } from '../Models/Packages.js';
+import { category } from '../Models/Categorymodel.js';
+import { Activity } from '../Models/Activities.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
-import { Activity } from '../Models/Activities.js';
 import bcrypt from 'bcrypt'
-import { log } from 'console';
 
 
 const verificationToken = crypto.randomBytes(20).toString('hex');
@@ -139,7 +140,7 @@ export const Agentplaces = async (req, res) => {
         const { path: image } = req.file
         console.log(place, description);
         const Placedata = new Place({
-            Placename: place,
+            Destrictname: place,
             Description: description,
             Image: image
         })
@@ -175,10 +176,9 @@ export const Getplaces = async (req, res) => {
 export const UpdatePlace = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
-        const { place, description, image } = req.body.Data;
-        console.log(place, description, image, "///");
-        const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Placename: place, Description: description } }, { new: true });
+        const { Destrictname, description, image } = req.body.Data;
+        console.log(Destrictname, description, image, "///");
+        const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Destrictname: Destrictname, Description: description } }, { new: true });
         console.log(foundPlace, "pop");
         if (!foundPlace) {
             return res.status(400).json({ message: "Place not found" });
@@ -234,3 +234,34 @@ export const UpdateActivity = async (req, res) => {
 
     }
 }
+
+export const Packageadd = async (req, res) => {
+    try {
+        const Data = req.body.form
+        const Packagedata = new Package({
+            Package: Data
+        })
+        await Packagedata.save()
+        return res.status(200).json({ succes: true })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+export const Getcategory = async (req, res) => {
+    try {
+        const Categories = await category.find();
+        return res.status(200).json({succes:true,Categories});
+    } catch (error) {  
+         return res.status(500).json("Server error")  }
+}
+
+
+export const Takeactivity = async (req, res) => {
+    try {
+        const Activities = await Activity.find();
+        return res.status(200).json(Activities);
+    } catch (error) {
+        return res.status(500).json("Server error")
+      }
+    }
