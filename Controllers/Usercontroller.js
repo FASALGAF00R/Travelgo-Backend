@@ -248,10 +248,16 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
-
+console.log(req.body,'ppppppppppp');
+const {userId}=req.body
         const Image = req.file.path;
+        console.log(userId,'--------------------');
+   
         const Cloudstore = await handleUpload(Image, "profilepic")
-        res.status(200).json({ success: true, imageUrl: Cloudstore.secure_url });
+        const url=Cloudstore.url
+        const newData=await user.updateOne({_id:userId},{$set:{image:url}})
+        console.log(Cloudstore,'oooooooooooooooooo');
+        res.status(200).json({ success: true, newData:url});
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error" });
 
@@ -293,7 +299,9 @@ export const getimage = async (req, res) => {
     console.log("ethiii");
     try {
         const Id = req.params.id;
-        const Img = await user.findById(Id);
+        console.log(Id,'lklklklklklklklklklk');
+        const Img = await user.findById({_id:Id});
+        console.log(Img,'pppppppppppppppppppp');
         console.log(Img.image,"opopopopoo");
         return res.json({message:"Image send",image:Img.image});
 

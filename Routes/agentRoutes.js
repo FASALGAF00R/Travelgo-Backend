@@ -29,7 +29,7 @@ agentRoute.put('/updateplace/:id',upload.single('image'),UpdatePlace)
 agentRoute.post('/addactivity',Agentactivities)
 agentRoute.get('/activities',Getactivities)
 agentRoute.put('/updateactivity/:id',UpdateActivity)
-agentRoute.post('/addpackage',Packageadd)
+agentRoute.post('/addpackage',upload.single('image'),Packageadd)
 agentRoute.get('/getcategories',Getcategory)
 agentRoute.get('/getactivites',Takeactivity)
 

@@ -5,12 +5,10 @@ import mongoose from 'mongoose';
 import cookieParser from "cookie-parser";
 const { connect } = mongoose;
 import env from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+
 env.config()
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+
 
 const app=express()
 
@@ -32,7 +30,6 @@ connect('mongodb://localhost:27017/travelgo')
 })
 .catch((err)=>{console.log(`connection error ${err}`)})
 
-app.use('/uploads', express.static(join(__dirname, 'Uploads')));
 
 //  routes
 import userRoutes from './Routes/userRoutes.js'

@@ -13,7 +13,6 @@ env.config()
 
 export const Adminlogin = async (req, res) => {
   try {
-    console.log("ethii");
     const { email, password } = req.body;
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
       const { accesToken, Refreshtoken } = createSecretToken();
@@ -142,6 +141,8 @@ export const agentapprovallisting = async (req, res) => {
     console.log(error);
   }
 }
+
+
 
 export const agentreject = async (req, res) => {
 

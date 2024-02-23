@@ -6,6 +6,7 @@ import { Activity } from '../Models/Activities.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
+import { handleUpload } from '../Util/Cloudinary.js'
 import bcrypt from 'bcrypt'
 
 
@@ -16,7 +17,6 @@ export const AgentSignup = async (req, res) => {
     try {
         const { userName, email, phone, password } = req.body
         const Agent = await agent.findOne({ email: email })
-        console.log(Agent);
 
         if (Agent) {
             return res.json({ message: "user already exisits" })
@@ -51,7 +51,6 @@ export const Agentverify = async (req, res) => {
 
     try {
         const { token } = req.params;
-        console.log(token);
         const Data = await agent.findOne({ verificationToken: token })
         if (Data) {
             Data.isVerified = true;
@@ -220,7 +219,7 @@ export const UpdateActivity = async (req, res) => {
     try {
         const { id } = req.params;
         const { form } = req.body;
-      
+
         const foundActivity = await Activity.findByIdAndUpdate(id, { $set: { Activity: form } }, { new: true });
         if (!foundActivity) {
             return res.status(400).json({ message: "Activity not found" });
@@ -237,9 +236,21 @@ export const UpdateActivity = async (req, res) => {
 
 export const Packageadd = async (req, res) => {
     try {
-        const Data = req.body.form
+        const { placeName,
+            category,
+            description,
+            activities,
+            amount } = req.body
+        console.log(req.body, "oggggggggo");
+        const Image = req.file.path;
+        const Cloudstore = await handleUpload(Image, "profilepic")
         const Packagedata = new Package({
-            Package: Data
+            placename: placeName,
+            Image:Cloudstore.url,
+            category:category,
+            details:description ,
+            activites:activities ,
+            amount:amount,
         })
         await Packagedata.save()
         return res.status(200).json({ succes: true })
@@ -251,9 +262,10 @@ export const Packageadd = async (req, res) => {
 export const Getcategory = async (req, res) => {
     try {
         const Categories = await category.find();
-        return res.status(200).json({succes:true,Categories});
-    } catch (error) {  
-         return res.status(500).json("Server error")  }
+        return res.status(200).json({ succes: true, Categories });
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
 }
 
 
@@ -263,5 +275,5 @@ export const Takeactivity = async (req, res) => {
         return res.status(200).json(Activities);
     } catch (error) {
         return res.status(500).json("Server error")
-      }
     }
+}
