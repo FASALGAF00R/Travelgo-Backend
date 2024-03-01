@@ -22,7 +22,7 @@ export const loadSignup = async (req, res) => {
         const { userName, email, password } = req.body
         const User = await user.findOne({ email: req.body.email })
         if (User) {
-            return res.json({success:false, message: "user already exisist !" })
+            return res.json({ success: false, message: "user already exisist !" })
         } else {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newuser = new user({ userName, email, password: hashedPassword })
@@ -128,58 +128,106 @@ export const googlelogin = async (req, res) => {
 // forgotpass
 export const Forgotpassword = async (req, res) => {
     try {
-        const { email } = req.body
+        const { email, role } = req.body
         const Data = await user.findOne({ email })
+        const Agentdata = await agent.findOne({ email })
         if (Data === null) {
             return res.json({ message: 'user not registered' })
         }
-        let otp = otpGenerator.generate(6, {
-            upperCaseAlphabets: false,
-            lowerCaseAlphabets: false,
-            specialChars: false,
-        });
-        const userdata = await user.updateOne({ email: Data.email }, { $set: { Otp: otp } })
-        let result = await user.findOne({ email: Data.email });
 
-        // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS,
-            }
-        });
-        console.log(process.env.MAIL_PASS, ".................");
-        const mailOptions = {
-            from: process.env.MAIL_USER,
-            to: result.email,
-            subject: 'otp verification for forgot password',
-            text: `Pls confirm your otp ${result.Otp}`
+        if (Agentdata === null) {
+            return res.json({ message: 'user not registered' })
         }
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log("errooor");
-                console.error(error);
-            } else {
-                console.log('Email sent  : ' + info.response);
-                console.log("iuiuiui");
-                return res.status(200).json({
-                    success: true,
-                    message: "OTP sent successfully",
-                    userdata
+        if (Data && role === 'user') {
+            let otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+            const userdata = await user.updateOne({ email: Data.email }, { $set: { Otp: otp } })
+            let result = await user.findOne({ email: Data.email });
 
-                });
+            // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+            const transporter = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS,
+                }
+            });
+            console.log(process.env.MAIL_PASS, ".................");
+            const mailOptions = {
+                from: process.env.MAIL_USER,
+                to: result.email,
+                subject: 'otp verification for forgot password',
+                text: `Pls confirm your otp ${result.Otp}`
             }
 
-        });
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log("errooor");
+                    console.error(error);
+                } else {
+                    console.log('Email sent  : ' + info.response);
+                    console.log("iuiuiui");
+                    return res.status(200).json({
+                        success: true,
+                        message: "OTP sent successfully",
+                        userdata
 
+                    });
+                }
+
+            });
+        } else {
+            console.log("hu");
+            let otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+
+            const Agent = await agent.updateOne({ email: Agentdata.email }, { $set: { Otp: otp } })
+
+            const transporter = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS,
+                }
+            });
+            console.log(process.env.MAIL_PASS, ".................");
+            const mailOptions = {
+                from: process.env.MAIL_USER,
+                to: Agentdata.email,
+                subject: 'otp verification for forgot password',
+                text: `Pls confirm your Resend otp ${otp}`
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log("errooor");
+                    console.error(error);
+                } else {
+                    console.log('Email sent  : ' + info.response);
+                    console.log("iuiuiui");
+                    return res.status(200).json({
+                        success: true,
+                        message: "OTP sent successfully",
+
+
+                    });
+                }
+
+            })
+        }
 
         //    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     } catch (error) {
         console.log(error);
-        // res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
@@ -188,18 +236,23 @@ export const Forgotpassword = async (req, res) => {
 
 export const userotpverify = async (req, res) => {
     try {
-
-        const otp = req.params.otp;
-        const findotp = await user.findOne({ Otp: otp })
-        if (findotp) {
-            if (findotp.Otp === otp) {
+        const otp = req.query.otp;
+        const Role = req.query.role;
+        if (Role === "agent") {
+            const findAgentotp = await agent.findOne({ Otp: otp })
+            if (findAgentotp.Otp === otp) {
                 return res.json({ success: true, message: "verified" })
             } else {
                 return res.json({ success: false, message: "invalid otp" })
             }
 
         } else {
-            return res.json({ success: false, message: "OTP not found" });
+            const findotp = await user.findOne({ Otp: otp })
+            if (findotp.Otp === otp) {
+                return res.json({ success: true, message: "verified" })
+            } else {
+                return res.json({ success: false, message: "invalid otp" })
+            }
 
         }
     } catch (error) {
@@ -211,29 +264,30 @@ export const userotpverify = async (req, res) => {
 
 
 
+
 // newpassword
 export const Createnewpass = async (req, res) => {
     try {
-        const { password, email,role } = req.body
-        console.log(role,';;;;;;;;;;',req.body);
-        
+        const { password, email, role } = req.body
+        console.log(role, ';;;;;;;;;;', req.body);
+
         const hashpass = await bcrypt.hash(password, 10)
-        if(role==='user'){
+        if (role === 'user') {
 
             const userdata = await user.updateOne({ email: email }, { $set: { password: hashpass } })
             if (userdata) {
                 return res.status(200).json({ message: 'password updated', success: true })
             } else {
                 return res.status(200).json({ message: 'User not found!', success: false })
-    
+
             }
-        }else{
+        } else {
             const agentdata = await agent.updateOne({ email: email }, { $set: { password: hashpass } })
             if (agentdata) {
                 return res.status(200).json({ message: 'password updated', success: true })
             } else {
                 return res.status(200).json({ message: 'User not found!', success: false })
-    
+
             }
         }
     } catch (error) {
@@ -248,22 +302,22 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
-console.log(req.body,'ppppppppppp');
-const {userId}=req.body
+        console.log(req.body, 'ppppppppppp');
+        const { userId } = req.body
         const Image = req.file.path;
-        console.log(userId,'--------------------');
-   
+        console.log(userId, '--------------------');
+
         const Cloudstore = await handleUpload(Image, "profilepic")
-        const url=Cloudstore.url
-        const newData=await user.updateOne({_id:userId},{$set:{image:url}})
-        console.log(Cloudstore,'oooooooooooooooooo');
-        res.status(200).json({ success: true, newData:url});
+        const url = Cloudstore.url
+        const newData = await user.updateOne({ _id: userId }, { $set: { image: url } })
+        console.log(Cloudstore, 'oooooooooooooooooo');
+        res.status(200).json({ success: true, newData: url });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error" });
 
     }
 }
- 
+
 // changing password
 
 export const Resetpassword = async (req, res) => {
@@ -299,15 +353,119 @@ export const getimage = async (req, res) => {
     console.log("ethiii");
     try {
         const Id = req.params.id;
-        console.log(Id,'lklklklklklklklklklk');
-        const Img = await user.findById({_id:Id});
-        console.log(Img,'pppppppppppppppppppp');
-        console.log(Img.image,"opopopopoo");
-        return res.json({message:"Image send",image:Img.image});
+        console.log(Id, 'lklklklklklklklklklk');
+        const Img = await user.findById({ _id: Id });
+        console.log(Img, 'pppppppppppppppppppp');
+        console.log(Img.image, "opopopopoo");
+        return res.json({ message: "Image send", image: Img.image });
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
     }
+
+}
+
+
+
+export const Resendotp = async (req, res) => {
+    try {
+
+        const { Data, role } = req.body;
+        if (role === 'user') {
+            let otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+
+            const userdata = await user.findOneAndUpdate({ email: Data }, { $set: { Otp: otp } })
+            console.log(userdata);
+
+
+            const transporter = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS,
+                }
+            });
+            console.log(process.env.MAIL_PASS, ".................");
+            const mailOptions = {
+                from: process.env.MAIL_USER,
+                to: userdata.email,
+                subject: 'Resend otp',
+                text: `Pls confirm your otp ${otp}`
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log("errooor");
+                    console.error(error);
+                } else {
+                    console.log('Email sent  : ' + info.response);
+                    console.log("iuiuiui");
+                    return res.status(200).json({
+                        success: true,
+                        message: "OTP sent successfully for resend",
+                    });
+                }
+
+            });
+
+
+        } else {
+            console.log("lklkl");
+
+            let otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+
+            const Agentdata = await agent.findOneAndUpdate({ email: Data }, { $set: { Otp: otp } })
+            await Agentdata.save();
+
+
+            const transporter = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS,
+                }
+            });
+            console.log(process.env.MAIL_PASS, ".................");
+            const mailOptions = {
+                from: process.env.MAIL_USER,
+                to: Agentdata.email,
+                subject: 'Resend otp',
+                text: `Pls confirm your Resendotp ${otp}`
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log("errooor");
+                    console.error(error);
+                } else {
+                    console.log('Email sent  : ' + info.response);
+                    console.log("iuiuiui");
+                    return res.status(200).json({
+                        success: true,
+                        message: "OTP sent successfully for resend",
+                    });
+                }
+
+            });
+
+        }
+
+
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
 
 }

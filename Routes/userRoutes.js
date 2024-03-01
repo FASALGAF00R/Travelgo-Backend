@@ -9,7 +9,8 @@ import {
     Createnewpass,
     updateprofile,
     Resetpassword,
-    getimage
+    getimage,
+    Resendotp
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -21,12 +22,14 @@ userRoute.post('/login', loadLogin)
 userRoute.post('/verify/:token', verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
 userRoute.post('/forgotpass',Forgotpassword)
-userRoute.get('/otpverify/:otp', userotpverify)
+userRoute.get('/otpverify', userotpverify)
+userRoute.post('/otpresend',Resendotp)
 userRoute.put('/newpass',Createnewpass)
 userRoute.post('/profile',userVerification,upload.single('profilepic'),updateprofile)
 userRoute.post('/resetpass',Resetpassword)
 userRoute.post('/refreshtoken', refreshTokenHandler);
 userRoute.get('/user/:id',getimage)
+
 
 
 
