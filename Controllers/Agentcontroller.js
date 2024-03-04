@@ -135,13 +135,14 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
-        const { place, description } = req.body
-        const { path: image } = req.file
-        console.log(place, description);
+        const { Destrictname, description } = req.body
+        const image = req.file.path;
+        const Cloudstore = await handleUpload(image, "profilepic")
+        const url = Cloudstore.url
         const Placedata = new Place({
-            Destrictname: place,
+            Destrictname: Destrictname,
             Description: description,
-            Image: image
+            Image: url
         })
         const Savedplace = await Placedata.save()
 
@@ -157,14 +158,7 @@ export const Agentplaces = async (req, res) => {
 export const Getplaces = async (req, res) => {
     try {
         const placelist = await Place.find();
-        const placesWithImageUrls = placelist.map(place => {
-            return {
-                ...place._doc,
-                Image: `${req.protocol}://${req.get('host')}/${place.Image}`
-            };
-
-        });
-        return res.status(200).json(placesWithImageUrls);
+        return res.status(200).json({succes:true,placelist});
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -178,7 +172,6 @@ export const UpdatePlace = async (req, res) => {
         const { Destrictname, description, image } = req.body.Data;
         console.log(Destrictname, description, image, "///");
         const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Destrictname: Destrictname, Description: description } }, { new: true });
-        console.log(foundPlace, "pop");
         if (!foundPlace) {
             return res.status(400).json({ message: "Place not found" });
         }

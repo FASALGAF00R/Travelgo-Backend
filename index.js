@@ -38,8 +38,6 @@ import adminRoute from './Routes/adminRoutes.js';
 
 
 
-
-
 app.use('/',userRoutes)
 app.use('/agent',agentRoute)
 app.use('/admin',adminRoute)

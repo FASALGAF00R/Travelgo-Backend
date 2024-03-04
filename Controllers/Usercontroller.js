@@ -7,7 +7,7 @@ import otpGenerator from 'otp-generator'
 import nodemailer from 'nodemailer'
 import { handleUpload } from '../Util/Cloudinary.js'
 import agent from '../Models/Agentmodel.js'
-
+import { Place } from '../Models/Placesmodel.js'
 
 
 
@@ -269,7 +269,6 @@ export const userotpverify = async (req, res) => {
 export const Createnewpass = async (req, res) => {
     try {
         const { password, email, role } = req.body
-        console.log(role, ';;;;;;;;;;', req.body);
 
         const hashpass = await bcrypt.hash(password, 10)
         if (role === 'user') {
@@ -302,7 +301,7 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
-        console.log(req.body, 'ppppppppppp');
+        console.log(req.body, 'how are you?');
         const { userId } = req.body
         const Image = req.file.path;
         console.log(userId, '--------------------');
@@ -458,13 +457,36 @@ export const Resendotp = async (req, res) => {
             });
 
         }
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
 
 
+}
+
+
+
+export const listplaces = async (req, res) => {
+    try {
+        const District = await Place.find({})
+        return res.status(200).json(District);
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const Searchplace = async (req, res) => {
+    try {
+        const { Data } = req.body;
+        console.log(Data, "searchplace");
+        const District = await Place.find({Destrictname:{$regex:new RegExp (Data,'i')}})
+        return res.status(200).json(District);
 
 
     } catch (error) {
-        console.error(error);
         return res.status(500).json({ message: "Internal server error" });
+
     }
 
 
