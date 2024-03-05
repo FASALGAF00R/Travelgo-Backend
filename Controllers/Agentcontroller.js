@@ -33,13 +33,8 @@ export const AgentSignup = async (req, res) => {
             const Expirationtime = 3;
             const Expirationdate = new Date();
             Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
-            const URL = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}?expires=${Expirationdate.toISOString()}`;
-            sendVerificationEmail(newagent, URL);
-            const token = createSecretToken(newagent._id);
-            res.cookie('tokken', token, {
-                withCredentials: true,
-                httpOnly: false,
-            });
+            
+            sendVerificationEmail(null,newagent,);
             res.status(201).json({ message: 'Agent signed up successfully. Please check your email for verification.', success: true, newagent })
         }
     } catch (error) {
@@ -51,6 +46,7 @@ export const Agentverify = async (req, res) => {
 
     try {
         const { token } = req.params;
+        console.log(token,"iiiiiiiiiiiiii");
         const Data = await agent.findOne({ verificationToken: token })
         if (Data) {
             Data.isVerified = true;
@@ -77,13 +73,9 @@ export const AgentLogin = async (req, res) => {
             return res.json({ message: "password incorrect" })
         }
 
-        if (Agent.Approval == false) {
-            const token = createSecretToken(Agent._id);
-            res.cookie("token", token, {
-                withCredentials: true,
-                httpOnly: false,
-            });
-            return res.status(201).json({ message: "Agent logged in successfully", success: true, Agent, token });
+        if (Agent.Approval == true) {
+            const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
+            return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken,Refreshtoken });
         } else {
             return res.status(200).json({ message: "permission required" })
         }

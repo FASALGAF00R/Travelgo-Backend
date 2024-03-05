@@ -16,7 +16,7 @@ export const Adminlogin = async (req, res) => {
     const { email, password } = req.body;
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
       const { accesToken, Refreshtoken } = createSecretToken();
-      res.status(200).json({ message: "admin logged succesfully", success: true,accesToken, Refreshtoken })
+      res.status(200).json({ message: "admin logged succesfully", success: true, accesToken, Refreshtoken })
     } else {
       return res.json({ message: "not admin", success: false });
     }
@@ -150,10 +150,10 @@ export const agentreject = async (req, res) => {
     const id = req.body._id
     const Agent = await agent.findOne({ _id: id });
 
-    if (agent) {
+    if (Agent) {
       const newAgent = await agent.updateOne(
         { _id: id },
-        { $set: { Approval: !Agent.Approval } }
+        { $set: { isActive: 'approval'} }
       );
 
       res.status(200).json({

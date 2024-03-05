@@ -14,20 +14,22 @@ const transporter = nodemailer.createTransport({
 
 const Expirationtime = 3;
 
-export const sendVerificationEmail = (user, URL) => {
+export const sendVerificationEmail = (newuser,newagent) => {
   const Expirationdate = new Date();
   Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
 
   const expirationTimeString = Expirationdate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const expirationISOString = Expirationdate.toISOString();
-  const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${user.verificationToken}?expires=${expirationISOString}`;
 
+  
+  
+  if (newagent) {
+    console.log("done",);
+    const URL = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}?expires=${Expirationdate.toISOString()}`;
 
-  if (URL) {
-    console.log("done");
     const mailOptions = {
       from: process.env.MAIL_USER,
-      to: user.email,
+      to: newagent.email,
       subject: 'TravelGO Agent verification',
       text: `Click the following link to verify Agent: ${URL}\n\n` + `This link will expire on: ${expirationTimeString}`
     }
@@ -38,12 +40,14 @@ export const sendVerificationEmail = (user, URL) => {
         console.log('Email sent for agent : ' + info.response);
       }
     });
-
-
+    
+    
   }else {
+    const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${newuser.verificationToken}?expires=${expirationISOString}`;
+    console.log("pop");
     const mailOptions = {
       from: process.env.MAIL_USER,
-      to: user.email,
+      to: newuser.email,
       subject: 'TravelGO verification',
       text: `Click the following link to verify user email: ${verificationLinkuser}\n\n` +
         `This link will expire on: ${expirationTimeString}`

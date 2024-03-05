@@ -469,21 +469,31 @@ export const Resendotp = async (req, res) => {
 export const listplaces = async (req, res) => {
     try {
         const District = await Place.find({})
-        return res.status(200).json(District);
+        const total = District.length
+        const page =req.query.page || 1
+        const limit = req.query.limit || 10
+        const skip = (page - 1) * limit
+        console.log(limit,page,"00");
+        const places = await Place.find({}).limit(limit).skip(skip)
+        const totalPages = Math.ceil(total / limit)
+        return res.status(200).json({
+            places,
+            total,
+            totalPages        
+        });
 
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
 
+
+
 export const Searchplace = async (req, res) => {
     try {
         const { Data } = req.body;
-        console.log(Data, "searchplace");
         const District = await Place.find({Destrictname:{$regex:new RegExp (Data,'i')}})
         return res.status(200).json(District);
-
-
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
 

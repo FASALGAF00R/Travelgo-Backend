@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 // passing the payload
 export const createSecretToken = (id,userName,email) => {
 const accesToken =jwt.sign({ id ,userName,email }, process.env.AXCESSTOKEN_KEY, {
-    expiresIn:'20m',
+    expiresIn:'24h',
   }); 
 // // Assigning refresh token in http-only cookie 
  const Refreshtoken = jwt.sign({id,userName,email},process.env.REFRESHTOKEN_KEY,{
