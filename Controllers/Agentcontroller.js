@@ -73,7 +73,7 @@ export const AgentLogin = async (req, res) => {
             return res.json({ message: "password incorrect" })
         }
 
-        if (Agent.Approval == true) {
+        if (Agent.isActive == 'approval') {
             const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
             return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken,Refreshtoken });
         } else {

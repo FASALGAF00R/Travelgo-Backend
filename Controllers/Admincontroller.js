@@ -148,24 +148,23 @@ export const agentreject = async (req, res) => {
 
   try {
     const id = req.body._id
+    console.log(id,"lkl");
     const Agent = await agent.findOne({ _id: id });
 
     if (Agent) {
       const newAgent = await agent.updateOne(
         { _id: id },
-        { $set: { isActive: 'approval'} }
+        { $set: { isActive: 'approval' } }
       );
 
       res.status(200).json({
         newAgent,
         status: true,
-        alert: "Done.",
       });
     } else {
       res.json({
         newAgent,
         status: false,
-        alert: "user not found",
       });
     }
 

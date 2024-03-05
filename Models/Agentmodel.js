@@ -10,7 +10,6 @@ const Agentschema= new Schema({
     isVerified :{type:Boolean},
     isBlock:{type:Boolean},
     verificationToken:{type:String},
-    Approval:{type:Boolean,default:false},
     isActive:{type:String,default:'pending'},
     Otp:{type:String}},
     {timestamps: true });

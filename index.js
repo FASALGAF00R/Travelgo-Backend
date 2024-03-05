@@ -24,7 +24,7 @@ app.use(express.json())
 
 const port =3000
 
-connect('mongodb://localhost:27017/travelgo')
+connect(process.env.DATABASE_URL)
 .then(()=>{
    console.log("connected to the database")
 })
