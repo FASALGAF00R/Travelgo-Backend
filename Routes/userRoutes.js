@@ -12,7 +12,8 @@ import {
     getimage,
     Resendotp,
     listplaces,
-    Searchplace
+    Searchplace,
+    Checkinguser
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -33,6 +34,7 @@ userRoute.post('/refreshtoken', refreshTokenHandler);
 userRoute.get('/user/:id',getimage)
 userRoute.get('/getplaces', listplaces)
 userRoute.post('/searchplaces', Searchplace)
+userRoute.get('/checkinguser/:data',Checkinguser)
 
 
 

@@ -501,3 +501,19 @@ export const Searchplace = async (req, res) => {
 
 
 }
+
+
+export const Checkinguser = async (req, res) => {
+    try {
+       const {data} =req.params
+       const User = await user.findById(data)
+      if(User.isBlock===false){
+        return res.json({success:false})
+       }else{
+        return res.json({success:true})
+       }
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+

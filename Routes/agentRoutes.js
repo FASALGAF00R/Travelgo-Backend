@@ -13,7 +13,8 @@ import {
     UpdateActivity,
     Packageadd,
     Getcategory,
-    Takeactivity
+    Takeactivity,
+    Checkingagent
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 const agentRoute =express.Router()
@@ -32,5 +33,6 @@ agentRoute.put('/updateactivity/:id',UpdateActivity)
 agentRoute.post('/addpackage',upload.single('image'),Packageadd)
 agentRoute.get('/getcategories',Getcategory)
 agentRoute.get('/getactivites',Takeactivity)
+agentRoute.get('/checkingagent/:data',Checkingagent)
 
 export default agentRoute

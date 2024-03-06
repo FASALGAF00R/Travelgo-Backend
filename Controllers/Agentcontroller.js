@@ -72,8 +72,13 @@ export const AgentLogin = async (req, res) => {
         if (!auth) {
             return res.json({ message: "password incorrect" })
         }
+        // if(Agent.isBlock===false){
+        //     return res.status(200).json({ message: "permission required" })
+        // }
 
-        if (Agent.isActive == 'approval') {
+
+
+        if (Agent.isActive == 'Accept') {
             const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
             return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken,Refreshtoken });
         } else {
@@ -149,6 +154,7 @@ export const Agentplaces = async (req, res) => {
 
 export const Getplaces = async (req, res) => {
     try {
+        console.log("varrunede");
         const placelist = await Place.find();
         return res.status(200).json({succes:true,placelist});
     } catch (error) {
@@ -258,6 +264,22 @@ export const Takeactivity = async (req, res) => {
     try {
         const Activities = await Activity.find();
         return res.status(200).json(Activities);
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+
+
+
+export const Checkingagent = async (req, res) => {
+    try {
+       const {data} =req.params
+       const Agent = await agent.findById(data)
+       if(Agent.isBlock===false){
+        return res.json({success:false})
+       }else{
+        return res.json({success:true})
+       }
     } catch (error) {
         return res.status(500).json("Server error")
     }
