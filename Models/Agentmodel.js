@@ -8,7 +8,7 @@ const Agentschema = new Schema({
     phone: { type: Number },
     password: { type: String },
     isVerified: { type: Boolean },
-    isBlock: { type: Boolean },
+    isBlock: { type: Boolean ,default:true},
     verificationToken: { type: String },
     isActive: { type: String, default: 'pending' },
     Otp: { type: String }

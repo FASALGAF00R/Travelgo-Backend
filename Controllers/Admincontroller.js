@@ -52,39 +52,29 @@ export const Agentlisting = async (req, res) => {
 
 export const Blockagent = async (req, res) => {
   try {
-    const id = req.body._id;
-    console.log(id, "params");
-
-    const objectId = new mongoose.Types.ObjectId(id);
-
-    const Agent = await agent.findOne({ _id: objectId });
-
-    console.log(Agent, '0OOOOO');
-    if (Agent.isBlock == "true") {
-      console.log('0OOO9999OO');
-
+    const id = req.body._id;  ;
+    const Agent = await agent.findById(id);
+    if (Agent.isBlock === true) {
       const newData = await agent.updateOne(
-        { _id: objectId },
+        { _id :id},
         { $set: { isBlock: false } }
       );
       res.json({
-        newData,
-        status: true,
-        alert: "agent Blocked",
+        status: false,
+        message: "agent Blocked",
       });
     } else {
       const newData = await agent.updateOne(
-        { _id: objectId },
+        {_id :id},
         { $set: { isBlock: true } }
       );
       res.json({
-        newData,
         status: true,
-        alert: "Unblocked agent",
+        message: "Unblocked agent",
       });
     }
   } catch (error) {
-    res.status(500).json({ alert: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
