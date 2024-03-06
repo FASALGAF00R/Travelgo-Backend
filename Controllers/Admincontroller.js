@@ -144,30 +144,38 @@ export const agentapprovallisting = async (req, res) => {
 
 
 
-export const agentreject = async (req, res) => {
+export const agentaccept = async (req, res) => {
 
   try {
-    const id = req.body._id
-    console.log(id,"lkl");
-    const Agent = await agent.findOne({ _id: id });
 
-    if (Agent) {
+    const { _id, option } = req.body
+    console.log(option,"opooo");
+    const Agent = await agent.findById( _id );
+    
+    if (Agent && option==='Accept') {
       const newAgent = await agent.updateOne(
-        { _id: id },
-        { $set: { isActive: 'approval' } }
+        { _id },
+        { $set: { isActive: option } }
       );
-
+     
       res.status(200).json({
         newAgent,
         status: true,
+        message: option
       });
-    } else {
-      res.json({
+    }else{
+const newAgent = await agent.updateOne(
+        { _id },
+        { $set: { isActive: option } }
+      );
+     
+      res.status(200).json({
         newAgent,
         status: false,
+        message: option
       });
-    }
 
+    }
 
 
   } catch (error) {
@@ -175,6 +183,11 @@ export const agentreject = async (req, res) => {
   }
 
 }
+
+
+
+
+
 
 export const Addcatgeory = async (req, res) => {
   try {
