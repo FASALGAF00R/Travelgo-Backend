@@ -22,19 +22,19 @@ const userRoute = express.Router();
 // user routes
 userRoute.post('/signup', loadSignup)
 userRoute.post('/login', loadLogin)
-userRoute.post('/verify/:token', verifyEmail)
+userRoute.post('/verify/:token',userVerification, verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
-userRoute.post('/forgotpass',Forgotpassword)
-userRoute.get('/otpverify', userotpverify)
-userRoute.post('/otpresend',Resendotp)
-userRoute.put('/newpass',Createnewpass)
+userRoute.post('/forgotpass',userVerification,Forgotpassword)
+userRoute.get('/otpverify',userVerification, userotpverify)
+userRoute.post('/otpresend',userVerification,Resendotp)
+userRoute.put('/newpass',userVerification,Createnewpass)
 userRoute.post('/profile',userVerification,upload.single('profilepic'),updateprofile)
-userRoute.post('/resetpass',Resetpassword)
+userRoute.post('/resetpass',userVerification,Resetpassword)
 userRoute.post('/refreshtoken', refreshTokenHandler);
-userRoute.get('/user/:id',getimage)
-userRoute.get('/getplaces', listplaces)
-userRoute.post('/searchplaces', Searchplace)
-userRoute.get('/checkinguser/:data',Checkinguser)
+userRoute.get('/user/:id',userVerification,getimage)
+userRoute.get('/getplaces',userVerification, listplaces)
+userRoute.post('/searchplaces',userVerification, Searchplace)
+userRoute.get('/checkinguser/:data',userVerification,Checkinguser)
 
 
 

@@ -9,6 +9,7 @@ agentapprovallisting,
 agentaccept,
 Addcatgeory,
 getcatgeory,
+Blockcategory
 
  } from "../Controllers/Admincontroller.js";
 
@@ -22,5 +23,7 @@ adminRoute.get('/agentapproval',agentapprovallisting)
 adminRoute.put('/accept',agentaccept)
 adminRoute.post('/catgeory',Addcatgeory)
 adminRoute.get('/getcatgeory',getcatgeory)
+adminRoute.put('/blockcat',Blockcategory)
+
 
 export  default adminRoute

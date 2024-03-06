@@ -186,7 +186,7 @@ export const Addcatgeory = async (req, res) => {
       Name: categoryName
     });
     newCategory.save();
-    return res.status(200).json({ success: true })
+    return res.status(200).json({ success: true,newCategory })
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
 
@@ -201,3 +201,43 @@ export const getcatgeory = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+
+
+
+export const Blockcategory = async (req, res) => {
+  try {
+    const id = req.body._id;
+    console.log(id, "paramsnnnhh");
+
+
+    const Cat = await category.findOne({ _id: id });
+
+    console.log(Cat, '0OOOOO');
+    if (Cat.isBlock == true) {
+      console.log('0OOO9999OO');
+
+      const newData = await category.updateOne(
+        { _id: id },
+        { $set: { isBlock: false } }
+      );
+      res.json({
+        newData,
+        status: true,
+        alert: "category Blocked",
+      });
+    } else {
+      const newData = await category.updateOne(
+        { _id: id },
+        { $set: { isBlock: true } }
+      );
+      res.json({
+        newData,
+        status: true,
+        alert: "Unblocked category",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

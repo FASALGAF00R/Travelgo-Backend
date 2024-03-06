@@ -143,6 +143,8 @@ export const Agentplaces = async (req, res) => {
         })
         const Savedplace = await Placedata.save()
 
+        return res.status(200).json({ succes: true, place: Savedplace })
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -252,7 +254,7 @@ export const Packageadd = async (req, res) => {
 
 export const Getcategory = async (req, res) => {
     try {
-        const Categories = await category.find();
+        const Categories = await category.find({isBlock:false});
         return res.status(200).json({ succes: true, Categories });
     } catch (error) {
         return res.status(500).json("Server error")

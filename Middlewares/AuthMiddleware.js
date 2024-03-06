@@ -6,6 +6,7 @@ env.config()
 //  the verify method accepts the token from user and jwtkey and provides decode of the token
 export const userVerification = (req, res, next) => {
   const axcesstoken = req.headers.authorization.split(' ')[1];
+  console.log(axcesstoken,"hh");
 
   if (!axcesstoken) {
     return res.status(401).json({ success: false, message: 'Unauthorized token not provided ' })

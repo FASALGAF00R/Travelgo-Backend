@@ -6,7 +6,7 @@ const Packageschema = new Schema({
     Image: { type: String},
     category: { type: String},
     details: { type: String},
-    activites: { type: String},
+    activites: [{ type: String}],
     amount: { type: Number},
 })
 
