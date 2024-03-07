@@ -64,6 +64,7 @@ export const Agentverify = async (req, res) => {
 export const AgentLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log("dhgdjbg");
         const Agent = await agent.findOne({ email: email });
         if (!Agent) {
             return res.json({ message: "user not found" });

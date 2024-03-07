@@ -21,7 +21,7 @@ const userRoute = express.Router();
 
 // user routes
 userRoute.post('/signup', loadSignup)
-userRoute.post('/login', loadLogin)
+userRoute.post('/login',loadLogin)
 userRoute.post('/verify/:token',userVerification, verifyEmail)
 userRoute.post('/googlelogin', googlelogin)
 userRoute.post('/forgotpass',userVerification,Forgotpassword)

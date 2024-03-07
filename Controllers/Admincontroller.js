@@ -52,11 +52,11 @@ export const Agentlisting = async (req, res) => {
 
 export const Blockagent = async (req, res) => {
   try {
-    const id = req.body._id;  ;
+    const id = req.body._id;;
     const Agent = await agent.findById(id);
     if (Agent.isBlock === true) {
       const newData = await agent.updateOne(
-        { _id :id},
+        { _id: id },
         { $set: { isBlock: false } }
       );
       res.json({
@@ -65,7 +65,7 @@ export const Blockagent = async (req, res) => {
       });
     } else {
       const newData = await agent.updateOne(
-        {_id :id},
+        { _id: id },
         { $set: { isBlock: true } }
       );
       res.json({
@@ -139,26 +139,26 @@ export const agentaccept = async (req, res) => {
   try {
 
     const { _id, option } = req.body
-    console.log(option,"opooo");
-    const Agent = await agent.findById( _id );
-    
-    if (Agent && option==='Accept') {
+    console.log(option, "opooo");
+    const Agent = await agent.findById(_id);
+
+    if (Agent && option === 'Accept') {
       const newAgent = await agent.updateOne(
         { _id },
         { $set: { isActive: option } }
       );
-     
+
       res.status(200).json({
         newAgent,
         status: true,
         message: option
       });
-    }else{
-const newAgent = await agent.updateOne(
+    } else {
+      const newAgent = await agent.updateOne(
         { _id },
         { $set: { isActive: option } }
       );
-     
+
       res.status(200).json({
         newAgent,
         status: false,
@@ -186,7 +186,7 @@ export const Addcatgeory = async (req, res) => {
       Name: categoryName
     });
     newCategory.save();
-    return res.status(200).json({ success: true,newCategory })
+    return res.status(200).json({ success: true, newCategory })
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
 
