@@ -33,8 +33,8 @@ export const AgentSignup = async (req, res) => {
             const Expirationtime = 3;
             const Expirationdate = new Date();
             Expirationdate.setMinutes(Expirationdate.getMinutes() + Expirationtime);
-            
-            sendVerificationEmail(null,newagent,);
+
+            sendVerificationEmail(null, newagent,);
             res.status(201).json({ message: 'Agent signed up successfully. Please check your email for verification.', success: true, newagent })
         }
     } catch (error) {
@@ -46,7 +46,7 @@ export const Agentverify = async (req, res) => {
 
     try {
         const { token } = req.params;
-        console.log(token,"iiiiiiiiiiiiii");
+        console.log(token, "iiiiiiiiiiiiii");
         const Data = await agent.findOne({ verificationToken: token })
         if (Data) {
             Data.isVerified = true;
@@ -81,7 +81,7 @@ export const AgentLogin = async (req, res) => {
 
         if (Agent.isActive == 'Accept') {
             const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
-            return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken,Refreshtoken });
+            return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken, Refreshtoken });
         } else {
             return res.status(200).json({ message: "permission required" })
         }
@@ -157,9 +157,8 @@ export const Agentplaces = async (req, res) => {
 
 export const Getplaces = async (req, res) => {
     try {
-        console.log("varrunede");
         const placelist = await Place.find();
-        return res.status(200).json({succes:true,placelist});
+        return res.status(200).json({ succes: true, placelist });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -228,62 +227,102 @@ export const UpdateActivity = async (req, res) => {
     }
 }
 
+
+export const BlockActivity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const Act = await Activity.findOne({ _id: id });
+        if (Act.isBlock == true) {
+            const newData = await Activity.updateOne(
+                { _id: id },
+                { $set: { isBlock: false } }
+            );
+            res.json({
+                newData,
+                status: true,
+                alert: "activity Blocked",
+            });
+
+            if (!Act) {
+                return res.status(400).json({ message: "Activity not found" })
+            }
+        }   else {
+            const newData = await Activity.updateOne(
+              { _id: id },
+              { $set: { isBlock: true } }
+            );
+            res.json({
+              newData,
+              status: true,
+              alert: "Unblocked activity",
+            });
+          }
+
+        }catch (error) {
+            res.status(500).json({ message: "Internal Server Error" })
+        }
+    }
+
+
+
+
 export const Packageadd = async (req, res) => {
-    try {
-        const { placeName,
-            category,
-            description,
-            activities,
-            amount } = req.body
-        console.log(req.body, "oggggggggo");
-        const Image = req.file.path;
-        const Cloudstore = await handleUpload(Image, "profilepic")
-        const Packagedata = new Package({
-            placename: placeName,
-            Image:Cloudstore.url,
-            category:category,
-            details:description ,
-            activites:activities ,
-            amount:amount,
-        })
-        await Packagedata.save()
-        return res.status(200).json({ succes: true })
-    } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
+        try {
+            const { placeName,
+                category,
+                description,
+                activities,
+                amount } = req.body
+            console.log(req.body, "oggggggggo");
+            const Image = req.file.path;
+            const Cloudstore = await handleUpload(Image, "profilepic")
+
+            const Packagedata = new Package({
+                placename: placeName,
+                Image: Cloudstore.url,
+                category: category,
+                details: description,
+                activites: activities,
+                amount: amount,
+            })
+            await Packagedata.save()
+            return res.status(200).json({ succes: true })
+        } catch (error) {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
     }
-}
 
-export const Getcategory = async (req, res) => {
-    try {
-        const Categories = await category.find({isBlock:false});
-        return res.status(200).json({ succes: true, Categories });
-    } catch (error) {
-        return res.status(500).json("Server error")
+    export const Getcategory = async (req, res) => {
+        try {
+            const Categories = await category.find({ isBlock: true });
+            return res.status(200).json({ success: true, Categories });
+        } catch (error) {
+            return res.status(500).json("Server error")
+        }
     }
-}
 
 
-export const Takeactivity = async (req, res) => {
-    try {
-        const Activities = await Activity.find();
-        return res.status(200).json(Activities);
-    } catch (error) {
-        return res.status(500).json("Server error")
+    export const Takeactivity = async (req, res) => {
+        try {
+            const Activities = await Activity.find();
+            return res.status(200).json(Activities);
+        } catch (error) {
+            return res.status(500).json("Server error")
+        }
     }
-}
 
 
 
-export const Checkingagent = async (req, res) => {
-    try {
-       const {data} =req.params
-       const Agent = await agent.findById(data)
-       if(Agent.isBlock===false){
-        return res.json({success:false})
-       }else{
-        return res.json({success:true})
-       }
-    } catch (error) {
-        return res.status(500).json("Server error")
+    export const Checkingagent = async (req, res) => {
+        try {
+            const { data } = req.params
+            const Agent = await agent.findById(data)
+            if (Agent.isBlock === false) {
+                return res.json({ success: false })
+            } else {
+                return res.json({ success: true })
+            }
+        } catch (error) {
+            return res.status(500).json("Server error")
+        }
     }
-}

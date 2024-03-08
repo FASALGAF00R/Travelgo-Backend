@@ -11,6 +11,7 @@ import {
     Agentactivities,
     Getactivities,
     UpdateActivity,
+    BlockActivity,
     Packageadd,
     Getcategory,
     Takeactivity,
@@ -36,5 +37,6 @@ agentRoute.post('/addpackage',userVerification,upload.single('image'),Packageadd
 agentRoute.get('/getcategories',userVerification,Getcategory)
 agentRoute.get('/getactivites',userVerification,Takeactivity)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)
+agentRoute.put('/blockactivity/:id',userVerification,BlockActivity)
 
 export default agentRoute

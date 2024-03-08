@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const Activityschema = new Schema({
-  Activity : { type: String}},
+  Activity : { type: String},
+  isBlock:{ type: Boolean,default: true}
+
+},
   { timestamps: true }
 );
 
