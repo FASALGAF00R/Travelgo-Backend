@@ -12,18 +12,19 @@ getcatgeory,
 Blockcategory
 
  } from "../Controllers/Admincontroller.js";
+ import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
 
 const adminRoute=express.Router()
 adminRoute.post('/login',Adminlogin)
-adminRoute.get('/users',Userlisting)
-adminRoute.get('/agents',Agentlisting)
-adminRoute.put('/blockuser',Blockuser)
-adminRoute.put('/blockagent',Blockagent)
-adminRoute.get('/agentapproval',agentapprovallisting)
-adminRoute.put('/accept',agentaccept)
-adminRoute.post('/catgeory',Addcatgeory)
-adminRoute.get('/getcatgeory',getcatgeory)
-adminRoute.put('/blockcat',Blockcategory)
+adminRoute.get('/users',userVerification,Userlisting)
+adminRoute.get('/agents',userVerification,Agentlisting)
+adminRoute.put('/blockuser',userVerification,Blockuser)
+adminRoute.put('/blockagent',userVerification,Blockagent)
+adminRoute.get('/agentapproval',userVerification,agentapprovallisting)
+adminRoute.put('/accept',userVerification,agentaccept)
+adminRoute.post('/catgeory',userVerification,Addcatgeory)
+adminRoute.get('/getcatgeory',userVerification,getcatgeory)
+adminRoute.put('/blockcat',userVerification,Blockcategory)
 
 
 export  default adminRoute
