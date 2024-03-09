@@ -241,3 +241,27 @@ export const Blockcategory = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
+
+
+export const Editcategory = async (req, res) => {
+  const id = req.params.id;
+  const newcategory=req.body.editedcat;
+  try {
+    const Foundcategory = await category.findByIdAndUpdate(id, { $set: {Name:newcategory} });
+    if (!Foundcategory) {
+        return res.status(400).json({ message: "Activity not found" });
+    } else {
+        await foundActivity.updateOne({ Name: newcategory });
+        return res.status(201).json({ message: 'Updated Successfully ',success: true });
+    }
+    
+
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+
+  }
+
+}
