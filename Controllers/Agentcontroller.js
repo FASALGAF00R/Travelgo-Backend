@@ -304,8 +304,8 @@ export const Packageadd = async (req, res) => {
 
     export const Takeactivity = async (req, res) => {
         try {
-            const Activities = await Activity.find();
-            return res.status(200).json(Activities);
+            const Activities = await Activity.find({isBlock: true});
+            return res.status(200).json({succes:true,Activities});
         } catch (error) {
             return res.status(500).json("Server error")
         }
