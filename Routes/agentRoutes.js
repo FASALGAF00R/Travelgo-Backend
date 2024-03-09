@@ -15,7 +15,8 @@ import {
     Packageadd,
     Getcategory,
     Takeactivity,
-    Checkingagent
+    Checkingagent,
+    Blockplaces
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -29,6 +30,7 @@ agentRoute.get('/verify/:token',Agentverify)
 agentRoute.post('/googlelogin',Agentgoogle)
 agentRoute.post('/places',userVerification,upload.single('image'),Agentplaces)
 agentRoute.get('/getplaces',userVerification,Getplaces)
+agentRoute.put('/Blockplace/:id',userVerification,Blockplaces)
 agentRoute.put('/updateplace/:id',userVerification,upload.single('image'),UpdatePlace)
 agentRoute.post('/addactivity',userVerification,Agentactivities)
 agentRoute.get('/activities',userVerification,Getactivities)

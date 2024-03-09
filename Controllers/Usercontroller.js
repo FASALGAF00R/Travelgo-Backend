@@ -468,7 +468,7 @@ export const Resendotp = async (req, res) => {
 
 export const listplaces = async (req, res) => {
     try {
-        const District = await Place.find({})
+        const District = await Place.find({isBlock:true})
         const total = District.length
         const page =req.query.page || 1
         const limit = req.query.limit || 10

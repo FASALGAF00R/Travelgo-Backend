@@ -46,7 +46,6 @@ export const Agentverify = async (req, res) => {
 
     try {
         const { token } = req.params;
-        console.log(token, "iiiiiiiiiiiiii");
         const Data = await agent.findOne({ verificationToken: token })
         if (Data) {
             Data.isVerified = true;
@@ -64,7 +63,6 @@ export const Agentverify = async (req, res) => {
 export const AgentLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log("dhgdjbg");
         const Agent = await agent.findOne({ email: email });
         if (!Agent) {
             return res.json({ message: "user not found" });
@@ -73,11 +71,6 @@ export const AgentLogin = async (req, res) => {
         if (!auth) {
             return res.json({ message: "password incorrect" })
         }
-        // if(Agent.isBlock===false){
-        //     return res.status(200).json({ message: "permission required" })
-        // }
-
-
 
         if (Agent.isActive == 'Accept') {
             const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
@@ -91,7 +84,6 @@ export const AgentLogin = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
 export const Agentgoogle = async (req, res) => {
     try {
         const { id, name, email, phone } = req.body.data
@@ -182,6 +174,53 @@ export const UpdatePlace = async (req, res) => {
     }
 }
 
+
+
+export const Blockplaces = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const Places = await Place.findOne({ _id: id });
+        if (Places.isBlock === true) {
+            const newData = await Place.updateOne(
+                { _id: id },
+                { $set: { isBlock: false } }
+            );
+            res.json({
+                newData,
+                status: true,
+                alert: "places Blocked",
+            });
+
+            if (!Places) {
+                return res.status(400).json({ message: "places not found" })
+            }
+        } else {
+            const newData = await Place.updateOne(
+                { _id: id },
+                { $set: { isBlock: true } }
+            );
+            res.json({
+                newData,
+                status: true,
+                alert: "Unblocked places",
+            });
+        }
+
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+
+    }
+}
+
+
+
+
+
+
+
+
+
 export const Agentactivities = async (req, res) => {
     try {
         const Data = req.body.form
@@ -246,83 +285,83 @@ export const BlockActivity = async (req, res) => {
             if (!Act) {
                 return res.status(400).json({ message: "Activity not found" })
             }
-        }   else {
+        } else {
             const newData = await Activity.updateOne(
-              { _id: id },
-              { $set: { isBlock: true } }
+                { _id: id },
+                { $set: { isBlock: true } }
             );
             res.json({
-              newData,
-              status: true,
-              alert: "Unblocked activity",
+                newData,
+                status: true,
+                alert: "Unblocked activity",
             });
-          }
-
-        }catch (error) {
-            res.status(500).json({ message: "Internal Server Error" })
         }
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
     }
+}
 
 
 
 
 export const Packageadd = async (req, res) => {
-        try {
-            const { placeName,
-                category,
-                description,
-                activities,
-                amount } = req.body
-            console.log(req.body, "oggggggggo");
-            const Image = req.file.path;
-            const Cloudstore = await handleUpload(Image, "profilepic")
+    try {
+        const { placeName,
+            category,
+            description,
+            activities,
+            amount } = req.body
+        console.log(req.body, "oggggggggo");
+        const Image = req.file.path;
+        const Cloudstore = await handleUpload(Image, "profilepic")
 
-            const Packagedata = new Package({
-                placename: placeName,
-                Image: Cloudstore.url,
-                category: category,
-                details: description,
-                activites: activities,
-                amount: amount,
-            })
-            await Packagedata.save()
-            return res.status(200).json({ succes: true })
-        } catch (error) {
-            res.status(500).json({ message: "Internal Server Error" });
-        }
+        const Packagedata = new Package({
+            placename: placeName,
+            Image: Cloudstore.url,
+            category: category,
+            details: description,
+            activites: activities,
+            amount: amount,
+        })
+        await Packagedata.save()
+        return res.status(200).json({ succes: true })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
     }
+}
 
-    export const Getcategory = async (req, res) => {
-        try {
-            const Categories = await category.find({ isBlock: true });
-            return res.status(200).json({ success: true, Categories });
-        } catch (error) {
-            return res.status(500).json("Server error")
-        }
+export const Getcategory = async (req, res) => {
+    try {
+        const Categories = await category.find({ isBlock: true });
+        return res.status(200).json({ success: true, Categories });
+    } catch (error) {
+        return res.status(500).json("Server error")
     }
+}
 
 
-    export const Takeactivity = async (req, res) => {
-        try {
-            const Activities = await Activity.find({isBlock: true});
-            return res.status(200).json({succes:true,Activities});
-        } catch (error) {
-            return res.status(500).json("Server error")
-        }
+export const Takeactivity = async (req, res) => {
+    try {
+        const Activities = await Activity.find({ isBlock: true });
+        return res.status(200).json({ succes: true, Activities });
+    } catch (error) {
+        return res.status(500).json("Server error")
     }
+}
 
 
 
-    export const Checkingagent = async (req, res) => {
-        try {
-            const { data } = req.params
-            const Agent = await agent.findById(data)
-            if (Agent.isBlock === false) {
-                return res.json({ success: false })
-            } else {
-                return res.json({ success: true })
-            }
-        } catch (error) {
-            return res.status(500).json("Server error")
+export const Checkingagent = async (req, res) => {
+    try {
+        const { data } = req.params
+        const Agent = await agent.findById(data)
+        if (Agent.isBlock === false) {
+            return res.json({ success: false })
+        } else {
+            return res.json({ success: true })
         }
+    } catch (error) {
+        return res.status(500).json("Server error")
     }
+}

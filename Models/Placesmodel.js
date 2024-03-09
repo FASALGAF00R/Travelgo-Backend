@@ -6,7 +6,9 @@ const Schema = mongoose.Schema;
 const PlaceSchema = new Schema({
     Destrictname: { type: String },
     Description: { type: String },
-    Image: { type: String }},
+    Image: { type: String },
+    isBlock: { type: Boolean,default: true}
+},
     {timestamps: true  })
 
 export const Place=mongoose.model('places',PlaceSchema)
