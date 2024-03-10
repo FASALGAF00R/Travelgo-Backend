@@ -147,15 +147,15 @@ export const Agentplaces = async (req, res) => {
 }
 
 
-export const Getplaces = async (req, res) => {
-    try {
-        const placelist = await Place.find();
-        return res.status(200).json({ succes: true, placelist });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
+    export const Getplaces = async (req, res) => {
+        try {
+            const placelist = await Place.find();
+            return res.status(200).json({ succes: true, placelist });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    };
 
 
 export const UpdatePlace = async (req, res) => {
