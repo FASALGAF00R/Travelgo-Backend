@@ -125,6 +125,7 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
+        console.log("haa");
         const { Destrictname, description } = req.body
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
@@ -149,8 +150,16 @@ export const Agentplaces = async (req, res) => {
 
     export const Getplaces = async (req, res) => {
         try {
-            const placelist = await Place.find();
-            return res.status(200).json({ succes: true, placelist });
+            const { page, limit } = req.query;
+            const startIndex = (parseInt(page) - 1) * parseInt(limit);
+            const placelist = await Place.find().skip(startIndex).limit(parseInt(limit)); 
+            const totalPlacesCount = await Place.find();
+            return res.status(200).json({
+                 succes: true, 
+                totalPlaces: totalPlacesCount,
+                currentPage: parseInt(page),
+                totalPages: Math.ceil(totalPlacesCount / parseInt(limit)),
+                placelist});
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: "Internal Server Error" });

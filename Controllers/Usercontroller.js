@@ -473,7 +473,6 @@ export const listplaces = async (req, res) => {
         const page =req.query.page || 1
         const limit = req.query.limit || 10
         const skip = (page - 1) * limit
-        console.log(limit,page,"00");
         const places = await Place.find({}).limit(limit).skip(skip)
         const totalPages = Math.ceil(total / limit)
         return res.status(200).json({
