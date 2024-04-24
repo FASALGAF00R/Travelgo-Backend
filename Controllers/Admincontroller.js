@@ -1,6 +1,7 @@
 import agent from '../Models/Agentmodel.js';
 import { category } from '../Models/Categorymodel.js';
 import { user } from "../Models/Usermodel.js";
+import {destination} from '../Models/Admindestinations.js'
 import { createSecretToken } from '../Util/SecretToken.js'
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"
@@ -8,15 +9,12 @@ import env from 'dotenv';
 env.config()
 
 
-
-
-
 export const Adminlogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASS) {
-      const { accesToken, Refreshtoken } = createSecretToken();
-      res.status(200).json({ message: "admin logged succesfully", success: true, accesToken, Refreshtoken })
+      const  accesToken = createSecretToken();
+      res.status(200).json({ message: "admin logged succesfully", success: true, accesToken })
     } else {
       return res.json({ message: "not admin", success: false });
     }
@@ -39,7 +37,6 @@ export const Userlisting = async (req, res) => {
 
 
 export const Agentlisting = async (req, res) => {
-
   try {
     const Agent = await agent.find({})
     return res.json({ success: true, Agent })
@@ -261,6 +258,26 @@ export const Editcategory = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
+
+  }
+
+}
+
+
+
+export const admindestinations = async (req, res) => {
+  try {
+      console.log("haa");
+      const { Destrictname, State } = req.body
+      const Placedata = new destination({
+         State: State,
+         Destrictname: Destrictname,
+      })
+      const Savedplace = await Placedata.save()
+      return res.status(200).json({ succes: true, place: Savedplace })
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
 
   }
 

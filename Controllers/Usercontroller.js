@@ -8,10 +8,11 @@ import nodemailer from 'nodemailer'
 import { handleUpload } from '../Util/Cloudinary.js'
 import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js'
+import { Package } from '../Models/Packages.js'
 
 
 
-
+// token for linkchecking
 const verificationToken = crypto.randomBytes(20).toString('hex');
 
 
@@ -20,7 +21,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const { userName, email, password } = req.body
-        const User = await user.findOne({ email: req.body.email })
+        const User = await user.findOne({ email})
         if (User) {
             return res.json({ success: false, message: "user already exisist !" })
         } else {
@@ -76,8 +77,8 @@ export const loadLogin = async (req, res) => {
         }
 
         if (Data && auth && Data.isBlock == true) {
-            const { accesToken, Refreshtoken } = createSecretToken(Data._id, Data.userName, Data.email);
-            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken, Refreshtoken })
+            const accesToken = createSecretToken(Data._id, Data.userName, Data.email);
+            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken})
         } else {
             return res.json({ message: "blocked by admin" })
         }
@@ -128,17 +129,15 @@ export const googlelogin = async (req, res) => {
 // forgotpass
 export const Forgotpassword = async (req, res) => {
     try {
-        const { email, role } = req.body
-        const Data = await user.findOne({ email })
-        const Agentdata = await agent.findOne({ email })
-        if (Data === null) {
-            return res.json({ message: 'user not registered' })
+        const {data, role } = req.body
+        const {email}=data
+        console.log(role,email);
+        const Data = await user.findOne({email})
+        console.log(Data,"88");
+        const Agentdata = await agent.findOne({email})
+        if (Data === null && Agentdata===null) {
+            return res.json({ message: ' not registered' })
         }
-
-        if (Agentdata === null) {
-            return res.json({ message: 'user not registered' })
-        }
-
         if (Data && role === 'user') {
             let otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
@@ -269,6 +268,7 @@ export const userotpverify = async (req, res) => {
 export const Createnewpass = async (req, res) => {
     try {
         const { password, email, role } = req.body
+        console.log(password);
 
         const hashpass = await bcrypt.hash(password, 10)
         if (role === 'user') {
@@ -491,14 +491,12 @@ export const listplaces = async (req, res) => {
 export const Searchplace = async (req, res) => {
     try {
         const { Data } = req.body;
-        const District = await Place.find({Destrictname:{$regex:new RegExp (Data,'i')}})
+        const District = await Place.find({Destrictname: Data})
+        console.log(District,"lklkkkkkkk");
         return res.status(200).json(District);
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
-
     }
-
-
 }
 
 
@@ -516,3 +514,20 @@ export const Checkinguser = async (req, res) => {
     }
 }
 
+
+
+    export const listpackages = async (req, res) => {
+        try {
+            const {id}=req.params
+            const places=await Place.findById(id)
+            const fullpackage=await Package.find({State:places.State,Destrictname:places.Destrictname})
+            console.log(fullpackage,"lllll");
+            return res.json({fullpackage})
+
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+    
+
+    

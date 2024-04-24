@@ -3,6 +3,7 @@ import { Place } from '../Models/Placesmodel.js';
 import { Package } from '../Models/Packages.js';
 import { category } from '../Models/Categorymodel.js';
 import { Activity } from '../Models/Activities.js';
+import {destination} from '../Models/Admindestinations.js'
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
@@ -72,9 +73,9 @@ export const AgentLogin = async (req, res) => {
             return res.json({ message: "password incorrect" })
         }
 
-        if (Agent.isActive == 'Accept') {
-            const { accesToken, Refreshtoken } = createSecretToken(Agent._id);
-            return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken, Refreshtoken });
+        if (Agent.isActive == 'Accepted') {
+            const accesToken = createSecretToken(Agent._id);
+            return res.status(200).json({ message: "Agent logged in successfully", success: true, Agent, accesToken });
         } else {
             return res.status(200).json({ message: "permission required" })
         }
@@ -126,11 +127,12 @@ export const Agentgoogle = async (req, res) => {
 export const Agentplaces = async (req, res) => {
     try {
         console.log("haa");
-        const { Destrictname, description } = req.body
+        const { Destrictname, description,State } = req.body
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
         const url = Cloudstore.url
         const Placedata = new Place({
+            State:State,
             Destrictname: Destrictname,
             Description: description,
             Image: url
@@ -146,6 +148,19 @@ export const Agentplaces = async (req, res) => {
     }
 
 }
+
+// for states and districts
+export const Getstates = async (req, res) => {
+    try {
+        const States = await destination.find({ isBlock: true });
+        return res.status(200).json({ success: true, States });
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+
+
+
 
 
     export const Getplaces = async (req, res) => {
@@ -316,7 +331,8 @@ export const BlockActivity = async (req, res) => {
 
 export const Packageadd = async (req, res) => {
     try {
-        const { placeName,
+        const {  State, 
+            Destrictname,
             category,
             description,
             activities,
@@ -326,7 +342,8 @@ export const Packageadd = async (req, res) => {
         const Cloudstore = await handleUpload(Image, "profilepic")
 
         const Packagedata = new Package({
-            placename: placeName,
+            State:State,
+            Destrictname: Destrictname,
             Image: Cloudstore.url,
             category: category,
             details: description,
@@ -366,11 +383,12 @@ export const Checkingagent = async (req, res) => {
         const { data } = req.params
         const Agent = await agent.findById(data)
         if (Agent.isBlock === false) {
-            return res.json({ success: false })
+            return res.json({ success: false ,message: 'blocked by admin'})
         } else {
             return res.json({ success: true })
         }
     } catch (error) {
+        console.log("bug");
         return res.status(500).json("Server error")
     }
 }

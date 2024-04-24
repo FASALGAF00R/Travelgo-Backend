@@ -10,8 +10,8 @@ agentaccept,
 Addcatgeory,
 getcatgeory,
 Blockcategory,
-Editcategory
-
+Editcategory,
+admindestinations
  } from "../Controllers/Admincontroller.js";
  import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
 
@@ -27,6 +27,7 @@ adminRoute.post('/catgeory',userVerification,Addcatgeory)
 adminRoute.get('/getcatgeory',userVerification,getcatgeory)
 adminRoute.put('/blockcat',userVerification,Blockcategory)
 adminRoute.put('/editcat/:id',userVerification,Editcategory)
+adminRoute.post('/destination',userVerification,admindestinations)
 
 
 export  default adminRoute
