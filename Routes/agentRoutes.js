@@ -37,7 +37,9 @@ agentRoute.put('/updateplace/:id',userVerification,upload.single('image'),Update
 agentRoute.post('/addactivity',userVerification,Agentactivities)
 agentRoute.get('/activities',userVerification,Getactivities)
 agentRoute.put('/updateactivity/:id',userVerification,UpdateActivity)
-agentRoute.post('/addpackage',userVerification,upload.single('image'),Packageadd)
+
+agentRoute.post('/addpackage',userVerification,upload.array('images',5),Packageadd)
+
 agentRoute.get('/getcategories',userVerification,Getcategory)
 agentRoute.get('/getactivites',userVerification,Takeactivity)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)

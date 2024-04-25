@@ -520,8 +520,8 @@ export const Checkinguser = async (req, res) => {
         try {
             const {id}=req.params
             const places=await Place.findById(id)
-            const fullpackage=await Package.find({State:places.State,Destrictname:places.Destrictname})
-            console.log(fullpackage,"lllll");
+            const fullpackage=await Package.find({$and:[{State:places.State},{Destrictname:places.Destrictname}]})
+            console.log(fullpackage,"ooooo");
             return res.json({fullpackage})
 
         } catch (error) {
@@ -531,3 +531,13 @@ export const Checkinguser = async (req, res) => {
     
 
     
+    export const getpackages = async (req, res) => {
+        try {
+            const {id}=req.params
+            const placespackage=await Package.findById(id)
+            return res.json({placespackage})
+
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }

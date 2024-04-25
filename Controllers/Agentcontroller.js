@@ -126,7 +126,6 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
-        console.log("haa");
         const { Destrictname, description,State } = req.body
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
@@ -152,7 +151,8 @@ export const Agentplaces = async (req, res) => {
 // for states and districts
 export const Getstates = async (req, res) => {
     try {
-        const States = await destination.find({ isBlock: true });
+        const States = await Place.find({ isBlock: false });
+        console.log(States);
         return res.status(200).json({ success: true, States });
     } catch (error) {
         return res.status(500).json("Server error")
@@ -333,25 +333,29 @@ export const Packageadd = async (req, res) => {
     try {
         const {  State, 
             Destrictname,
+            image,
             category,
             description,
             activities,
             amount } = req.body
         console.log(req.body, "oggggggggo");
-        const Image = req.file.path;
-        const Cloudstore = await handleUpload(Image, "profilepic")
+        // const Image = req.file.path;
+        // console.log(Image,"IMAGES");
+        // const Cloudstore = await handleUpload(Image, "profilepic")
 
         const Packagedata = new Package({
             State:State,
             Destrictname: Destrictname,
-            Image: Cloudstore.url,
+            Image:image ,
             category: category,
             details: description,
             activites: activities,
             amount: amount,
         })
         await Packagedata.save()
-        return res.status(200).json({ succes: true })
+
+        console.log(Packagedata,"Packagedata");
+        return res.status(200).json({ succes: true ,Packagedata})
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
