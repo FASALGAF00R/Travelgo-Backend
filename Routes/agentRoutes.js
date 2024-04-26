@@ -17,7 +17,9 @@ import {
     Takeactivity,
     Checkingagent,
     Blockplaces,
-    Getstates
+    Getstates,
+    Listpackages,
+    Blockpackagess
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -37,11 +39,11 @@ agentRoute.put('/updateplace/:id',userVerification,upload.single('image'),Update
 agentRoute.post('/addactivity',userVerification,Agentactivities)
 agentRoute.get('/activities',userVerification,Getactivities)
 agentRoute.put('/updateactivity/:id',userVerification,UpdateActivity)
-
 agentRoute.post('/addpackage',userVerification,upload.array('images',5),Packageadd)
-
 agentRoute.get('/getcategories',userVerification,Getcategory)
 agentRoute.get('/getactivites',userVerification,Takeactivity)
+agentRoute.get('/listpackages',userVerification,Listpackages)
+agentRoute.put('/blockpackages/:id',userVerification,Blockpackagess)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)
 agentRoute.put('/blockactivity/:id',userVerification,BlockActivity)
 

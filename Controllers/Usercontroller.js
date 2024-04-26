@@ -520,7 +520,7 @@ export const Checkinguser = async (req, res) => {
         try {
             const {id}=req.params
             const places=await Place.findById(id)
-            const fullpackage=await Package.find({$and:[{State:places.State},{Destrictname:places.Destrictname}]})
+            const fullpackage=await Package.find({$and:[{State:places.State},{Destrictname:places.Destrictname},{isBlock:true}]})
             console.log(fullpackage,"ooooo");
             return res.json({fullpackage})
 

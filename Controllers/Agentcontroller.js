@@ -396,3 +396,51 @@ export const Checkingagent = async (req, res) => {
         return res.status(500).json("Server error")
     }
 }
+
+
+export const Listpackages = async (req, res) => {
+    try {
+        const pack = await Package.find();
+        console.log(pack,"pppppppppppppppp");
+        return res.status(200).json({  pack });
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+
+
+
+export const Blockpackagess = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const Packages = await Package.findOne({ _id: id });
+        if (Packages.isBlock === true) {
+            const newData = await Package.updateOne(
+                { _id: id },
+                { $set: { isBlock: false } }
+            );
+            res.json({
+                newData,
+                status: true,
+                alert: "packages Blocked",
+            });
+
+            if (!Packages) {
+                return res.status(400).json({ message: "Packages not found" })
+            }
+        } else {
+            const newData = await Package.updateOne(
+                { _id: id },
+                { $set: { isBlock: true } }
+            );
+            res.json({
+                newData,
+                status: true,
+                alert: "Unblocked Packages",
+            });
+        }
+
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}

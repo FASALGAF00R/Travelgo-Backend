@@ -9,6 +9,7 @@ const Packageschema = new Schema({
     details: { type: String},
     activites: [{ type: String}],
     amount: { type: Number},
+    isBlock: { type: Boolean,default: true}
 })
 
  export const Package=mongoose.model('Package',Packageschema)
