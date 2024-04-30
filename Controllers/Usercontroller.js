@@ -9,6 +9,7 @@ import { handleUpload } from '../Util/Cloudinary.js'
 import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js'
 import { Package } from '../Models/Packages.js'
+import { category } from '../Models/Categorymodel.js';
 
 
 
@@ -536,6 +537,19 @@ export const Checkinguser = async (req, res) => {
             const {id}=req.params
             const placespackage=await Package.findById(id)
             return res.json({placespackage})
+
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+
+
+    export const fetchcat = async (req, res) => {
+        try {
+            const packagescat=await category.find()
+            console.log(packagescat,"///////////");
+            return res.json({packagescat})
 
         } catch (error) {
             return res.status(500).json({ message: "Internal server error" });

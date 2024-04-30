@@ -24,14 +24,19 @@ export const sendVerificationEmail = (newuser,newagent) => {
   
   
   if (newagent) {
-    console.log("done",);
-    const URL = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}?expires=${Expirationdate.toISOString()}`;
-
+    const URL = `${process.env.AGENT_BASE_URL}/verify/${newagent.verificationToken}`;
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: newagent.email,
       subject: 'TravelGO Agent verification',
-      text: `Click the following link to verify Agent: ${URL}\n\n` + `This link will expire on: ${expirationTimeString}`
+      html: `
+      <div style="background-color: #3498db; padding: 15px; border-radius: 5px;">
+        <h2 style="color: #ffffff;">TravelGO Agent Verification</h2>
+        <p style="color: #ffffff;">Click the button below to verify your agent account:</p>
+        <a href="${URL}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Agent</a>
+        <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
+      </div>
+    `
     }
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -43,14 +48,19 @@ export const sendVerificationEmail = (newuser,newagent) => {
     
     
   }else {
-    const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${newuser.verificationToken}?expires=${expirationISOString}`;
-    console.log("pop");
+    const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${newuser.verificationToken}`;
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: newuser.email,
       subject: 'TravelGO verification',
-      text: `Click the following link to verify user email: ${verificationLinkuser}\n\n` +
-        `This link will expire on: ${expirationTimeString}`
+      html: `
+      <div style="background-color: #ff1493; padding: 15px; border-radius: 5px;">
+        <h2 style="color: #ffffff;">TravelGO user Verification</h2>
+        <p style="color: #ffffff;">Click the button below to verify user account:</p>
+        <a href="${verificationLinkuser}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Agent</a>
+        <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
+      </div>
+    `
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
