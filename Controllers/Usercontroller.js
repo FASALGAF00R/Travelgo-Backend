@@ -555,3 +555,23 @@ export const Checkinguser = async (req, res) => {
             return res.status(500).json({ message: "Internal server error" });
         }
     }
+
+
+
+
+
+    export const listcatpackages = async (req, res) => {
+        try {
+            const {placeId,categoryname}=req.params
+            console.log(placeId,";;;;;;;;;;;;");
+            const placename=await Place.findById({_id:placeId})
+            console.log(placename,"ppppppppppppp");
+                const packagesInCategory = await Package.find({category:categoryname,Destrictname:placename.Destrictname });
+               console.log(packagesInCategory,"packagesInCategory");
+              return res.json({packagesInCategory})
+            
+                        
+        } catch (error) {
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }

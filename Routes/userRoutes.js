@@ -16,7 +16,8 @@ import {
     Checkinguser,
     listpackages,
     getpackages,
-    fetchcat
+    fetchcat,
+    listcatpackages
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -40,6 +41,7 @@ userRoute.get('/checkinguser/:data',userVerification,Checkinguser)
 userRoute.get('/packages/:id',userVerification, listpackages)
 userRoute.get('/packagesdetails/:id',userVerification, getpackages)
 userRoute.get('/categories',userVerification,fetchcat)
+userRoute.get('/catpackages/:placeId/:categoryname',userVerification, listcatpackages)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);
