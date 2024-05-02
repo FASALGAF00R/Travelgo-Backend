@@ -17,7 +17,8 @@ import {
     listpackages,
     getpackages,
     fetchcat,
-    listcatpackages
+    listcatpackages,
+    fetchpaymentreq
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -42,6 +43,7 @@ userRoute.get('/packages/:id',userVerification, listpackages)
 userRoute.get('/packagesdetails/:id',userVerification, getpackages)
 userRoute.get('/categories',userVerification,fetchcat)
 userRoute.get('/catpackages/:placeId/:categoryname',userVerification, listcatpackages)
+userRoute.get('/paymentreq/:id',userVerification,fetchpaymentreq)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);

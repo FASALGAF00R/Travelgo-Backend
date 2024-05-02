@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const PlaceSchema = new Schema({
+    agentid:{type:String},
     State:{ type: String },
     Destrictname: { type: String },
     Description: { type: String },

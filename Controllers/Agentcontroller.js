@@ -126,11 +126,13 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
-        const { Destrictname, description,State } = req.body
+        const { Destrictname, description,State,agentid } = req.body
+        console.log(agentid,"agentid");
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
         const url = Cloudstore.url
         const Placedata = new Place({
+            agentid:agentid,
             State:State,
             Destrictname: Destrictname,
             Description: description,

@@ -10,7 +10,9 @@ import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js'
 import { Package } from '../Models/Packages.js'
 import { category } from '../Models/Categorymodel.js';
-
+import Stripe from 'stripe'
+import env from 'dotenv'
+env.config()
 
 
 // token for linkchecking
@@ -22,7 +24,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const { userName, email, password } = req.body
-        const User = await user.findOne({ email})
+        const User = await user.findOne({ email })
         if (User) {
             return res.json({ success: false, message: "user already exisist !" })
         } else {
@@ -79,7 +81,7 @@ export const loadLogin = async (req, res) => {
 
         if (Data && auth && Data.isBlock == true) {
             const accesToken = createSecretToken(Data._id, Data.userName, Data.email);
-            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken})
+            res.status(200).json({ message: "User logged succesfulluy", success: true, Data, accesToken })
         } else {
             return res.json({ message: "blocked by admin" })
         }
@@ -130,13 +132,13 @@ export const googlelogin = async (req, res) => {
 // forgotpass
 export const Forgotpassword = async (req, res) => {
     try {
-        const {data, role } = req.body
-        const {email}=data
-        console.log(role,email);
-        const Data = await user.findOne({email})
-        console.log(Data,"88");
-        const Agentdata = await agent.findOne({email})
-        if (Data === null && Agentdata===null) {
+        const { data, role } = req.body
+        const { email } = data
+        console.log(role, email);
+        const Data = await user.findOne({ email })
+        console.log(Data, "88");
+        const Agentdata = await agent.findOne({ email })
+        if (Data === null && Agentdata === null) {
             return res.json({ message: ' not registered' })
         }
         if (Data && role === 'user') {
@@ -471,7 +473,7 @@ export const listplaces = async (req, res) => {
     try {
         const District = await Place.find()
         const total = District.length
-        const page =req.query.page || 1
+        const page = req.query.page || 1
         const limit = req.query.limit || 10
         const skip = (page - 1) * limit
         const places = await Place.find({}).limit(limit).skip(skip)
@@ -479,7 +481,7 @@ export const listplaces = async (req, res) => {
         return res.status(200).json({
             places,
             total,
-            totalPages        
+            totalPages
         });
 
     } catch (error) {
@@ -492,8 +494,8 @@ export const listplaces = async (req, res) => {
 export const Searchplace = async (req, res) => {
     try {
         const { Data } = req.body;
-        const District = await Place.find({Destrictname: Data})
-        console.log(District,"lklkkkkkkk");
+        const District = await Place.find({ Destrictname: Data })
+        console.log(District, "lklkkkkkkk");
         return res.status(200).json(District);
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
@@ -503,13 +505,13 @@ export const Searchplace = async (req, res) => {
 
 export const Checkinguser = async (req, res) => {
     try {
-       const {data} =req.params
-       const User = await user.findById(data)
-      if(User.isBlock===false){
-        return res.json({success:false})
-       }else{
-        return res.json({success:true})
-       }
+        const { data } = req.params
+        const User = await user.findById(data)
+        if (User.isBlock === false) {
+            return res.json({ success: false })
+        } else {
+            return res.json({ success: true })
+        }
     } catch (error) {
         return res.status(500).json("Server error")
     }
@@ -517,61 +519,93 @@ export const Checkinguser = async (req, res) => {
 
 
 
-    export const listpackages = async (req, res) => {
-        try {
-            const {id}=req.params
-            const places=await Place.findById(id)
-            const fullpackage=await Package.find({$and:[{State:places.State},{Destrictname:places.Destrictname},{isBlock:true}]})
-            console.log(fullpackage,"ooooo");
-            return res.json({fullpackage})
+export const listpackages = async (req, res) => {
+    try {
+        const { id } = req.params
+        const places = await Place.findById(id)
+        const fullpackage = await Package.find({ $and: [{ State: places.State }, { Destrictname: places.Destrictname }, { isBlock: true }] })
+        console.log(fullpackage, "ooooo");
+        return res.json({ fullpackage })
 
-        } catch (error) {
-            return res.status(500).json({ message: "Internal server error" });
-        }
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
     }
-    
+}
 
-    
-    export const getpackages = async (req, res) => {
-        try {
-            const {id}=req.params
-            const placespackage=await Package.findById(id)
-            return res.json({placespackage})
 
-        } catch (error) {
-            return res.status(500).json({ message: "Internal server error" });
-        }
+
+export const getpackages = async (req, res) => {
+    try {
+        const { id } = req.params
+        const placespackage = await Package.findById(id)
+        return res.json({ placespackage })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
     }
+}
 
 
 
-    export const fetchcat = async (req, res) => {
-        try {
-            const packagescat=await category.find()
-            console.log(packagescat,"///////////");
-            return res.json({packagescat})
+export const fetchcat = async (req, res) => {
+    try {
+        const packagescat = await category.find()
+        console.log(packagescat, "///////////");
+        return res.json({ packagescat })
 
-        } catch (error) {
-            return res.status(500).json({ message: "Internal server error" });
-        }
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
     }
+}
 
 
 
 
 
-    export const listcatpackages = async (req, res) => {
-        try {
-            const {placeId,categoryname}=req.params
-            console.log(placeId,";;;;;;;;;;;;");
-            const placename=await Place.findById({_id:placeId})
-            console.log(placename,"ppppppppppppp");
-                const packagesInCategory = await Package.find({category:categoryname,Destrictname:placename.Destrictname });
-               console.log(packagesInCategory,"packagesInCategory");
-              return res.json({packagesInCategory})
-            
-                        
-        } catch (error) {
-            return res.status(500).json({ message: "Internal server error" });
-        }
+export const listcatpackages = async (req, res) => {
+    try {
+        const { placeId, categoryname } = req.params
+        console.log(placeId, ";;;;;;;;;;;;");
+        const placename = await Place.findById({ _id: placeId })
+        console.log(placename, "ppppppppppppp");
+        const packagesInCategory = await Package.find({ category: categoryname, Destrictname: placename.Destrictname });
+        console.log(packagesInCategory, "packagesInCategory");
+        return res.json({ packagesInCategory })
+
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
     }
+}
+
+
+
+export const fetchpaymentreq = async (req, res) => {
+    try {
+        const { id } = req.params
+        console.log(id, "idddddd");
+        const stripe = new Stripe(process.env.STRIPE_KEY)
+        const Bookpackage = await Package.findById({ _id: id })
+        console.log(Bookpackage, "Bookpackage");
+        const RentAmount = Bookpackage.amount
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: RentAmount * 100,
+            currency: "inr",
+            automatic_payment_methods: {
+                enabled: true
+            },
+        })
+        return res.status(200).send({ success: true, message: "client id passed to client", clientSecret: paymentIntent.client_secret, RentAmount })
+
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+
+
+
