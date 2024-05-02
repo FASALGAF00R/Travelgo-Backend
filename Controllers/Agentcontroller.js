@@ -3,7 +3,7 @@ import { Place } from '../Models/Placesmodel.js';
 import { Package } from '../Models/Packages.js';
 import { category } from '../Models/Categorymodel.js';
 import { Activity } from '../Models/Activities.js';
-import {destination} from '../Models/Admindestinations.js'
+import { destination } from '../Models/Admindestinations.js'
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
@@ -126,14 +126,14 @@ export const Agentgoogle = async (req, res) => {
 
 export const Agentplaces = async (req, res) => {
     try {
-        const { Destrictname, description,State,agentid } = req.body
-        console.log(agentid,"agentid");
+        const { Destrictname, description, State, agentid } = req.body
+        console.log(agentid, "agentid");
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
         const url = Cloudstore.url
         const Placedata = new Place({
-            agentid:agentid,
-            State:State,
+            agentid: agentid,
+            State: State,
             Destrictname: Destrictname,
             Description: description,
             Image: url
@@ -165,23 +165,24 @@ export const Getstates = async (req, res) => {
 
 
 
-    export const Getplaces = async (req, res) => {
-        try {
-            const { page, limit } = req.query;
-            const startIndex = (parseInt(page) - 1) * parseInt(limit);
-            const placelist = await Place.find().skip(startIndex).limit(parseInt(limit)); 
-            const totalPlacesCount = await Place.find();
-            return res.status(200).json({
-                 succes: true, 
-                totalPlaces: totalPlacesCount,
-                currentPage: parseInt(page),
-                totalPages: Math.ceil(totalPlacesCount / parseInt(limit)),
-                placelist});
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: "Internal Server Error" });
-        }
-    };
+export const Getplaces = async (req, res) => {
+    try {
+        const { page, limit } = req.query;
+        const startIndex = (parseInt(page) - 1) * parseInt(limit);
+        const placelist = await Place.find().skip(startIndex).limit(parseInt(limit));
+        const totalPlacesCount = await Place.find();
+        return res.status(200).json({
+            succes: true,
+            totalPlaces: totalPlacesCount,
+            currentPage: parseInt(page),
+            totalPages: Math.ceil(totalPlacesCount / parseInt(limit)),
+            placelist
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
 
 export const UpdatePlace = async (req, res) => {
@@ -249,8 +250,10 @@ export const Blockplaces = async (req, res) => {
 
 export const Agentactivities = async (req, res) => {
     try {
-        const Data = req.body.form
+        const Data = req.body.data;
+        const agentid = req.body.id
         const Activitydata = new Activity({
+            agentid: agentid,
             Activity: Data
         })
         await Activitydata.save()
@@ -333,22 +336,24 @@ export const BlockActivity = async (req, res) => {
 
 export const Packageadd = async (req, res) => {
     try {
-        const {  State, 
+        const { State,
             Destrictname,
             image,
             category,
             description,
             activities,
-            amount } = req.body
-        console.log(req.body, "oggggggggo");
+            amount,
+            id } = req.body
+        console.log(id, "oggggggggo");
         // const Image = req.file.path;
         // console.log(Image,"IMAGES");
         // const Cloudstore = await handleUpload(Image, "profilepic")
 
         const Packagedata = new Package({
-            State:State,
+            agentid:id,
+            State: State,
             Destrictname: Destrictname,
-            Image:image ,
+            Image: image,
             category: category,
             details: description,
             activites: activities,
@@ -356,8 +361,8 @@ export const Packageadd = async (req, res) => {
         })
         await Packagedata.save()
 
-        console.log(Packagedata,"Packagedata");
-        return res.status(200).json({ succes: true ,Packagedata})
+        console.log(Packagedata, "Packagedata");
+        return res.status(200).json({ succes: true, Packagedata })
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
@@ -389,7 +394,7 @@ export const Checkingagent = async (req, res) => {
         const { data } = req.params
         const Agent = await agent.findById(data)
         if (Agent.isBlock === false) {
-            return res.json({ success: false ,message: 'blocked by admin'})
+            return res.json({ success: false, message: 'blocked by admin' })
         } else {
             return res.json({ success: true })
         }
@@ -403,8 +408,8 @@ export const Checkingagent = async (req, res) => {
 export const Listpackages = async (req, res) => {
     try {
         const pack = await Package.find();
-        console.log(pack,"pppppppppppppppp");
-        return res.status(200).json({  pack });
+        console.log(pack, "pppppppppppppppp");
+        return res.status(200).json({ pack });
     } catch (error) {
         return res.status(500).json("Server error")
     }

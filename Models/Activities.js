@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const Activityschema = new Schema({
+  agentid:{type:String},
   Activity : { type: String},
   isBlock:{ type: Boolean,default: true}
 
