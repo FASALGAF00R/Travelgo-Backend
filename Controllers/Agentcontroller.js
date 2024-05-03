@@ -3,7 +3,6 @@ import { Place } from '../Models/Placesmodel.js';
 import { Package } from '../Models/Packages.js';
 import { category } from '../Models/Categorymodel.js';
 import { Activity } from '../Models/Activities.js';
-import { destination } from '../Models/Admindestinations.js'
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';

@@ -10,6 +10,9 @@ import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js'
 import { Package } from '../Models/Packages.js'
 import { category } from '../Models/Categorymodel.js';
+import { Booking } from '../Models/Booking.js';
+
+
 import Stripe from 'stripe'
 import env from 'dotenv'
 env.config()
@@ -606,6 +609,74 @@ export const fetchpaymentreq = async (req, res) => {
 
 
 
+
+
+export const userbookingdetails = async (req, res) => {
+    try {
+        const { formData, totalAmount, userId, agentId, packageId } = req.body;
+
+        const { country, state, city, address, contact, paymentDate } = formData;
+        const booking = new Booking({
+            phone: contact,
+            address: {
+                state: state,
+                city: city,
+                country: country,
+            },
+            agentId: agentId,
+            userId: userId,
+            packageId: packageId,
+            Date: paymentDate,
+            Amount: totalAmount,
+
+        });
+        console.log(booking, "booking");
+        await booking.save();
+        res.status(201).json({ message: "Booking saved successfully", status: true });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'internal server  error please try again later' })
+    }
+}
+
+
+
+export const getbookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find()
+        console.log(bookings, "bookings");
+        return res.json({ message: "fetched all bookings", bookings })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+export const Cancelbooking = async (req, res) => {
+    try {
+        const { bookingid, userid } = req.body;
+        console.log(userid, bookingid, "bookingidbookingidbookingid");
+        const findbooking = await Booking.findByIdAndUpdate({ _id: bookingid }, { $set: { isCanceled: true } })
+        console.log(findbooking, "findbookingggggggggg");
+        if (findbooking) {
+            const totalamount = findbooking.Amount
+            console.log(totalamount, "totalamount");
+            const finduser = await user.findById({ _id: userid })
+            console.log(finduser, "finduser");
+            if (finduser) {
+                finduser.wallet += totalamount;
+                await finduser.save();
+            }
+        } else {
+            return res.status(500).json({ message: "not found" });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 
 

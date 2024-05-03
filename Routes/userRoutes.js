@@ -18,7 +18,10 @@ import {
     getpackages,
     fetchcat,
     listcatpackages,
-    fetchpaymentreq
+    fetchpaymentreq,
+    userbookingdetails,
+    getbookings,
+    Cancelbooking
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -44,6 +47,9 @@ userRoute.get('/packagesdetails/:id',userVerification, getpackages)
 userRoute.get('/categories',userVerification,fetchcat)
 userRoute.get('/catpackages/:placeId/:categoryname',userVerification, listcatpackages)
 userRoute.get('/paymentreq/:id',userVerification,fetchpaymentreq)
+userRoute.post('/bookingdata',userVerification,userbookingdetails)
+userRoute.get('/fetchbookings',userVerification, getbookings)
+userRoute.put('/cancelbookings',userVerification,Cancelbooking)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);

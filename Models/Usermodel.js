@@ -10,6 +10,7 @@ const Userschema= new Schema({
     verificationToken:{type:String},
     isBlock:{type:Boolean,default:true},
     image:{type:String},
+    wallet: {type: Number,default: 0,},
     Otp:{type:String},},
     {timestamps: true })
 

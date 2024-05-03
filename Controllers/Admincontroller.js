@@ -1,7 +1,6 @@
 import agent from '../Models/Agentmodel.js';
 import { category } from '../Models/Categorymodel.js';
 import { user } from "../Models/Usermodel.js";
-import {destination} from '../Models/Admindestinations.js'
 import { createSecretToken } from '../Util/SecretToken.js'
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"

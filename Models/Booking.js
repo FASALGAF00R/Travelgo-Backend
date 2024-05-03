@@ -24,16 +24,27 @@ const bookingSchema = new Schema(
     packageId: {
         type: String,
       },
+      Date: {
+        type: Date,
+      },
+      Amount: {
+        type: Number,
+      },
+
     bookingStatus: {
         type: String,
-        default: "pending",
+        default: "success",
     },
+    isCanceled: {
+      type: Boolean,
+      default:false
+  }
+
   },
   {
     timestamps: true,
   }
 );
 
-const Booking = mongoose.model("Booking", bookingSchema);
+export const Booking = mongoose.model("Booking", bookingSchema);
 
-module.exports = Booking;
