@@ -19,7 +19,8 @@ import {
     Blockplaces,
     Getstates,
     Listpackages,
-    Blockpackagess
+    Blockpackagess,
+    Listbookings
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -46,5 +47,6 @@ agentRoute.get('/listpackages',userVerification,Listpackages)
 agentRoute.put('/blockpackages/:id',userVerification,Blockpackagess)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)
 agentRoute.put('/blockactivity/:id',userVerification,BlockActivity)
+agentRoute.get('/listbookings',userVerification,Listbookings)
 
 export default agentRoute

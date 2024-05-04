@@ -22,23 +22,27 @@ const bookingSchema = new Schema(
       type: String,
     },
     packageId: {
-        type: String,
-      },
-      Date: {
-        type: Date,
-      },
-      Amount: {
-        type: Number,
-      },
+      type: String,
+    },
+    Date: {
+      type: Date,
+    },
+    Amount: {
+      type: Number,
+    },
 
     bookingStatus: {
-        type: String,
-        default: "success",
+      type: String,
+      default: "success",
     },
     isCanceled: {
       type: Boolean,
-      default:false
-  }
+      default: false
+    },
+    payment_type: {
+      type: String,
+      default: "stripe",
+    },
 
   },
   {

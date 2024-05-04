@@ -362,7 +362,7 @@ export const getimage = async (req, res) => {
         const Img = await user.findById({ _id: Id });
         console.log(Img, 'pppppppppppppppppppp');
         console.log(Img.image, "opopopopoo");
-        return res.json({ message: "Image send", image: Img.image });
+        return res.json({ message: "Image send", image: Img.image, wallet: Img.wallet });
 
     } catch (error) {
         console.error(error);
@@ -643,7 +643,7 @@ export const userbookingdetails = async (req, res) => {
 
 export const getbookings = async (req, res) => {
     try {
-        const bookings = await Booking.find()
+        const bookings = await Booking.find({payment_type:'Wallet'})
         console.log(bookings, "bookings");
         return res.json({ message: "fetched all bookings", bookings })
 
@@ -651,6 +651,25 @@ export const getbookings = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+
+
+// for displaying aall bookins
+
+export const getallbookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find({})
+        console.log(bookings, "bookings");
+        return res.json({ message: "fetched all bookings", bookings })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+
 
 
 
@@ -680,3 +699,61 @@ export const Cancelbooking = async (req, res) => {
 
 
 
+export const getwalletamount = async (req, res) => {
+    console.log("ethiii");
+    try {
+        const Id = req.params.id;
+        console.log(Id, 'lklklklklklklklklklk');
+        const userid = await user.findById({ _id: Id });
+        return res.json({ message: "wallet send", wallet: userid.wallet });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
+
+
+export const userbookingwalletdetails = async (req, res) => {
+    try {
+        const { contact, address, totalAmount, packageId, state, userid, agentid, country, city, paymentDate } = req.body;
+        console.log(totalAmount, "totalAmount", packageId, "packageId", totalAmount, "totalAmount", state, "state");
+
+        const userList = await user.findOne({ _id: userid })
+        console.log(userList, "ll");
+        const wallet = userList.wallet;
+        console.log(wallet,"walletwallet");
+        if (wallet >= totalAmount) {
+            const updateWallet = await user.findByIdAndUpdate(
+                { _id: userid },
+                { $inc: { wallet: -totalAmount } }
+            )
+            console.log(updateWallet,"updateWalletyyyyyyyyyyyyy");
+            const bookingData = new Booking({
+                phone: contact,
+                address: {
+                    state: state,
+                    city: city,
+                    country: country,
+                },
+                agentId: agentid,
+                userId: userid,
+                packageId: packageId,
+                Date: paymentDate,
+                Amount: totalAmount,
+                payment_type: 'Wallet',
+
+            });
+
+            await bookingData.save();
+
+            res.status(200).json({ success: true, message: "Booking details saved successfully.", updateWallet });
+        }else {
+            return res.json({ success: false, message: "Wallet Balance is not enough to buy this!",});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Error saving booking details." });
+    }
+}

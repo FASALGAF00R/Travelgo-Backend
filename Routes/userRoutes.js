@@ -21,7 +21,10 @@ import {
     fetchpaymentreq,
     userbookingdetails,
     getbookings,
-    Cancelbooking
+    Cancelbooking,
+    getwalletamount,
+    userbookingwalletdetails,
+    getallbookings
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -49,7 +52,10 @@ userRoute.get('/catpackages/:placeId/:categoryname',userVerification, listcatpac
 userRoute.get('/paymentreq/:id',userVerification,fetchpaymentreq)
 userRoute.post('/bookingdata',userVerification,userbookingdetails)
 userRoute.get('/fetchbookings',userVerification, getbookings)
+userRoute.get('/fetchallbookings',userVerification, getallbookings)
 userRoute.put('/cancelbookings',userVerification,Cancelbooking)
+userRoute.get('/userwallet/:id',userVerification,getwalletamount)
+userRoute.post('/walletpayment',userVerification,userbookingwalletdetails)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);

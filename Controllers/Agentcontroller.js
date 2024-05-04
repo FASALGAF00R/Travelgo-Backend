@@ -2,6 +2,7 @@ import agent from '../Models/Agentmodel.js'
 import { Place } from '../Models/Placesmodel.js';
 import { Package } from '../Models/Packages.js';
 import { category } from '../Models/Categorymodel.js';
+import { Booking } from '../Models/Booking.js';
 import { Activity } from '../Models/Activities.js';
 import crypto from 'crypto'
 import { sendVerificationEmail } from '../Util/emailService.js';
@@ -446,6 +447,16 @@ export const Blockpackagess = async (req, res) => {
             });
         }
 
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+
+
+export const Listbookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find({})        
+        return res.json({ message: "fetched all bookings", bookings })
     } catch (error) {
         return res.status(500).json("Server error")
     }
