@@ -616,6 +616,7 @@ export const userbookingdetails = async (req, res) => {
         const { formData, totalAmount, userId, agentId, packageId } = req.body;
 
         const { country, state, city, address, contact, paymentDate } = formData;
+        console.log(paymentDate,"paymentDate");
         const booking = new Booking({
             phone: contact,
             address: {
@@ -626,7 +627,7 @@ export const userbookingdetails = async (req, res) => {
             agentId: agentId,
             userId: userId,
             packageId: packageId,
-            Date: paymentDate,
+            Date: new Date(),
             Amount: totalAmount,
 
         });
@@ -740,7 +741,7 @@ export const userbookingwalletdetails = async (req, res) => {
                 agentId: agentid,
                 userId: userid,
                 packageId: packageId,
-                Date: paymentDate,
+                Date:  new Date(),
                 Amount: totalAmount,
                 payment_type: 'Wallet',
 
