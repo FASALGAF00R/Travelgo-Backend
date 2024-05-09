@@ -24,7 +24,8 @@ import {
     Cancelbooking,
     getwalletamount,
     userbookingwalletdetails,
-    getallbookings
+    getallbookings,
+    getaddress
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -42,6 +43,7 @@ userRoute.put('/newpass',Createnewpass)
 userRoute.post('/profile',userVerification,upload.single('profilepic'),updateprofile)
 userRoute.post('/resetpass',userVerification,Resetpassword)
 userRoute.get('/user/:id',userVerification,getimage)
+userRoute.get('/getaddress/:id',userVerification,getaddress)
 userRoute.get('/getplaces',userVerification, listplaces)
 userRoute.post('/searchplaces',userVerification, Searchplace)
 userRoute.get('/checkinguser/:data',userVerification,Checkinguser)

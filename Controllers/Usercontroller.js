@@ -373,6 +373,39 @@ export const getimage = async (req, res) => {
 
 
 
+export const getaddress = async (req, res) => {
+    try {
+        const Id = req.params.id;
+        console.log(Id, 'id');
+        const Address=await Booking.findOne({userId: Id})
+        console.log(Address,"Address");
+        return res.json({ message: "address send", Address });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const Resendotp = async (req, res) => {
     try {
 
@@ -505,6 +538,7 @@ export const Searchplace = async (req, res) => {
     }
 }
 
+// for checking user blocked
 
 export const Checkinguser = async (req, res) => {
     try {
@@ -615,8 +649,13 @@ export const userbookingdetails = async (req, res) => {
     try {
         const { formData, totalAmount, userId, agentId, packageId } = req.body;
 
-        const { country, state, city, address, contact, paymentDate } = formData;
-        console.log(paymentDate,"paymentDate");
+        const { country, state, city, address, contact } = formData;
+        console.log(totalAmount,"paymentDate");
+
+    const findagent = await agent.findById({_id:agentId})
+     console.log(findagent,"findagent");
+      findagent.amount=totalAmount
+       await findagent.save()
         const booking = new Booking({
             phone: contact,
             address: {

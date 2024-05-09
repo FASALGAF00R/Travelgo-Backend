@@ -10,6 +10,7 @@ const Packageschema = new Schema({
     details: { type: String},
     activites: [{ type: String}],
     amount: { type: Number},
+    perDAy:{ type: String},
     isBlock: { type: Boolean,default: true}
 })
 

@@ -343,8 +343,9 @@ export const Packageadd = async (req, res) => {
             description,
             activities,
             amount,
+            perDAy,
             id } = req.body
-        console.log(id, "oggggggggo");
+        console.log(perDAy, "oggggggggo");
         // const Image = req.file.path;
         // console.log(Image,"IMAGES");
         // const Cloudstore = await handleUpload(Image, "profilepic")
@@ -358,6 +359,7 @@ export const Packageadd = async (req, res) => {
             details: description,
             activites: activities,
             amount: amount,
+            perDAy:perDAy
         })
         await Packagedata.save()
 
