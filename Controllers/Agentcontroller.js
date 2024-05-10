@@ -457,6 +457,8 @@ export const Blockpackagess = async (req, res) => {
 
 export const Listbookings = async (req, res) => {
     try {
+        const {bookid,agentid}=req.params
+        console.log(bookid,agentid,"agentid");
         const bookings = await Booking.find({})        
         return res.json({ message: "fetched all bookings", bookings })
     } catch (error) {

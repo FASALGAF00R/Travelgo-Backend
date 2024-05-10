@@ -11,7 +11,7 @@ const Agentschema = new Schema({
     isBlock: { type: Boolean ,default:true},
     verificationToken: { type: String },
     isActive: { type: String, default: 'pending' },
-    amount:{type:String},
+    amount:{type:Number },
     Otp: { type: String },
 },
     { timestamps: true });

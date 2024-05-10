@@ -561,7 +561,6 @@ export const listpackages = async (req, res) => {
         const { id } = req.params
         const places = await Place.findById(id)
         const fullpackage = await Package.find({ $and: [{ State: places.State }, { Destrictname: places.Destrictname }, { isBlock: true }] })
-        console.log(fullpackage, "ooooo");
         return res.json({ fullpackage })
 
     } catch (error) {
@@ -587,7 +586,6 @@ export const getpackages = async (req, res) => {
 export const fetchcat = async (req, res) => {
     try {
         const packagescat = await category.find()
-        console.log(packagescat, "///////////");
         return res.json({ packagescat })
 
     } catch (error) {
@@ -602,11 +600,8 @@ export const fetchcat = async (req, res) => {
 export const listcatpackages = async (req, res) => {
     try {
         const { placeId, categoryname } = req.params
-        console.log(placeId, ";;;;;;;;;;;;");
         const placename = await Place.findById({ _id: placeId })
-        console.log(placename, "ppppppppppppp");
         const packagesInCategory = await Package.find({ category: categoryname, Destrictname: placename.Destrictname });
-        console.log(packagesInCategory, "packagesInCategory");
         return res.json({ packagesInCategory })
 
 
@@ -620,10 +615,8 @@ export const listcatpackages = async (req, res) => {
 export const fetchpaymentreq = async (req, res) => {
     try {
         const { id } = req.params
-        console.log(id, "idddddd");
         const stripe = new Stripe(process.env.STRIPE_KEY)
         const Bookpackage = await Package.findById({ _id: id })
-        console.log(Bookpackage, "Bookpackage");
         const RentAmount = Bookpackage.amount
 
         const paymentIntent = await stripe.paymentIntents.create({
@@ -648,13 +641,11 @@ export const fetchpaymentreq = async (req, res) => {
 export const userbookingdetails = async (req, res) => {
     try {
         const { formData, totalAmount, userId, agentId, packageId } = req.body;
-
         const { country, state, city, address, contact } = formData;
-        console.log(totalAmount,"paymentDate");
 
-    const findagent = await agent.findById({_id:agentId})
-     console.log(findagent,"findagent");
-      findagent.amount=totalAmount
+console.log(agentId,totalAmount,"agentId");
+    const findagent = await agent.findOneAndUpdate({_id:agentId},{$inc:{amount:totalAmount}})
+    console.log(findagent,"findagent");
        await findagent.save()
         const booking = new Booking({
             phone: contact,
@@ -670,7 +661,6 @@ export const userbookingdetails = async (req, res) => {
             Amount: totalAmount,
 
         });
-        console.log(booking, "booking");
         await booking.save();
         res.status(201).json({ message: "Booking saved successfully", status: true });
     } catch (error) {
@@ -684,7 +674,6 @@ export const userbookingdetails = async (req, res) => {
 export const getbookings = async (req, res) => {
     try {
         const bookings = await Booking.find({payment_type:'Wallet'})
-        console.log(bookings, "bookings");
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -699,7 +688,6 @@ export const getbookings = async (req, res) => {
 export const getallbookings = async (req, res) => {
     try {
         const bookings = await Booking.find({})
-        console.log(bookings, "bookings");
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -715,15 +703,17 @@ export const getallbookings = async (req, res) => {
 
 export const Cancelbooking = async (req, res) => {
     try {
-        const { bookingid, userid } = req.body;
-        console.log(userid, bookingid, "bookingidbookingidbookingid");
+        const { bookingid, userid ,agentid} = req.body;
+        console.log(agentid,"agentid");
         const findbooking = await Booking.findByIdAndUpdate({ _id: bookingid }, { $set: { isCanceled: true } })
-        console.log(findbooking, "findbookingggggggggg");
         if (findbooking) {
             const totalamount = findbooking.Amount
-            console.log(totalamount, "totalamount");
+            const findagent=await agent.findById({_id:agentid})
+            if(findagent){
+                findagent.amount -= totalamount;
+                await findagent.save();
+            }
             const finduser = await user.findById({ _id: userid })
-            console.log(finduser, "finduser");
             if (finduser) {
                 finduser.wallet += totalamount;
                 await finduser.save();
@@ -740,10 +730,8 @@ export const Cancelbooking = async (req, res) => {
 
 
 export const getwalletamount = async (req, res) => {
-    console.log("ethiii");
     try {
         const Id = req.params.id;
-        console.log(Id, 'lklklklklklklklklklk');
         const userid = await user.findById({ _id: Id });
         return res.json({ message: "wallet send", wallet: userid.wallet });
 
@@ -757,13 +745,11 @@ export const getwalletamount = async (req, res) => {
 
 export const userbookingwalletdetails = async (req, res) => {
     try {
-        const { contact, address, totalAmount, packageId, state, userid, agentid, country, city, paymentDate } = req.body;
-        console.log(totalAmount, "totalAmount", packageId, "packageId", totalAmount, "totalAmount", state, "state");
+        const { contact, address, totalAmount, packageId, state, userid, agentid, country, city } = req.body;
+     const findagent=await agent.updateOne({ _id: agentid },  { $inc: { amount: totalAmount } } );
 
         const userList = await user.findOne({ _id: userid })
-        console.log(userList, "ll");
         const wallet = userList.wallet;
-        console.log(wallet,"walletwallet");
         if (wallet >= totalAmount) {
             const updateWallet = await user.findByIdAndUpdate(
                 { _id: userid },
