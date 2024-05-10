@@ -25,7 +25,9 @@ import {
     getwalletamount,
     userbookingwalletdetails,
     getallbookings,
-    getaddress
+    getaddress,
+    fetchpackagedetails,
+    userreview
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -58,6 +60,8 @@ userRoute.get('/fetchallbookings',userVerification, getallbookings)
 userRoute.put('/cancelbookings',userVerification,Cancelbooking)
 userRoute.get('/userwallet/:id',userVerification,getwalletamount)
 userRoute.post('/walletpayment',userVerification,userbookingwalletdetails)
+userRoute.get('/fetchpackagedetails/:packageId',userVerification,fetchpackagedetails)
+userRoute.post('/submitReview',userVerification,userreview)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);

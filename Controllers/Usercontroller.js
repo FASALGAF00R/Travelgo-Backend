@@ -11,7 +11,7 @@ import { Place } from '../Models/Placesmodel.js'
 import { Package } from '../Models/Packages.js'
 import { category } from '../Models/Categorymodel.js';
 import { Booking } from '../Models/Booking.js';
-
+import { Review } from '../Models/Review.js'
 
 import Stripe from 'stripe'
 import env from 'dotenv'
@@ -377,8 +377,8 @@ export const getaddress = async (req, res) => {
     try {
         const Id = req.params.id;
         console.log(Id, 'id');
-        const Address=await Booking.findOne({userId: Id})
-        console.log(Address,"Address");
+        const Address = await Booking.findOne({ userId: Id })
+        console.log(Address, "Address");
         return res.json({ message: "address send", Address });
 
     } catch (error) {
@@ -635,7 +635,7 @@ export const fetchpaymentreq = async (req, res) => {
 }
 
 
-
+// kjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 
 
 export const userbookingdetails = async (req, res) => {
@@ -643,10 +643,10 @@ export const userbookingdetails = async (req, res) => {
         const { formData, totalAmount, userId, agentId, packageId } = req.body;
         const { country, state, city, address, contact } = formData;
 
-console.log(agentId,totalAmount,"agentId");
-    const findagent = await agent.findOneAndUpdate({_id:agentId},{$inc:{amount:totalAmount}})
-    console.log(findagent,"findagent");
-       await findagent.save()
+        console.log(agentId, totalAmount, "agentId");
+        const findagent = await agent.findOneAndUpdate({ _id: agentId }, { $inc: { amount: totalAmount } })
+        console.log(findagent, "findagent");
+        await findagent.save()
         const booking = new Booking({
             phone: contact,
             address: {
@@ -673,7 +673,7 @@ console.log(agentId,totalAmount,"agentId");
 
 export const getbookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({payment_type:'Wallet'})
+        const bookings = await Booking.find({ payment_type: 'Wallet' })
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -703,13 +703,13 @@ export const getallbookings = async (req, res) => {
 
 export const Cancelbooking = async (req, res) => {
     try {
-        const { bookingid, userid ,agentid} = req.body;
-        console.log(agentid,"agentid");
+        const { bookingid, userid, agentid } = req.body;
+        console.log(agentid, "agentid");
         const findbooking = await Booking.findByIdAndUpdate({ _id: bookingid }, { $set: { isCanceled: true } })
         if (findbooking) {
             const totalamount = findbooking.Amount
-            const findagent=await agent.findById({_id:agentid})
-            if(findagent){
+            const findagent = await agent.findById({ _id: agentid })
+            if (findagent) {
                 findagent.amount -= totalamount;
                 await findagent.save();
             }
@@ -746,7 +746,7 @@ export const getwalletamount = async (req, res) => {
 export const userbookingwalletdetails = async (req, res) => {
     try {
         const { contact, address, totalAmount, packageId, state, userid, agentid, country, city } = req.body;
-     const findagent=await agent.updateOne({ _id: agentid },  { $inc: { amount: totalAmount } } );
+        const findagent = await agent.updateOne({ _id: agentid }, { $inc: { amount: totalAmount } });
 
         const userList = await user.findOne({ _id: userid })
         const wallet = userList.wallet;
@@ -755,7 +755,7 @@ export const userbookingwalletdetails = async (req, res) => {
                 { _id: userid },
                 { $inc: { wallet: -totalAmount } }
             )
-            console.log(updateWallet,"updateWalletyyyyyyyyyyyyy");
+            console.log(updateWallet, "updateWalletyyyyyyyyyyyyy");
             const bookingData = new Booking({
                 phone: contact,
                 address: {
@@ -766,7 +766,7 @@ export const userbookingwalletdetails = async (req, res) => {
                 agentId: agentid,
                 userId: userid,
                 packageId: packageId,
-                Date:  new Date(),
+                Date: new Date(),
                 Amount: totalAmount,
                 payment_type: 'Wallet',
 
@@ -775,11 +775,45 @@ export const userbookingwalletdetails = async (req, res) => {
             await bookingData.save();
 
             res.status(200).json({ success: true, message: "Booking details saved successfully.", updateWallet });
-        }else {
-            return res.json({ success: false, message: "Wallet Balance is not enough to buy this!",});
+        } else {
+            return res.json({ success: false, message: "Wallet Balance is not enough to buy this!", });
         }
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Error saving booking details." });
     }
+}
+
+
+export const fetchpackagedetails = async (req, res) => {
+    try {
+        const { packageId } = req.params
+        const packagedetails = await Package.findById({ _id: packageId })
+        return res.json({ packagedetails })
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+
+export const userreview = async (req, res) => {
+    try {
+        const { packageId, agentId, userId, reviewText, rating } = req.body;
+        const reviewadd = new Review({
+            content: reviewText,
+            rating: rating,
+            userid: userId,
+            packageid:packageId,
+            agentId:agentId
+        })
+        await reviewadd.save()
+        return res.json({ message: 'Review submitted successfully',reviewadd });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
 }
