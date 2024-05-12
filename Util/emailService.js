@@ -57,7 +57,7 @@ export const sendVerificationEmail = (newuser,newagent) => {
       <div style="background-color: #ff1493; padding: 15px; border-radius: 5px;">
         <h2 style="color: #ffffff;">TravelGO user Verification</h2>
         <p style="color: #ffffff;">Click the button below to verify user account:</p>
-        <a href="${verificationLinkuser}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Agent</a>
+        <a href="${verificationLinkuser}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify user</a>
         <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
       </div>
     `

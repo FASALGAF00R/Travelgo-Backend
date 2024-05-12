@@ -527,16 +527,6 @@ export const listplaces = async (req, res) => {
 
 
 
-export const Searchplace = async (req, res) => {
-    try {
-        const { Data } = req.body;
-        const District = await Place.find({ Destrictname: Data })
-        console.log(District, "lklkkkkkkk");
-        return res.status(200).json(District);
-    } catch (error) {
-        return res.status(500).json({ message: "Internal server error" });
-    }
-}
 
 // for checking user blocked
 
@@ -673,7 +663,9 @@ export const userbookingdetails = async (req, res) => {
 
 export const getbookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({ payment_type: 'Wallet' })
+        const {userid}=req.params
+        console.log(userid,"userid");
+        const bookings = await Booking.find({$and:[{ payment_type: 'Wallet' },{userId:userid}]})
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -687,7 +679,13 @@ export const getbookings = async (req, res) => {
 
 export const getallbookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({})
+        const{id}=req.params
+        console.log(id,"id");
+        const bookings = await Booking.find({userId:id})
+        console.log(bookings,"bookings");
+        if(!bookings){
+            return res.json({ message: "no bookings" })
+        }
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -801,19 +799,35 @@ export const fetchpackagedetails = async (req, res) => {
 export const userreview = async (req, res) => {
     try {
         const { packageId, agentId, userId, reviewText, rating } = req.body;
+      const  finduser =await user.findById({_id:userId})
+      const username=finduser.userName
         const reviewadd = new Review({
+            userName:username,
             content: reviewText,
             rating: rating,
             userid: userId,
-            packageid:packageId,
-            agentId:agentId
+            packageid: packageId,
+            agentId: agentId
         })
         await reviewadd.save()
-        return res.json({ message: 'Review submitted successfully',reviewadd });
+        return res.json({ message: 'Review submitted successfully', reviewadd });
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
     }
 
+}
+
+
+
+
+export const fetchreviewdetails = async (req, res) => {
+    try {
+        const { id } = req.params
+        const Reviewdetails = await Review.find({packageid: id })
+        return res.json({ Reviewdetails })
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }

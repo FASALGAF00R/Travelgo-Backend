@@ -12,7 +12,6 @@ import {
     getimage,
     Resendotp,
     listplaces,
-    Searchplace,
     Checkinguser,
     listpackages,
     getpackages,
@@ -27,7 +26,8 @@ import {
     getallbookings,
     getaddress,
     fetchpackagedetails,
-    userreview
+    userreview,
+    fetchreviewdetails
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
@@ -47,7 +47,6 @@ userRoute.post('/resetpass',userVerification,Resetpassword)
 userRoute.get('/user/:id',userVerification,getimage)
 userRoute.get('/getaddress/:id',userVerification,getaddress)
 userRoute.get('/getplaces',userVerification, listplaces)
-userRoute.post('/searchplaces',userVerification, Searchplace)
 userRoute.get('/checkinguser/:data',userVerification,Checkinguser)
 userRoute.get('/packages/:id',userVerification, listpackages)
 userRoute.get('/packagesdetails/:id',userVerification, getpackages)
@@ -55,13 +54,16 @@ userRoute.get('/categories',userVerification,fetchcat)
 userRoute.get('/catpackages/:placeId/:categoryname',userVerification, listcatpackages)
 userRoute.get('/paymentreq/:id',userVerification,fetchpaymentreq)
 userRoute.post('/bookingdata',userVerification,userbookingdetails)
-userRoute.get('/fetchbookings',userVerification, getbookings)
-userRoute.get('/fetchallbookings',userVerification, getallbookings)
+// for wallet
+userRoute.get('/fetchbookings/:userid',userVerification, getbookings)
+// for all booking lisitng
+userRoute.get('/fetchallbookings/:id',userVerification, getallbookings)
 userRoute.put('/cancelbookings',userVerification,Cancelbooking)
 userRoute.get('/userwallet/:id',userVerification,getwalletamount)
 userRoute.post('/walletpayment',userVerification,userbookingwalletdetails)
 userRoute.get('/fetchpackagedetails/:packageId',userVerification,fetchpackagedetails)
 userRoute.post('/submitReview',userVerification,userreview)
+userRoute.get('/reviewdetails/:id',userVerification,fetchreviewdetails)
 
 
 userRoute.post('/refreshtoken', refreshTokenHandler);

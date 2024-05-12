@@ -7,11 +7,14 @@ const reviewSchema = new Schema({
             type: Date,
             default: Date.now,
         },
+        userName: {
+            type: String,
+        },
         content: {
             type: String,
         },
         rating: {
-            type: String,
+            type: Number,
         },
         userid: {
             type: String,

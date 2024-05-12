@@ -9,6 +9,7 @@ import { sendVerificationEmail } from '../Util/emailService.js';
 import { createSecretToken } from '../Util/SecretToken.js';
 import { handleUpload } from '../Util/Cloudinary.js'
 import bcrypt from 'bcrypt'
+import { user } from '../Models/Usermodel.js';
 
 
 const verificationToken = crypto.randomBytes(20).toString('hex');
@@ -153,7 +154,7 @@ export const Agentplaces = async (req, res) => {
 // for states and districts
 export const Getstates = async (req, res) => {
     try {
-        const States = await Place.find({ isBlock: false });
+        const States = await Place.find({ isBlock: true });
         console.log(States);
         return res.status(200).json({ success: true, States });
     } catch (error) {
@@ -351,7 +352,7 @@ export const Packageadd = async (req, res) => {
         // const Cloudstore = await handleUpload(Image, "profilepic")
 
         const Packagedata = new Package({
-            agentid:id,
+            agentid: id,
             State: State,
             Destrictname: Destrictname,
             Image: image,
@@ -359,7 +360,7 @@ export const Packageadd = async (req, res) => {
             details: description,
             activites: activities,
             amount: amount,
-            perDAy:perDAy
+            perDAy: perDAy
         })
         await Packagedata.save()
 
@@ -457,11 +458,21 @@ export const Blockpackagess = async (req, res) => {
 
 export const Listbookings = async (req, res) => {
     try {
-        const {bookid,agentid}=req.params
-        console.log(bookid,agentid,"agentid");
-        const bookings = await Booking.find({})        
-        return res.json({ message: "fetched all bookings", bookings })
+        const bookings = await Booking.find({});
+        
+        const bookingsWithUserNames = await Promise.all(bookings.map(async (booking) => {
+            const User = await user.findById(booking.userId);
+            return { ...booking.toObject(), userName: User ? User.userName : '' }; 
+        }));
+     
+        return res.json({ message: "fetched all bookings", bookings: bookingsWithUserNames });
     } catch (error) {
-        return res.status(500).json("Server error")
+        console.error('Error fetching bookings:', error);
+        return res.status(500).json({ message: "Server error" });
     }
 }
+
+
+
+
+
