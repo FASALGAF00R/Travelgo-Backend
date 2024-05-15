@@ -28,14 +28,14 @@ export const sendVerificationEmail = (newuser,newagent) => {
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: newagent.email,
-      subject: 'TravelGO Agent verification',
+      subject: 'Travel go Agent verification',
       html: `
-      <div style="background-color: #3498db; padding: 15px; border-radius: 5px;">
-        <h2 style="color: #ffffff;">TravelGO Agent Verification</h2>
-        <p style="color: #ffffff;">Click the button below to verify your agent account:</p>
-        <a href="${URL}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Agent</a>
-        <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
-      </div>
+      <div style="background-color: #ff69b4; padding: 15px; border-radius: 5px; text-align: center;">
+      <h2 style="color: #ffffff;">Travel go agent verification</h2>
+      <p style="color: #ffffff;">Click the button below to verify agent account:</p>
+      <a href="${URL}" style="background-color: #d6336c; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify agent</a>
+      <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
+    </div>
     `
     }
     transporter.sendMail(mailOptions, (error, info) => {
@@ -52,14 +52,15 @@ export const sendVerificationEmail = (newuser,newagent) => {
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: newuser.email,
-      subject: 'TravelGO verification',
+      subject: 'Travel go user verification',
       html: `
-      <div style="background-color: #ff1493; padding: 15px; border-radius: 5px;">
-        <h2 style="color: #ffffff;">TravelGO user Verification</h2>
-        <p style="color: #ffffff;">Click the button below to verify user account:</p>
-        <a href="${verificationLinkuser}" style="background-color: #2980b9; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify user</a>
-        <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
-      </div>
+      <div style="background-color: #ff69b4; padding: 15px; border-radius: 5px; text-align: center;">
+      <h2 style="color: #ffffff;">Travel go user verification</h2>
+      <p style="color: #ffffff;">Click the button below to verify user account:</p>
+      <a href="${verificationLinkuser}" style="background-color: #d6336c; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify User</a>
+      <p style="color: #ffffff;">This link will expire on: ${expirationTimeString}</p>
+    </div>
+    
     `
     };
 

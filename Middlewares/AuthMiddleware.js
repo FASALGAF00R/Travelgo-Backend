@@ -31,26 +31,6 @@ export const userVerification = (req, res, next) => {
 }
 
 
-export const refreshTokenHandler = async (req, res) => {
-  try {
-    const refreshToken = req.body.refreshToken;
-    if (!refreshToken) {
-      return res.status(401).json({ success: false, message: 'Unauthorized - Refresh token not provided' });
-    }
-
-    // Verify the refresh token
-    const decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_KEY);
-
-    // Create a new access token
-    const newAccessToken = jwt.sign({ id: decoded.id, userName: decoded.userName , email:decoded.email }, process.env.AXCESSTOKEN_KEY, {
-      expiresIn: '10m',
-    });
-    // Send the new access token in the response
-    res.json({ success: true, accessToken: newAccessToken });
-  } catch (error) {
-    res.status(401).json({ success: false, message: 'Unauthorized - Invalid refresh token' });
-  }
-};
 
 
 

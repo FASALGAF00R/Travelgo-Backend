@@ -27,6 +27,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 export const loadSignup = async (req, res) => {
     try {
         const { userName, email, password } = req.body
+
         const User = await user.findOne({ email })
         if (User) {
             return res.json({ success: false, message: "user already exisist !" })
@@ -548,6 +549,7 @@ export const Checkinguser = async (req, res) => {
 
 export const listpackages = async (req, res) => {
     try {
+        console.log("lo");
         const { id } = req.params
         const places = await Place.findById(id)
         const fullpackage = await Package.find({ $and: [{ State: places.State }, { Destrictname: places.Destrictname }, { isBlock: true }] })
@@ -663,9 +665,9 @@ export const userbookingdetails = async (req, res) => {
 
 export const getbookings = async (req, res) => {
     try {
-        const {userid}=req.params
-        console.log(userid,"userid");
-        const bookings = await Booking.find({$and:[{ payment_type: 'Wallet' },{userId:userid}]})
+        const { userid } = req.params
+        console.log(userid, "userid");
+        const bookings = await Booking.find({ $and: [{ payment_type: 'Wallet' }, { userId: userid }] })
         return res.json({ message: "fetched all bookings", bookings })
 
     } catch (error) {
@@ -679,11 +681,11 @@ export const getbookings = async (req, res) => {
 
 export const getallbookings = async (req, res) => {
     try {
-        const{id}=req.params
-        console.log(id,"id");
-        const bookings = await Booking.find({userId:id})
-        console.log(bookings,"bookings");
-        if(!bookings){
+        const { id } = req.params
+        console.log(id, "id");
+        const bookings = await Booking.find({ userId: id })
+        console.log(bookings, "bookings");
+        if (!bookings) {
             return res.json({ message: "no bookings" })
         }
         return res.json({ message: "fetched all bookings", bookings })
@@ -702,20 +704,17 @@ export const getallbookings = async (req, res) => {
 export const Cancelbooking = async (req, res) => {
     try {
         const { bookingid, userid, agentid } = req.body;
-        console.log(agentid, "agentid");
         const findbooking = await Booking.findByIdAndUpdate({ _id: bookingid }, { $set: { isCanceled: true } })
         if (findbooking) {
             const totalamount = findbooking.Amount
-            const findagent = await agent.findById({ _id: agentid })
-            if (findagent) {
-                findagent.amount -= totalamount;
-                await findagent.save();
-            }
+            const findagent = await agent.findByIdAndUpdate({ _id: agentid }, { $inc: { amount: -totalamount } }, { new: true })
+            await findagent.save()
             const finduser = await user.findById({ _id: userid })
             if (finduser) {
                 finduser.wallet += totalamount;
                 await finduser.save();
             }
+            return res.status(200).json({ message: 'update completed' })
         } else {
             return res.status(500).json({ message: "not found" });
         }
@@ -744,8 +743,7 @@ export const getwalletamount = async (req, res) => {
 export const userbookingwalletdetails = async (req, res) => {
     try {
         const { contact, address, totalAmount, packageId, state, userid, agentid, country, city } = req.body;
-        const findagent = await agent.updateOne({ _id: agentid }, { $inc: { amount: totalAmount } });
-
+        const findagent = await agent.findByIdAndUpdate({ _id: agentid }, { $inc: { amount: totalAmount } });
         const userList = await user.findOne({ _id: userid })
         const wallet = userList.wallet;
         if (wallet >= totalAmount) {
@@ -799,10 +797,10 @@ export const fetchpackagedetails = async (req, res) => {
 export const userreview = async (req, res) => {
     try {
         const { packageId, agentId, userId, reviewText, rating } = req.body;
-      const  finduser =await user.findById({_id:userId})
-      const username=finduser.userName
+        const finduser = await user.findById({ _id: userId })
+        const username = finduser.userName
         const reviewadd = new Review({
-            userName:username,
+            userName: username,
             content: reviewText,
             rating: rating,
             userid: userId,
@@ -825,8 +823,35 @@ export const userreview = async (req, res) => {
 export const fetchreviewdetails = async (req, res) => {
     try {
         const { id } = req.params
-        const Reviewdetails = await Review.find({packageid: id })
+        const Reviewdetails = await Review.find({ packageid: id })
         return res.json({ Reviewdetails })
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+
+export const fetchtotalrating = async (req, res) => {
+    try {
+        console.log("hi");
+        const aggregateResult = await Review.aggregate([{ $group: { _id: "$packageid", totalRating: { $sum: "$rating" }, totalReviews: { $sum: 1 } } },
+        {
+            $project: {
+                _id: 0,
+                packageId: "$_id",
+                averageRating: { $divide: ["$totalRating", "$totalReviews"] }
+            }
+        }
+        ]);
+
+        const packageRatings = aggregateResult.map(item => ({
+            packageId: item.packageId,
+            averageRating: item.averageRating
+        }));
+
+        return res.json({ packageRatings });
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
     }

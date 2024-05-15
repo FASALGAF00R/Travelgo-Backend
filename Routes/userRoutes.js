@@ -27,10 +27,11 @@ import {
     getaddress,
     fetchpackagedetails,
     userreview,
-    fetchreviewdetails
+    fetchreviewdetails,
+    fetchtotalrating
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
-import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
+import {userVerification} from '../Middlewares/AuthMiddleware.js'
 const userRoute = express.Router();
 
 // user routes
@@ -64,9 +65,9 @@ userRoute.post('/walletpayment',userVerification,userbookingwalletdetails)
 userRoute.get('/fetchpackagedetails/:packageId',userVerification,fetchpackagedetails)
 userRoute.post('/submitReview',userVerification,userreview)
 userRoute.get('/reviewdetails/:id',userVerification,fetchreviewdetails)
+userRoute.get('/toprating',userVerification,fetchtotalrating)
 
 
-userRoute.post('/refreshtoken', refreshTokenHandler);
 
 
 

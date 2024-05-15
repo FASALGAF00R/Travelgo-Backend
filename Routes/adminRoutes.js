@@ -13,7 +13,7 @@ Blockcategory,
 Editcategory,
 admindestinations
  } from "../Controllers/Admincontroller.js";
- import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
+ import {userVerification} from '../Middlewares/AuthMiddleware.js'
 
 const adminRoute=express.Router()
 adminRoute.post('/login',Adminlogin)

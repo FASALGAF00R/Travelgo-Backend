@@ -21,12 +21,15 @@ import {
     Listpackages,
     Blockpackagess,
     Listbookings,
-    
+    Listnumberofusers,
+    Listnumberofpackages,
+    Listmontlyamount
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
-import {userVerification,refreshTokenHandler} from '../Middlewares/AuthMiddleware.js'
+import {userVerification} from '../Middlewares/AuthMiddleware.js'
 
 const agentRoute =express.Router()
+
 
 // agent routes
 agentRoute.post('/login',AgentLogin)
@@ -49,5 +52,8 @@ agentRoute.put('/blockpackages/:id',userVerification,Blockpackagess)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)
 agentRoute.put('/blockactivity/:id',userVerification,BlockActivity)
 agentRoute.get('/listbookings',userVerification,Listbookings)
+agentRoute.get('/numberofusers/:agentid',userVerification,Listnumberofusers)
+agentRoute.get('/numberofpackages/:agentid',userVerification,Listnumberofpackages)
+agentRoute.get('/montlyamount/:agentid',userVerification,Listmontlyamount)
 
 export default agentRoute

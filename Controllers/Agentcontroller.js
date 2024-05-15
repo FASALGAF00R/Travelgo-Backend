@@ -67,7 +67,7 @@ export const AgentLogin = async (req, res) => {
         const { email, password } = req.body;
         const Agent = await agent.findOne({ email: email });
         if (!Agent) {
-            return res.json({ message: "user not found" });
+            return res.json({ message: "agent not found" });
         }
         const auth = await bcrypt.compare(password, Agent.password);
         if (!auth) {
@@ -100,7 +100,6 @@ export const Agentgoogle = async (req, res) => {
 
         } else {
             const hashpass = await bcrypt.hash(id, 10)
-            console.log(hashpass);
             const Googleagent = new agent({
                 userName: name,
                 email: email,
@@ -128,7 +127,6 @@ export const Agentgoogle = async (req, res) => {
 export const Agentplaces = async (req, res) => {
     try {
         const { Destrictname, description, State, agentid } = req.body
-        console.log(agentid, "agentid");
         const image = req.file.path;
         const Cloudstore = await handleUpload(image, "profilepic")
         const url = Cloudstore.url
@@ -155,7 +153,6 @@ export const Agentplaces = async (req, res) => {
 export const Getstates = async (req, res) => {
     try {
         const States = await Place.find({ isBlock: true });
-        console.log(States);
         return res.status(200).json({ success: true, States });
     } catch (error) {
         return res.status(500).json("Server error")
@@ -190,7 +187,7 @@ export const UpdatePlace = async (req, res) => {
     try {
         const id = req.params.id;
         const { Destrictname, description, image } = req.body.Data;
-        console.log(Destrictname, description, image, "///");
+
         const foundPlace = await Place.findByIdAndUpdate(id, { $set: { Destrictname: Destrictname, Description: description } }, { new: true });
         if (!foundPlace) {
             return res.status(400).json({ message: "Place not found" });
@@ -346,10 +343,7 @@ export const Packageadd = async (req, res) => {
             amount,
             perDAy,
             id } = req.body
-        console.log(perDAy, "oggggggggo");
-        // const Image = req.file.path;
-        // console.log(Image,"IMAGES");
-        // const Cloudstore = await handleUpload(Image, "profilepic")
+
 
         const Packagedata = new Package({
             agentid: id,
@@ -364,7 +358,6 @@ export const Packageadd = async (req, res) => {
         })
         await Packagedata.save()
 
-        console.log(Packagedata, "Packagedata");
         return res.status(200).json({ succes: true, Packagedata })
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
@@ -402,7 +395,6 @@ export const Checkingagent = async (req, res) => {
             return res.json({ success: true })
         }
     } catch (error) {
-        console.log("bug");
         return res.status(500).json("Server error")
     }
 }
@@ -411,7 +403,6 @@ export const Checkingagent = async (req, res) => {
 export const Listpackages = async (req, res) => {
     try {
         const pack = await Package.find();
-        console.log(pack, "pppppppppppppppp");
         return res.status(200).json({ pack });
     } catch (error) {
         return res.status(500).json("Server error")
@@ -459,12 +450,12 @@ export const Blockpackagess = async (req, res) => {
 export const Listbookings = async (req, res) => {
     try {
         const bookings = await Booking.find({});
-        
+
         const bookingsWithUserNames = await Promise.all(bookings.map(async (booking) => {
             const User = await user.findById(booking.userId);
-            return { ...booking.toObject(), userName: User ? User.userName : '' }; 
+            return { ...booking.toObject(), userName: User ? User.userName : '' };
         }));
-     
+
         return res.json({ message: "fetched all bookings", bookings: bookingsWithUserNames });
     } catch (error) {
         console.error('Error fetching bookings:', error);
@@ -475,4 +466,47 @@ export const Listbookings = async (req, res) => {
 
 
 
+export const Listnumberofusers = async (req, res) => {
+    try {
+        const { agentid } = req.params
+        const bookingCount = await Booking.countDocuments({ agentId: agentid });
+        res.json({ count: bookingCount });
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
 
+
+
+export const Listnumberofpackages = async (req, res) => {
+    try {
+        const { agentid } = req.params
+        const packagesCount = await Package.countDocuments({ agentid: agentid });
+        const Agent = await agent.findById({ _id: agentid })
+        res.json({ packagesCount, Amount: Agent.amount });
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
+
+
+
+export const Listmontlyamount = async (req, res) => {
+    try {
+        const { agentid } = req.params
+        const packagesCount = await Booking.aggregate([{ $match: { agentId: agentid } },
+            { $match: { isCanceled: false } },
+            { $group: { _id: { $month: '$Date' }, totalamount: { $sum: '$Amount' } } },
+        {
+            $project: {
+                month: '$_id',
+                totalamount: 1,
+                _id: 0
+            }
+        }
+        ]);
+            return res.json({monthlyAmounts :packagesCount});
+    } catch (error) {
+        return res.status(500).json("Server error")
+    }
+}
