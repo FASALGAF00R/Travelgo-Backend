@@ -494,16 +494,21 @@ export const Listnumberofpackages = async (req, res) => {
 export const Listmontlyamount = async (req, res) => {
     try {
         const { agentid } = req.params
-        const packagesCount = await Booking.aggregate([{ $match: { agentId: agentid } },
-            { $match: { isCanceled: false } },
-            { $group: { _id: { $month: '$Date' }, totalamount: { $sum: '$Amount' } } },
-        {
-            $project: {
-                month: '$_id',
-                totalamount: 1,
-                _id: 0
+        const packagesCount = await Booking.aggregate([
+            { $match: { agentId: agentid, isCanceled: false } },
+            { $group: { 
+                _id: { 
+                    month: { $month: '$Date' },
+                },
+                totalamount: { $sum: '$Amount' } 
+            } },
+            { 
+                $project: { 
+                    month: '$_id.month',
+                    totalamount: 1,
+                    _id: 0
+                } 
             }
-        }
         ]);
             return res.json({monthlyAmounts :packagesCount});
     } catch (error) {

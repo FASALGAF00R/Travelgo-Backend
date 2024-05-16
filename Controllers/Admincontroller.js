@@ -1,6 +1,8 @@
 import agent from '../Models/Agentmodel.js';
 import { category } from '../Models/Categorymodel.js';
 import { user } from "../Models/Usermodel.js";
+import { Booking } from '../Models/Booking.js';
+import { Package } from '../Models/Packages.js';
 import { createSecretToken } from '../Util/SecretToken.js'
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"
@@ -266,7 +268,6 @@ export const Editcategory = async (req, res) => {
 
 export const admindestinations = async (req, res) => {
   try {
-      console.log("haa");
       const { Destrictname, State } = req.body
       const Placedata = new destination({
          State: State,
@@ -280,4 +281,80 @@ export const admindestinations = async (req, res) => {
 
   }
 
+}
+
+
+
+export const Getusers = async (req, res) => {
+  try {
+      const userCount = await user.countDocuments();
+      res.status(200).json({  userCount });
+  } catch (error) {
+      return res.status(500).json("Server error")
+  }
+}
+
+export const Getagents = async (req, res) => {
+  try {
+      const agentCount = await agent.countDocuments();
+      res.json({  agentCount });
+  } catch (error) {
+      return res.status(500).json("Server error")
+  }
+}
+
+
+
+export const Getpackages = async (req, res) => {
+  try {
+     
+      const packagesCount = await Package.countDocuments();
+      res.json({  packagesCount });
+  } catch (error) {
+      return res.status(500).json("Server error")
+  }
+}
+
+
+
+export const Getmonthlyamounts = async (req, res) => {
+  try {
+    const monthlyCount = await Booking.aggregate([
+      {
+          $match: {
+              isCanceled: false
+          }
+      },
+      {
+          $group: {
+              _id: { $month: '$Date' },
+              totalamount: { $sum: '$Amount' }
+          }
+      },
+      {
+          $project: {
+              _id: 0,
+              month: '$_id',
+              totalamount: 1
+          }
+      }
+  ]);
+  
+      res.json({  monthlyCount });
+  } catch (error) {
+      return res.status(500).json("Server error")
+  }
+}
+
+
+
+export const Getpaymenttypes = async (req, res) => {
+  try {
+    
+      const paymenttypes = await Booking.find({$and:[{payment_type:'Wallet'},{payment_type:'stripe'}]})
+      console.log(paymenttypes,"paymenttypes");
+      res.json({ paymenttypes });
+  } catch (error) {
+      return res.status(500).json("Server error")
+  }
 }

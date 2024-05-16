@@ -11,7 +11,12 @@ Addcatgeory,
 getcatgeory,
 Blockcategory,
 Editcategory,
-admindestinations
+admindestinations,
+Getusers,
+Getpackages,
+Getmonthlyamounts,
+Getpaymenttypes,
+Getagents
  } from "../Controllers/Admincontroller.js";
  import {userVerification} from '../Middlewares/AuthMiddleware.js'
 
@@ -28,6 +33,11 @@ adminRoute.get('/getcatgeory',userVerification,getcatgeory)
 adminRoute.put('/blockcat',userVerification,Blockcategory)
 adminRoute.put('/editcat/:id',userVerification,Editcategory)
 adminRoute.post('/destination',userVerification,admindestinations)
+adminRoute.get('/numberofusers/admin',userVerification,Getusers)
+adminRoute.get('/numberofagents/admin',userVerification,Getagents)
+adminRoute.get('/numberofpackages/admin',userVerification,Getpackages)
+adminRoute.get('/montlyamount/admin',userVerification,Getmonthlyamounts)
+adminRoute.get('/paymenttypes/admin',userVerification,Getpaymenttypes)
 
 
 export  default adminRoute
