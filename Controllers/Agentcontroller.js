@@ -515,3 +515,15 @@ export const Listmontlyamount = async (req, res) => {
         return res.status(500).json("Server error")
     }
 }
+
+
+
+export const fetchagentpackagedetails = async (req, res) => {
+    try {
+        const { packageId } = req.params
+        const packagedetails = await Package.findById({ _id: packageId })
+        return res.json({ packagedetails })
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

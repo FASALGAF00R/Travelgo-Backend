@@ -84,15 +84,12 @@ export const Blockagent = async (req, res) => {
 export const Blockuser = async (req, res) => {
   try {
     const id = req.body._id;
-    console.log(id, "params");
 
     const objectId = new mongoose.Types.ObjectId(id);
 
     const User = await user.findOne({ _id: id });
 
-    console.log(User, '0OOOOO');
     if (User.isBlock == true) {
-      console.log('0OOO9999OO');
 
       const newData = await user.updateOne(
         { _id: objectId },
@@ -137,7 +134,6 @@ export const agentaccept = async (req, res) => {
   try {
 
     const { _id, option } = req.body
-    console.log(option, "opooo");
     const Agent = await agent.findById(_id);
 
     if (Agent && option === 'Accept') {
@@ -206,14 +202,11 @@ export const getcatgeory = async (req, res) => {
 export const Blockcategory = async (req, res) => {
   try {
     const id = req.body._id;
-    console.log(id, "paramsnnnhh");
 
 
     const Cat = await category.findOne({ _id: id });
 
-    console.log(Cat, '0OOOOO');
     if (Cat.isBlock == true) {
-      console.log('0OOO9999OO');
 
       const newData = await category.updateOne(
         { _id: id },
@@ -352,7 +345,6 @@ export const Getpaymenttypes = async (req, res) => {
   try {
     
       const paymenttypes = await Booking.find({$and:[{payment_type:'Wallet'},{payment_type:'stripe'}]})
-      console.log(paymenttypes,"paymenttypes");
       res.json({ paymenttypes });
   } catch (error) {
       return res.status(500).json("Server error")

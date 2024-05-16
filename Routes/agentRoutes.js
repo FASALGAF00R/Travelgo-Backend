@@ -23,7 +23,8 @@ import {
     Listbookings,
     Listnumberofusers,
     Listnumberofpackages,
-    Listmontlyamount
+    Listmontlyamount,
+    fetchagentpackagedetails
 } from '../Controllers/Agentcontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
@@ -52,6 +53,7 @@ agentRoute.put('/blockpackages/:id',userVerification,Blockpackagess)
 agentRoute.get('/checkingagent/:data',userVerification,Checkingagent)
 agentRoute.put('/blockactivity/:id',userVerification,BlockActivity)
 agentRoute.get('/listbookings',userVerification,Listbookings)
+agentRoute.get('/fetchagentpackagedetails/:packageId',userVerification,fetchagentpackagedetails)
 agentRoute.get('/numberofusers/:agentid',userVerification,Listnumberofusers)
 agentRoute.get('/numberofpackages/:agentid',userVerification,Listnumberofpackages)
 agentRoute.get('/montlyamount/:agentid',userVerification,Listmontlyamount)

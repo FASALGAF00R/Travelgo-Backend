@@ -138,9 +138,7 @@ export const Forgotpassword = async (req, res) => {
     try {
         const { data, role } = req.body
         const { email } = data
-        console.log(role, email);
         const Data = await user.findOne({ email })
-        console.log(Data, "88");
         const Agentdata = await agent.findOne({ email })
         if (Data === null && Agentdata === null) {
             return res.json({ message: ' not registered' })
@@ -172,11 +170,9 @@ export const Forgotpassword = async (req, res) => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log("errooor");
                     console.error(error);
                 } else {
                     console.log('Email sent  : ' + info.response);
-                    console.log("iuiuiui");
                     return res.status(200).json({
                         success: true,
                         message: "OTP sent successfully",
@@ -187,7 +183,6 @@ export const Forgotpassword = async (req, res) => {
 
             });
         } else {
-            console.log("hu");
             let otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
@@ -213,11 +208,9 @@ export const Forgotpassword = async (req, res) => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log("errooor");
                     console.error(error);
                 } else {
                     console.log('Email sent  : ' + info.response);
-                    console.log("iuiuiui");
                     return res.status(200).json({
                         success: true,
                         message: "OTP sent successfully",
@@ -275,7 +268,6 @@ export const userotpverify = async (req, res) => {
 export const Createnewpass = async (req, res) => {
     try {
         const { password, email, role } = req.body
-        console.log(password);
 
         const hashpass = await bcrypt.hash(password, 10)
         if (role === 'user') {
@@ -308,15 +300,12 @@ export const Createnewpass = async (req, res) => {
 
 export const updateprofile = async (req, res) => {
     try {
-        console.log(req.body, 'how are you?');
         const { userId } = req.body
         const Image = req.file.path;
-        console.log(userId, '--------------------');
 
         const Cloudstore = await handleUpload(Image, "profilepic")
         const url = Cloudstore.url
         const newData = await user.updateOne({ _id: userId }, { $set: { image: url } })
-        console.log(Cloudstore, 'oooooooooooooooooo');
         res.status(200).json({ success: true, newData: url });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error" });
@@ -327,22 +316,19 @@ export const updateprofile = async (req, res) => {
 // changing password
 
 export const Resetpassword = async (req, res) => {
-    console.log("ioioioioioioioioio");
     try {
         const { email, formData } = req.body;
-        console.log(formData, ":::::::::::::::::::::::");
         const { password, newPassword } = formData;
         const User = await user.findOne({ email: email });
         if (!User) {
             return res.status(404).json({ message: "User not found" });
         }
         const Passwordconfirm = await bcrypt.compare(password, User.password)
-        console.log(Passwordconfirm, ".....");
         if (Passwordconfirm) {
             const hashpassnew = await bcrypt.hash(newPassword, 10)
             const Userdata = await user.updateOne({ email: email }, { $set: { password: hashpassnew } });
             User.image = formData.image
-            await User.save()
+           
             return res.status(200).json({ success: true, message: "Password updated" });
         } else {
             return res.json({ success: false, message: "Current password incorrect" });
@@ -356,13 +342,9 @@ export const Resetpassword = async (req, res) => {
 
 // viewing image
 export const getimage = async (req, res) => {
-    console.log("ethiii");
     try {
         const Id = req.params.id;
-        console.log(Id, 'lklklklklklklklklklk');
         const Img = await user.findById({ _id: Id });
-        console.log(Img, 'pppppppppppppppppppp');
-        console.log(Img.image, "opopopopoo");
         return res.json({ message: "Image send", image: Img.image, wallet: Img.wallet });
 
     } catch (error) {
@@ -377,9 +359,7 @@ export const getimage = async (req, res) => {
 export const getaddress = async (req, res) => {
     try {
         const Id = req.params.id;
-        console.log(Id, 'id');
         const Address = await Booking.findOne({ userId: Id })
-        console.log(Address, "Address");
         return res.json({ message: "address send", Address });
 
     } catch (error) {
@@ -439,11 +419,9 @@ export const Resendotp = async (req, res) => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log("errooor");
                     console.error(error);
                 } else {
                     console.log('Email sent  : ' + info.response);
-                    console.log("iuiuiui");
                     return res.status(200).json({
                         success: true,
                         message: "OTP sent successfully for resend",
@@ -454,7 +432,6 @@ export const Resendotp = async (req, res) => {
 
 
         } else {
-            console.log("lklkl");
 
             let otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
@@ -483,11 +460,9 @@ export const Resendotp = async (req, res) => {
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    console.log("errooor");
                     console.error(error);
                 } else {
                     console.log('Email sent  : ' + info.response);
-                    console.log("iuiuiui");
                     return res.status(200).json({
                         success: true,
                         message: "OTP sent successfully for resend",
@@ -549,7 +524,6 @@ export const Checkinguser = async (req, res) => {
 
 export const listpackages = async (req, res) => {
     try {
-        console.log("lo");
         const { id } = req.params
         const places = await Place.findById(id)
         const fullpackage = await Package.find({ $and: [{ State: places.State }, { Destrictname: places.Destrictname }, { isBlock: true }] })
@@ -635,9 +609,7 @@ export const userbookingdetails = async (req, res) => {
         const { formData, totalAmount, userId, agentId, packageId } = req.body;
         const { country, state, city, address, contact } = formData;
 
-        console.log(agentId, totalAmount, "agentId");
         const findagent = await agent.findOneAndUpdate({ _id: agentId }, { $inc: { amount: totalAmount } })
-        console.log(findagent, "findagent");
         await findagent.save()
         const booking = new Booking({
             phone: contact,
@@ -794,6 +766,25 @@ export const fetchpackagedetails = async (req, res) => {
 
 
 
+export const fetchwalletpackagedetails = async (req, res) => {
+    try {
+        const { packageId } = req.params
+        const packagedetails = await Package.findById({ _id: packageId })
+        return res.json({walletpackagedetails: packagedetails })
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+
+
+
+
+
+
+
 export const userreview = async (req, res) => {
     try {
         const { packageId, agentId, userId, reviewText, rating } = req.body;
@@ -835,7 +826,6 @@ export const fetchreviewdetails = async (req, res) => {
 
 export const fetchtotalrating = async (req, res) => {
     try {
-        console.log("hi");
         const aggregateResult = await Review.aggregate([{ $group: { _id: "$packageid", totalRating: { $sum: "$rating" }, totalReviews: { $sum: 1 } } },
         {
             $project: {

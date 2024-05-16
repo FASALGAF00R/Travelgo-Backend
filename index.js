@@ -44,6 +44,6 @@ app.use('/admin',adminRoute)
 
 
 
-app.listen(port,()=>{console.log('port runnin on 3000')})
+app.listen(port,()=>{console.log('port running on 3000')})
 
 

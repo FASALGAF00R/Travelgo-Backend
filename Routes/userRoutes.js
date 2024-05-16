@@ -28,7 +28,8 @@ import {
     fetchpackagedetails,
     userreview,
     fetchreviewdetails,
-    fetchtotalrating
+    fetchtotalrating,
+    fetchwalletpackagedetails
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
@@ -63,6 +64,7 @@ userRoute.put('/cancelbookings',userVerification,Cancelbooking)
 userRoute.get('/userwallet/:id',userVerification,getwalletamount)
 userRoute.post('/walletpayment',userVerification,userbookingwalletdetails)
 userRoute.get('/fetchpackagedetails/:packageId',userVerification,fetchpackagedetails)
+userRoute.get('/walletbookingsdetails/:packageId',userVerification,fetchwalletpackagedetails)
 userRoute.post('/submitReview',userVerification,userreview)
 userRoute.get('/reviewdetails/:id',userVerification,fetchreviewdetails)
 userRoute.get('/toprating',userVerification,fetchtotalrating)
