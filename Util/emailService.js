@@ -48,7 +48,7 @@ export const sendVerificationEmail = (newuser,newagent) => {
     
     
   }else {
-    const verificationLinkuser = `${process.env.USER_BASE_URL}verify/${newuser.verificationToken}`;
+    const verificationLinkuser = `${process.env.USER_BASE_URL}/verify/${newuser.verificationToken}`;
     const mailOptions = {
       from: process.env.MAIL_USER,
       to: newuser.email,
