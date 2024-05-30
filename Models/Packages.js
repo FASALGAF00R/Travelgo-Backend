@@ -11,8 +11,7 @@ const Packageschema = new Schema({
     activites: [{ type: String}],
     amount: { type: Number},
     perDAy:{ type: String},
-    isBlock: { type: Boolean,default: true},    
-},
+    isBlock: { type: Boolean,default: true},},
 {timestamps: true  })
 
 

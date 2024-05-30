@@ -375,18 +375,6 @@ export const getaddress = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 export const Resendotp = async (req, res) => {
     try {
 
@@ -399,7 +387,6 @@ export const Resendotp = async (req, res) => {
             });
 
             const userdata = await user.findOneAndUpdate({ email: Data }, { $set: { Otp: otp } })
-            console.log(userdata);
 
 
             const transporter = nodemailer.createTransport({
@@ -638,7 +625,6 @@ export const userbookingdetails = async (req, res) => {
 export const getbookings = async (req, res) => {
     try {
         const { userid } = req.params
-        console.log(userid, "userid");
         const bookings = await Booking.find({ $and: [{ payment_type: 'Wallet' }, { userId: userid }] })
         return res.json({ message: "fetched all bookings", bookings })
 
@@ -654,9 +640,7 @@ export const getbookings = async (req, res) => {
 export const getallbookings = async (req, res) => {
     try {
         const { id } = req.params
-        console.log(id, "id");
         const bookings = await Booking.find({ userId: id })
-        console.log(bookings, "bookings");
         if (!bookings) {
             return res.json({ message: "no bookings" })
         }
@@ -723,7 +707,6 @@ export const userbookingwalletdetails = async (req, res) => {
                 { _id: userid },
                 { $inc: { wallet: -totalAmount } }
             )
-            console.log(updateWallet, "updateWalletyyyyyyyyyyyyy");
             const bookingData = new Booking({
                 phone: contact,
                 address: {
