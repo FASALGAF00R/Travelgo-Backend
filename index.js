@@ -22,7 +22,7 @@ app.use(cors({
 
 app.use(express.json())
 
-const port =3000
+const port =3001
 
 connect(process.env.DATABASE_URL)
 .then(()=>{
@@ -44,6 +44,6 @@ app.use('/admin',adminRoute)
 
 
 
-app.listen(port,()=>{console.log('port running on 3000')})
+app.listen(port,()=>{console.log('port running on 3001')})
 
 
