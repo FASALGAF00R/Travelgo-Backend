@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "server": "node server/index.js",
+    "start": "nodemon app.js",
+    "server": "node server/app.js",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },

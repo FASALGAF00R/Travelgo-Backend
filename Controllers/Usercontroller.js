@@ -25,8 +25,12 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 
 //  user signup
 export const loadSignup = async (req, res) => {
+    console.log("ooooooooooooooo");
+    
     try {
         const { userName, email, password } = req.body
+        console.log(req.body,"///");
+        
 
         const User = await user.findOne({ email })
         if (User) {
@@ -35,6 +39,8 @@ export const loadSignup = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newuser = new user({ userName, email, password: hashedPassword })
             newuser.verificationToken = verificationToken;
+            console.log(verificationToken,"ll");
+            
             newuser.save();
             sendVerificationEmail(newuser);
             res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newuser })
