@@ -29,7 +29,8 @@ import {
     userreview,
     fetchreviewdetails,
     fetchtotalrating,
-    fetchwalletpackagedetails
+    fetchwalletpackagedetails,
+    Alllistpackages
 } from '../Controllers/Usercontroller.js'
 import { upload } from '../Middlewares/Multer.js';
 import {userVerification} from '../Middlewares/AuthMiddleware.js'
@@ -50,6 +51,8 @@ userRoute.get('/user/:id',userVerification,getimage)
 userRoute.get('/getaddress/:id',userVerification,getaddress)
 userRoute.get('/getplaces',userVerification, listplaces)
 userRoute.get('/checkinguser/:data',userVerification,Checkinguser)
+userRoute.get('/fetchallpackage',userVerification, Alllistpackages)
+
 userRoute.get('/packages/:id',userVerification, listpackages)
 userRoute.get('/packagesdetails/:id',userVerification, getpackages)
 userRoute.get('/categories',userVerification,fetchcat)

@@ -496,6 +496,8 @@ export const listplaces = async (req, res) => {
 export const Checkinguser = async (req, res) => {
     try {
         const { data } = req.params
+        console.log(data,"ethi");
+        
         const User = await user.findById(data)
         if (User.isBlock === false) {
             return res.json({ success: false })
@@ -520,6 +522,19 @@ export const listpackages = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+
+
+export const Alllistpackages = async (req, res) => {
+    try {
+        const fullpackage = await Package.find({})
+        return res.json({ fullpackage })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 
 
 
