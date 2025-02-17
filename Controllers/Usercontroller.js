@@ -584,7 +584,7 @@ export const fetchpaymentreq = async (req, res) => {
     try {
         const { id } = req.params
         const stripe = new Stripe(process.env.STRIPE_KEY)
-        console.log(stripe,";;;;;;;;;;;;;;;");
+        console.log("hgisdigjhdsjghhfdbgjdfuhgdhufuhdfhb");
         
         const Bookpackage = await Package.findById({ _id: id })
         const RentAmount = Bookpackage.amount
@@ -641,6 +641,8 @@ export const userbookingdetails = async (req, res) => {
 
 export const getbookings = async (req, res) => {
     try {
+        console.log("lotta");
+        
         const { userid } = req.params
         const bookings = await Booking.find({ $and: [{ payment_type: 'Wallet' }, { userId: userid }] })
         return res.json({ message: "fetched all bookings", bookings })
