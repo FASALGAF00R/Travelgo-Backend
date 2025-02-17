@@ -584,6 +584,8 @@ export const fetchpaymentreq = async (req, res) => {
     try {
         const { id } = req.params
         const stripe = new Stripe(process.env.STRIPE_KEY)
+        console.log(stripe,";;;;;;;;;;;;;;;");
+        
         const Bookpackage = await Package.findById({ _id: id })
         const RentAmount = Bookpackage.amount
 
