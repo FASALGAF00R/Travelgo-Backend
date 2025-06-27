@@ -24,7 +24,7 @@ const verificationToken = crypto.randomBytes(20).toString('hex');
 
 //  user signup
 export const loadSignup = async (req, res) => {
-    
+
     try {
         const { userName, email, password } = req.body
         const User = await user.findOne({ email })
@@ -34,7 +34,7 @@ export const loadSignup = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newuser = new user({ userName, email, password: hashedPassword })
             newuser.verificationToken = verificationToken;
-            console.log(verificationToken,"ll");
+            console.log(verificationToken, "ll");
             newuser.save();
             sendVerificationEmail(newuser);
             res.status(201).json({ message: 'User signed up successfully. Please check your email for verification.', success: true, newuser })
@@ -135,7 +135,7 @@ export const googlelogin = async (req, res) => {
 
 // forgotpass
 export const Forgotpassword = async (req, res) => {
-    
+
     try {
         const { data, role } = req.body
         const { email } = data
@@ -172,6 +172,11 @@ export const Forgotpassword = async (req, res) => {
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error(error);
+                    return res.status(500).json({
+                        success: false,
+                        message: "Failed to send OTP email",
+                        error: error.message
+                    });
                 } else {
                     console.log('Email sent  : ' + info.response);
                     return res.status(200).json({
@@ -193,7 +198,7 @@ export const Forgotpassword = async (req, res) => {
             const Agent = await agent.updateOne({ email: Agentdata.email }, { $set: { Otp: otp } })
 
             const transporter = nodemailer.createTransport({
-                host: "smtp.gmal.com",
+                host: "smtp.gmail.com",
                 auth: {
                     user: process.env.EMAIL_HOST_USER,
                     pass: process.env.EMAIL_HOST_PASS,
@@ -209,6 +214,11 @@ export const Forgotpassword = async (req, res) => {
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error(error);
+                    return res.status(500).json({
+                        success: false,
+                        message: "Failed to send OTP email",
+                        error: error.message
+                    });
                 } else {
                     console.log('Email sent  : ' + info.response);
                     return res.status(200).json({
@@ -328,7 +338,7 @@ export const Resetpassword = async (req, res) => {
             const hashpassnew = await bcrypt.hash(newPassword, 10)
             const Userdata = await user.updateOne({ email: email }, { $set: { password: hashpassnew } });
             User.image = formData.image
-           
+
             return res.status(200).json({ success: true, message: "Password updated" });
         } else {
             return res.json({ success: false, message: "Current password incorrect" });
@@ -496,8 +506,8 @@ export const listplaces = async (req, res) => {
 export const Checkinguser = async (req, res) => {
     try {
         const { data } = req.params
-        console.log(data,"ethi");
-        
+        console.log(data, "ethi");
+
         const User = await user.findById(data)
         if (User.isBlock === false) {
             return res.json({ success: false })
@@ -585,7 +595,7 @@ export const fetchpaymentreq = async (req, res) => {
         const { id } = req.params
         const stripe = new Stripe(process.env.STRIPE_KEY)
         console.log("hgisdigjhdsjghhfdbgjdfuhgdhufuhdfhb");
-        
+
         const Bookpackage = await Package.findById({ _id: id })
         const RentAmount = Bookpackage.amount
 
@@ -642,7 +652,7 @@ export const userbookingdetails = async (req, res) => {
 export const getbookings = async (req, res) => {
     try {
         console.log("lotta");
-        
+
         const { userid } = req.params
         const bookings = await Booking.find({ $and: [{ payment_type: 'Wallet' }, { userId: userid }] })
         return res.json({ message: "fetched all bookings", bookings })
@@ -772,7 +782,7 @@ export const fetchwalletpackagedetails = async (req, res) => {
     try {
         const { packageId } = req.params
         const packagedetails = await Package.findById({ _id: packageId })
-        return res.json({walletpackagedetails: packagedetails })
+        return res.json({ walletpackagedetails: packagedetails })
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
     }
