@@ -135,6 +135,7 @@ export const googlelogin = async (req, res) => {
 
 // forgotpass
 export const Forgotpassword = async (req, res) => {
+    
     try {
         const { data, role } = req.body
         const { email } = data
@@ -154,15 +155,15 @@ export const Forgotpassword = async (req, res) => {
 
             // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
             const transporter = nodemailer.createTransport({
-                host: process.env.MAIL_HOST,
+                host: "smtp.gmail.com",
                 auth: {
-                    user: process.env.MAIL_USER,
-                    pass: process.env.MAIL_PASS,
+                    user: process.env.EMAIL_HOST_USER,
+                    pass: process.env.EMAIL_HOST_PASS,
                 }
             });
-            console.log(process.env.MAIL_PASS, ".................");
+            console.log(process.env.EMAIL_HOST_USER, "..r...............");
             const mailOptions = {
-                from: process.env.MAIL_USER,
+                from: process.env.EMAIL_HOST_USER,
                 to: result.email,
                 subject: 'otp verification for forgot password',
                 text: `Pls confirm your otp ${result.Otp}`
@@ -192,15 +193,14 @@ export const Forgotpassword = async (req, res) => {
             const Agent = await agent.updateOne({ email: Agentdata.email }, { $set: { Otp: otp } })
 
             const transporter = nodemailer.createTransport({
-                host: process.env.MAIL_HOST,
+                host: "smtp.gmal.com",
                 auth: {
-                    user: process.env.MAIL_USER,
-                    pass: process.env.MAIL_PASS,
+                    user: process.env.EMAIL_HOST_USER,
+                    pass: process.env.EMAIL_HOST_PASS,
                 }
             });
-            console.log(process.env.MAIL_PASS, ".................");
             const mailOptions = {
-                from: process.env.MAIL_USER,
+                from: process.env.EMAIL_HOST_USER,
                 to: Agentdata.email,
                 subject: 'otp verification for forgot password',
                 text: `Pls confirm your Resend otp ${otp}`
